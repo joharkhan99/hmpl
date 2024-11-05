@@ -8,12 +8,12 @@
 
 [![npm-version](https://img.shields.io/npm/v/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://www.npmjs.com/package/hmpl-js)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://bundlephobia.com/package/hmpl-js) 
-[![issues](https://img.shields.io/github/issues/hmpl-lang/hmpl?logo=github&color=0183ff&style=for-the-badge)](https://github.com/hmpl-lang/hmpl/issues) 
+[![issues](https://img.shields.io/github/issues/hmpl-language/hmpl?logo=github&color=0183ff&style=for-the-badge)](https://github.com/hmpl-lang/hmpl/issues) 
 [![x.com](https://img.shields.io/badge/follow-0183ff?style=for-the-badge&logo=x&labelColor=555555)](https://x.com/hmpljs)
 
 </div>
 
-<div align="center"><a href="https://hmpl-lang.github.io">Website</a> • <a href="https://hmpl-lang.github.io/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.github.io/examples.html">Examples</a>
+<div align="center"><a href="https://hmpl-language.github.io">Website</a> • <a href="https://hmpl-language.github.io/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-language.github.io/examples.html">Examples</a>
 </div>
 <br/>
 
@@ -198,7 +198,7 @@ This resource could be unpkg, skypack or other resources. The examples include u
 
 ## Getting started
 
-After installation using any convenient method described in [Installation](https://hmpl-lang.github.io/installation.html), you can start working with the server in the following way:
+After installation using any convenient method described in [Installation](https://hmpl-language.github.io/installation.html), you can start working with the server in the following way:
 
 ```html
 <script src="https://unpkg.com/hmpl-js/dist/hmpl.min.js"></script>
@@ -258,7 +258,7 @@ For the loader to work, it is better to use versions `0.0.2` or higher.
 
 ## Changelog
 
-[Changelog](https://hmpl-lang.github.io/changelog.html)
+[Changelog](https://hmpl-language.github.io/changelog.html)
 
 ## Inspiration
 
@@ -266,8 +266,8 @@ If you like hmpl, it will be very cool if you rate the repository with a star �
 
 ## Contact
 
-Email - camplejs@gmail.com
+Email - hmpllang@gmail.com
 
 ## License
 
-[Licensed under MIT](https://github.com/hmpl-lang/hmpl/blob/master/LICENSE)
+[Licensed under MIT](https://github.com/hmpl-language/hmpl/blob/master/LICENSE)

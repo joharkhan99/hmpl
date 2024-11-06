@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://www.npmjs.com/package/hmpl-js">
-        <img width="200" height="200" src="https://github.com/hmpl-lang/media/blob/main/logo_transparent.png" alt="hmpl" >
+        <img width="200" height="200" src="https://github.com/hmpl-language/media/blob/main/logo_transparent.png" alt="hmpl" >
     </a>
 </p>
 <h1 align="center">hmpl - server-oriented customizable templating for JavaScript</h1>
@@ -13,7 +13,7 @@
 
 </div>
 
-<div align="center"><a href="https://hmpl-language.github.io">Website</a> • <a href="https://hmpl-language.github.io/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-language.github.io/examples.html">Examples</a>
+<div align="center"><a href="https://hmpl-lang.dev">Website</a> • <a href="https://hmpl-lang.dev/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.dev/examples.html">Examples</a>
 </div>
 <br/>
 
@@ -198,7 +198,7 @@ This resource could be unpkg, skypack or other resources. The examples include u
 
 ## Getting started
 
-After installation using any convenient method described in [Installation](https://hmpl-language.github.io/installation.html), you can start working with the server in the following way:
+After installation using any convenient method described in [Installation](https://hmpl-lang.dev/installation.html), you can start working with the server in the following way:
 
 ```html
 <script src="https://unpkg.com/hmpl-js/dist/hmpl.min.js"></script>
@@ -258,7 +258,7 @@ For the loader to work, it is better to use versions `0.0.2` or higher.
 
 ## Changelog
 
-[Changelog](https://hmpl-language.github.io/changelog.html)
+[Changelog](https://hmpl-lang.dev/changelog.html)
 
 ## Inspiration
 

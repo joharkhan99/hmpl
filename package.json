@@ -1,7 +1,7 @@
 {
   "name": "hmpl-js",
   "version": "2.1.6",
-  "description": "Template language for displaying UI from server to client",
+  "description": "Server-oriented customizable templating for JavaScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -20,7 +20,7 @@
     "dist/",
     "src/"
   ],
-  "homepage": "https://hmpl-lang.github.io",
+  "homepage": "https://hmpl-lang.dev",
   "license": "MIT",
   "keywords": [
     "html",
@@ -34,10 +34,10 @@
   "author": "Anton Maklakov",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hmpl-lang/hmpl.git"
+    "url": "git+https://github.com/hmpl-language/hmpl.git"
   },
   "bugs": {
-    "url": "https://github.com/hmpl-lang/hmpl/issues"
+    "url": "https://github.com/hmpl-language/hmpl/issues"
   },
   "engines": {
     "node": ">=10.12.0"

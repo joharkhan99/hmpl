@@ -3,7 +3,7 @@
 Thank you for investing your time in contributing to our project! When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change. 
 
-Please note we have a [code of conduct](https://github.com/hmpl-lang/hmpl/blob/master/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+Please note we have a [code of conduct](https://github.com/hmpl-language/hmpl/blob/master/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
 
 ### Pull Request
 
@@ -20,4 +20,4 @@ Once you submit your pull request, a HMPL.js team member will review your propos
 
 Congratulations! The HMPL.js team thanks you!
 
-Once your pull request is merged, your contributions will be publicly visible on the [HMPL.js contributors](https://github.com/hmpl-lang/hmpl/graphs/contributors). 
+Once your pull request is merged, your contributions will be publicly visible on the [HMPL.js contributors](https://github.com/hmpl-language/hmpl/graphs/contributors). 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.7 (2024-11-10)
+
+- Update package data
+
 ## 2.1.6 (2024-10-27)
 
 - Standardization of errors

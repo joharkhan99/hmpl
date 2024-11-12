@@ -149,6 +149,10 @@ const wrapper = document.getElementById("wrapper");
 wrapper.appendChild(obj.response);
 ```
 
+### Result
+
+![Result](https://github.com/user-attachments/assets/94200655-4ea4-448a-bf80-96200fbe1bfa)
+
 ## Installation
 
 hmpl can be installed in several ways, which are described in this article. This tool is a simple javascript file that is connected in the usual way through a `script`, or using the `import` construct in an environment that supports this (webpack build, parcel build etc.). The first and easiest way is to install using a CDN.

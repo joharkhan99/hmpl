@@ -1,9 +1,8 @@
 <p align="center">
     <a href="https://www.npmjs.com/package/hmpl-js">
-        <img src="https://github.com/hmpl-language/media/blob/main/logo_transparent.png" width="200" height="200" alt="hmpl">
+        <img src="https://github.com/user-attachments/assets/8e027282-291f-4d6a-aa6e-1d4f6f8a5968" width="1000" height="400" alt="hmpl">
     </a>
 </p>
-<h1 align="center">Server-oriented customizable templating for JavaScript</h1>
 <div align="center">
 
 [![npm-version](https://img.shields.io/npm/v/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://www.npmjs.com/package/hmpl-js)
@@ -13,15 +12,48 @@
 
 </div>
 
+<div align="center">hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.</div>
+<br/>
 <div align="center"><a href="https://hmpl-lang.dev">Website</a> • <a href="https://hmpl-lang.dev/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.dev/examples.html">Examples</a>
 </div>
 <br/>
 
 <div align="center"><em>Best alternative to htmx and alpine.js</em></div>
 
-## About
 
-🌐 hmpl is a small template language for displaying UI from server to client. It is based on _customizable_ requests sent to the server via [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) and processed into ready-made HTML. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.
+## Why hmpl?
+
+The HMPL template language extends the capabilities of regular HTML by adding query objects to the markup to reduce the code on the client. When creating modern web applications, frameworks and libraries are used, which entail the need to write a bunch of boilerplate code, as well as connecting additional modules, which again make JavaScript files very large. If you recall the same SPA, then there js files can reach several hundred megabytes, which makes the first site load speed quite long. All this can be avoided by generating the markup on the server and then loading it on the client. Example of comparing the file size of a web application on Vue and HMPL.js:
+
+```javascript
+createApp({
+  setup() {
+    const count = ref(0);
+    return {
+      count,
+    };
+  },
+  template: `<div>
+        <button @click="count++">Click!</button>
+        <div>Clicks: {{ count }}</div>
+    </div>`,
+}).mount("#app");
+```
+> Size: **226** bytes (4KB on disk)
+
+```javascript
+document.querySelector("#app").append(
+  hmpl.compile(
+    `<div>
+        <button>Click!</button>
+        <div>Clicks: {{ "src": "/api/clicks", "after": "click:button" }}</div>
+    </div>`
+  )().response
+);
+```
+> Size: **206** bytes (4KB on disk)
+
+If we do not take into account that in one case we store the state on the client, and in the other on the server, as well as the response speed from the server, then we can see that with different file sizes we get the same interface. And this is only a small example. If we take large web applications, then the file sizes there can be several times smaller.
 
 ## Example #1
 
@@ -115,40 +147,6 @@ const obj = templateFn(initFn);
 const wrapper = document.getElementById("wrapper");
 wrapper.appendChild(obj.response);
 ```
-
-## Why hmpl?
-
-The HMPL template language extends the capabilities of regular HTML by adding query objects to the markup to reduce the code on the client. When creating modern web applications, frameworks and libraries are used, which entail the need to write a bunch of boilerplate code, as well as connecting additional modules, which again make JavaScript files very large. If you recall the same SPA, then there js files can reach several hundred megabytes, which makes the first site load speed quite long. All this can be avoided by generating the markup on the server and then loading it on the client. Example of comparing the file size of a web application on Vue and HMPL.js:
-
-```javascript
-createApp({
-  setup() {
-    const count = ref(0);
-    return {
-      count,
-    };
-  },
-  template: `<div>
-        <button @click="count++">Click!</button>
-        <div>Clicks: {{ count }}</div>
-    </div>`,
-}).mount("#app");
-```
-> Size: **226** bytes (4KB on disk)
-
-```javascript
-document.querySelector("#app").append(
-  hmpl.compile(
-    `<div>
-        <button>Click!</button>
-        <div>Clicks: {{ "src": "/api/clicks", "after": "click:button" }}</div>
-    </div>`
-  )().response
-);
-```
-> Size: **206** bytes (4KB on disk)
-
-If we do not take into account that in one case we store the state on the client, and in the other on the server, as well as the response speed from the server, then we can see that with different file sizes we get the same interface. And this is only a small example. If we take large web applications, then the file sizes there can be several times smaller.
 
 ## Installation
 
@@ -256,9 +254,6 @@ const elementObj = templateFn();
 
 For the loader to work, it is better to use versions `0.0.2` or higher.
 
-## Changelog
-
-[Changelog](https://hmpl-lang.dev/changelog.html)
 
 ## Inspiration
 
@@ -268,6 +263,6 @@ If you like hmpl, it will be very cool if you rate the repository with a star �
 
 Email - hmpllang@gmail.com
 
-## License
+## Fossa status
 
-[Licensed under MIT](https://github.com/hmpl-language/hmpl/blob/master/LICENSE)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhmpl-language%2Fhmpl.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhmpl-language%2Fhmpl?ref=badge_large&issueType=license)

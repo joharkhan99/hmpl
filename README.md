@@ -5,8 +5,6 @@
 </div>
 <div align="center"><h1>Server-oriented customizable templating for JavaScript</h1></div>
 
-<div align="center">hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.</div>
-<br/>
 <div align="center">
 
 [![npm-version](https://img.shields.io/npm/v/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://www.npmjs.com/package/hmpl-js)
@@ -17,6 +15,9 @@
 </div>
 <div align="center"><a href="https://hmpl-lang.dev">Website</a> • <a href="https://hmpl-lang.dev/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.dev/examples.html">Examples</a>
 </div>
+<br/>
+
+<div align="center">hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.</div>
 <br/>
 
 ## Why hmpl?

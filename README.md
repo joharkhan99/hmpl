@@ -1,8 +1,9 @@
 <div align="center">
     <a href="https://www.npmjs.com/package/hmpl-js">
-        <img src="https://github.com/hmpl-language/media/blob/main/logo_transparent.png" width="200" height="200" alt="hmpl">
+        <img src="https://github.com/hmpl-language/media/blob/main/logo_transparent.min.png" height="80" alt="hmpl">
     </a>
 </div>
+<br/>
 <div align="center"><h1>Server-oriented customizable templating for JavaScript</h1></div>
 
 <div align="center">

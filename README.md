@@ -29,7 +29,7 @@ document.querySelector("#app").append(
   hmpl.compile(
     `<div>
         <button data-action="increment" id="btn">Click!</button>
-        <div>Clicks: { { "src": "/api/clicks", "after": "click:#btn" } }</div>
+        <div>Clicks: {{ "src": "/api/clicks", "after": "click:#btn" }}</div>
     </div>`
   )(({ request: { event } }) => ({
     body: event.target.getAttribute("data-action")

@@ -8,6 +8,8 @@
 
 [![npm-version](https://img.shields.io/npm/v/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://www.npmjs.com/package/hmpl-js)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://bundlephobia.com/package/hmpl-js) 
+[![codecov](https://img.shields.io/codecov/c/github/hmpl-language/hmpl?style=for-the-badge&logo=codecov&logoColor=ffffff&label=CODECOV&color=0183ff
+)](https://codecov.io/github/hmpl-language/hmpl)
 [![issues](https://img.shields.io/github/issues/hmpl-language/hmpl?logo=github&color=0183ff&style=for-the-badge)](https://github.com/hmpl-lang/hmpl/issues) 
 [![x.com](https://img.shields.io/badge/follow-0183ff?style=for-the-badge&logo=x&labelColor=555555)](https://x.com/hmpljs)
 

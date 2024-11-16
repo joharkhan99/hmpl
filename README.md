@@ -20,6 +20,34 @@
 
 <div>hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.</div>
 
+## Usage
+
+```javascript
+import hmpl from "hmpl-js";
+
+document.querySelector("#app").append(
+  hmpl.compile(
+    `<div>
+        <button data-action="increment" id="btn">Click!</button>
+        <div>Clicks: {{ "src": "/api/clicks", "after": "click:#btn" }}</div>
+    </div>`
+  )(({ request: { event } }) => ({
+    body: event.target.getAttribute("data-action")
+  })).response
+);
+```
+
+## Features
+
+- **Customizable**: Send a custom request to the server when receiving the UI
+- **Based on Fetch API**: Use a modern standard instead of `XMLHTTPRequest`
+- **Server-oriented**: Work with the server directly through markup and with a little js
+- **Memory Preserving**: Reduce file sizes on the client by several times
+- **Simple**: Get ready-made UI from the server by writing a couple of lines of familiar object syntax
+- **Flexible**: Can be used in almost any project due to not only working through a script, but also working in files with the `.hmpl` extension
+- **No dependencies**: Can connect from one js file
+- **Small bundle size**: Lots of functionality in a couple of kilobytes
+
 ## Ecosystem
 
 <a href="https://www.npmjs.com/package/hmpl-loader"><img src="https://raw.githubusercontent.com/hmpl-language/media/refs/heads/main/Webpack.svg" alt="hmpl-loader" height="40"/></a>

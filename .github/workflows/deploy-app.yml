@@ -31,9 +31,11 @@ jobs:
           git clone https://${{ env.ORG_NAME }}:${{ secrets.SECRET_TOKEN }}@github.com/${{ env.ORG_NAME }}/app.git
           cd app
           git remote add ${{ env.ORIGINAL_REPO_NAME }} https://${{ env.ORG_NAME }}:${{ secrets.SECRET_TOKEN }}@github.com/${{ env.ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
-          git remote update
-          git merge ${{ env.ORIGINAL_REPO_NAME }}/app --allow-unrelated-histories
-          git push origin app
+          git fetch ${{ env.ORIGINAL_REPO_NAME }}
+          git checkout ${{ env.ORIGINAL_REPO_NAME }}/app -- . || true
+          git add -A
+          git commit -m "Copied changes from ${{ env.ORIGINAL_REPO_NAME }}/app" || true
+          git push origin app --force
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
           ORIGINAL_REPO_NAME: ${{ github.event.repository.name }}

@@ -37,7 +37,6 @@ jobs:
           git push origin --force blog
   app:
     name: Deploy app from subdirectory
-      GITHUB_TOKEN: ${{ github.token }}
     runs-on: ubuntu-latest
     permissions:
       contents: write

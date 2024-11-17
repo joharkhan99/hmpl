@@ -23,6 +23,7 @@ jobs:
 
       - name: Switch to another branch
         run: |
+          git fetch origin app
           git checkout app
 
       - name: Setup Node.js

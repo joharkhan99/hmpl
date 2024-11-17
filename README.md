@@ -46,10 +46,10 @@ Using HMPL, you can multiply reduce the size of the application bundle. Full cus
 ## Features
 
 - **Customizable**: Send a custom request to the server when receiving the UI
-- **Generate thousands of DOM nodes from a single template**: Work with large components not only on the server but also on the client
+- **Memory Preserving**: Reduce file sizes on the client by several times
 - **Based on Fetch API**: Use a modern standard instead of `XMLHTTPRequest`
 - **Server-oriented**: Work with the server directly through markup and with a little js
-- **Memory Preserving**: Reduce file sizes on the client by several times
+- **Generate thousands of DOM nodes from a single template**: Work with large components not only on the server but also on the client
 - **Simple**: Get ready-made UI from the server by writing a couple of lines of familiar object syntax
 - **Flexible**: Can be used in almost any project due to not only working through a script, but also working in files with the `.hmpl` extension
 - **No dependencies**: Can connect from one js file

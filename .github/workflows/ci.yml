@@ -36,3 +36,17 @@ jobs:
           git subtree split --branch blog --prefix www/blog/
           git checkout blog
           git push origin blog
+  app:
+    name: Deploy app from subdirectory
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: git
+        run: |
+          git subtree split --branch app --prefix www/app/
+          git checkout app
+          git push origin app

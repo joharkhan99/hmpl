@@ -30,7 +30,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
       - name: git
         run: |
           git subtree split --branch blog --prefix www/blog/
@@ -44,9 +43,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
       - name: git
         run: |
           git subtree split --branch app --prefix www/app/
           git checkout app
           git push origin --force app
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}

@@ -32,9 +32,9 @@ jobs:
           cd blog
           git remote add ${{ env.ORIGINAL_REPO_NAME }} https://${{ env.ORG_NAME }}:${{ secrets.SECRET_TOKEN }}@github.com/${{ env.ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
           git fetch ${{ env.ORIGINAL_REPO_NAME }}
-          git checkout ${{ env.ORIGINAL_REPO_NAME }}/blog -- .github || true
-          git add .github
-          git commit -m "Merged .github directory from ${{ env.ORIGINAL_REPO_NAME }}/blog" || true
+          git checkout ${{ env.ORIGINAL_REPO_NAME }}/blog -- . || true
+          git add -A
+          git commit -m "Copied changes from ${{ env.ORIGINAL_REPO_NAME }}/blog" || true
           git push origin blog --force
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}

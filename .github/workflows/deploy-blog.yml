@@ -32,7 +32,11 @@ jobs:
           cd blog
           git remote add ${{ env.ORIGINAL_REPO_NAME }} https://${{ env.ORG_NAME }}:${{ secrets.SECRET_TOKEN }}@github.com/${{ env.ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
           git remote update
-          git push origin --force blog
+          git merge ${{ env.ORIGINAL_REPO_NAME }}/blog --allow-unrelated-histories || true
+          git merge --strategy-option=ours || true
+          git add -A
+          git commit -m "Resolved conflicts during automatic merge" || true
+          git push origin blog
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
           ORIGINAL_REPO_NAME: ${{ github.event.repository.name }}

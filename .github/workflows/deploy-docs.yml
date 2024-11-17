@@ -45,6 +45,7 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v4
         with:
           fqdn: hmpl-lang.dev
+          jekyll: false
           target_branch: gh-pages
           build_dir: docs/.vuepress/dist
         env:

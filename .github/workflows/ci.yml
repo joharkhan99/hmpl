@@ -38,6 +38,8 @@ jobs:
   app:
     name: Deploy app from subdirectory
     runs-on: ubuntu-latest
+    with:
+      token: ${{ secrets.WORKFLOW_TOKEN }}
     permissions:
       contents: write
       actions: write

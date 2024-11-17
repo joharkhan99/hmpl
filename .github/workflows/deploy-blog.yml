@@ -20,14 +20,13 @@ concurrency:
 
 jobs:
   # Build job
-  branch:
-    - name: Switch to another branch
-      run: |
-        git fetch origin blog
-        git checkout blog
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Switch to another branch
+        run: |
+          git fetch origin blog
+          git checkout blog
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Ruby

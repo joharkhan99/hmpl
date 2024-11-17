@@ -18,24 +18,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Sync specific folder to another repository
-        env:
-          REPO_URL: https://hmpl-language@github.com/app.git
-          TARGET_BRANCH: main
-          FOLDER_TO_SYNC: www/app
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git clone --branch $TARGET_BRANCH $REPO_URL target-repo
-
-          rsync -av --delete $FOLDER_TO_SYNC/ target-repo/
-
-          cd target-repo
-          git add .
-          git commit -m "Sync from source repository"
-          git push $REPO_URL $TARGET_BRANCH
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -56,3 +38,10 @@ jobs:
         with:
           branch: gh-pages
           folder: docs/.vuepress/dist
+      - name: Deploy to another repo
+        run: |
+          git checkout gh-pages
+          git remote add app-remote https://github.com/hmpl-language/app.git
+          git fetch app-remote
+          git merge app-remote/main --allow-unrelated-histories
+          git remote rm app-remote

@@ -21,6 +21,10 @@ jobs:
           # if your docs needs submodules, uncomment the following line
           # submodules: true
 
+      - name: Switch to another branch
+        run: |
+          git checkout app
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:

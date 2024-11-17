@@ -25,16 +25,18 @@
 ```javascript
 import hmpl from "hmpl-js";
 
-document.querySelector("#app").append(
-  hmpl.compile(
-    `<div>
-        <button data-action="increment" id="btn">Click!</button>
-        <div>Clicks: {{ "src": "/api/clicks", "after": "click:#btn" }}</div>
-    </div>`
-  )(({ request: { event } }) => ({
-    body: event.target.getAttribute("data-action")
-  })).response
+const templateFn = hmpl.compile(
+  `<div>
+      <button data-action="increment" id="btn">Click!</button>
+      <div>Clicks: {{ "src": "/api/clicks", "after": "click:#btn" }}</div>
+  </div>`
 );
+
+const clicker = templateFn(({ request: { event } }) => ({
+  body: event.target.getAttribute("data-action"),
+})).response;
+
+document.querySelector("#app").append(clicker);
 ```
 
 ## Why HMPL? 

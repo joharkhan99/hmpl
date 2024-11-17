@@ -53,7 +53,7 @@ jobs:
           cd app
           git remote add ${{ env.ORIGINAL_REPO_NAME }} https://${{ env.ORG_NAME }}:${{ secrets.SECRET_TOKEN }}@github.com/${{ env.ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
           git remote update
-          git merge ${{ env.ORIGINAL_REPO_NAME }}/gh-pages
+          git merge ${{ env.ORIGINAL_REPO_NAME }}/gh-pages --allow-unrelated-histories
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}

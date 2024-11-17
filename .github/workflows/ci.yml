@@ -37,11 +37,11 @@ jobs:
           git push origin --force blog
   app:
     name: Deploy app from subdirectory
+      GITHUB_TOKEN: ${{ github.token }}
     runs-on: ubuntu-latest
-    with:
-      token: ${{ secrets.WORKFLOW_TOKEN }}
     permissions:
       contents: write
+      actions: write
 
     steps:
       - name: git

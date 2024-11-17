@@ -41,15 +41,11 @@ jobs:
         run: |-
           npm run build
           > docs/.vuepress/dist/.nojekyll
+      - name: Add CNAME
+        run: echo "hmpl-lang.dev" > docs/.vuepress/dist/CNAME
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # This is the branch where the docs are deployed to
           branch: gh-pages
           folder: docs/.vuepress/dist
-      - name: Switch to another branch
-        run: |
-          git fetch origin gh-pages
-          git checkout gh-pages
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2

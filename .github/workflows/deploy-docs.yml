@@ -48,7 +48,7 @@ jobs:
       - name: Deploy to another repo
         run: |
           git checkout gh-pages
-          git remote add app-remote https://github.com/hmpl-language/app.git
-          git fetch app-remote
-          git merge app-remote/main --allow-unrelated-histories
-          git remote rm app-remote
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add target https://github.com/hmpl-language/app.git
+          git push --force target $(git rev-parse --abbrev-ref HEAD):main

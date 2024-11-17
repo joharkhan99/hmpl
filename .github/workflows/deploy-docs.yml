@@ -43,9 +43,15 @@ jobs:
           > docs/.vuepress/dist/.nojekyll
       - name: Add CNAME
         run: echo "hmpl-lang.dev" > docs/.vuepress/dist/CNAME
+      - name: Remove specific file
+        run: |
+          if [ -f "docs/.vuepress/dist/.nojekyll" ]; then
+            rm docs/.vuepress/dist/.nojekyll
+          fi
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # This is the branch where the docs are deployed to
           branch: gh-pages
+          clean: true
           folder: docs/.vuepress/dist

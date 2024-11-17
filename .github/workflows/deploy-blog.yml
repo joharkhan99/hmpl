@@ -30,7 +30,7 @@ jobs:
           git config --global user.email "anthonymaxgit@gmail.com"
           git clone https://github.com/${{ env.ORG_NAME }}/blog.git
           cd blog
-          git remote add origin ${{ env.ORIGINAL_REPO_NAME }} git@github.com:${{ env.ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
+          git remote add ${{ env.ORIGINAL_REPO_NAME }} git@github.com:${{ env.ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
           git remote update
           git merge ${{ env.ORIGINAL_REPO_NAME }}/blog --allow-unrelated-histories
           git push origin blog

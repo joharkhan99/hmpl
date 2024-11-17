@@ -53,5 +53,3 @@ jobs:
           git checkout gh-pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
-        with:
-          cname: "hmpl-lang.dev"

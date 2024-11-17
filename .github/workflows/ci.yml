@@ -38,14 +38,14 @@ jobs:
   app:
     name: Deploy app from subdirectory
     runs-on: ubuntu-latest
+    with:
+      token: ${{ secrets.WORKFLOW_TOKEN }}
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v3
       - name: git
-        with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+        uses: actions/checkout@v3
         run: |
           git subtree split --branch app --prefix www/app/
           git checkout app

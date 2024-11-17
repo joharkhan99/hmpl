@@ -41,12 +41,10 @@ jobs:
         run: |-
           npm run build
           > docs/.vuepress/dist/.nojekyll
-      - name: Add CNAME
-        run: echo "hmpl-lang.dev" > docs/.vuepress/dist/CNAME
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v4
         with:
-          domain: hmpl-lang.dev
+          fqdn: hmpl-lang.dev
           target_branch: gh-pages
           build_dir: docs/.vuepress/dist
         env:

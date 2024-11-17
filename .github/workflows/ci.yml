@@ -30,4 +30,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: git
-        run: git subtree split --branch blog --prefix www/blog/
+        run: |
+          git subtree split --branch blog --prefix www/blog/
+          git checkout blog
+          git push origin blog

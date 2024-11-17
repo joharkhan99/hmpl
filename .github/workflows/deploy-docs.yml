@@ -17,13 +17,24 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          # if your docs needs submodules, uncomment the following line
-          # submodules: true
 
-      - name: Switch to another branch
+      - name: Sync specific folder to another repository
+        env:
+          REPO_URL: https://hmpl-language@github.com/app.git
+          TARGET_BRANCH: main
+          FOLDER_TO_SYNC: www/app
         run: |
-          git fetch origin app
-          git checkout app
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git clone --branch $TARGET_BRANCH $REPO_URL target-repo
+
+          rsync -av --delete $FOLDER_TO_SYNC/ target-repo/
+
+          cd target-repo
+          git add .
+          git commit -m "Sync from source repository"
+          git push $REPO_URL $TARGET_BRANCH
 
       - name: Setup Node.js
         uses: actions/setup-node@v3

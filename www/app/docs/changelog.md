@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.8 (2024-11-18)
+
+- Update package data
+- Fixing error
+
 ## 2.1.7 (2024-11-10)
 
 - Update package data

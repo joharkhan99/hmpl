@@ -16,13 +16,13 @@ Along the path node-modules/hmpl/dist you can find two files that contain a regu
 
 ## Manual download
 
-You can install the package by simply [downloading](https://unpkg.com/hmpl-js@2.1.7/dist/hmpl.min.js) it as a file and moving it to the project folder.
+You can install the package by simply [downloading](https://unpkg.com/hmpl-js@2.1.8/dist/hmpl.min.js) it as a file and moving it to the project folder.
 
 ```html
 <script src="./hmpl.min.js"></script>
 ```
 
-If, for some reason, you do not need the minified file, then you can download the full file from this [link](https://unpkg.com/hmpl-js@2.1.7/dist/hmpl.js).
+If, for some reason, you do not need the minified file, then you can download the full file from this [link](https://unpkg.com/hmpl-js@2.1.8/dist/hmpl.js).
 
 ```html
 <script src="./hmpl.js"></script>
@@ -36,8 +36,8 @@ This method involves connecting the file through a third-party resource, which p
 
 ```html
 <script
-  src="https://unpkg.com/hmpl-js@2.1.7/dist/hmpl.min.js"
-  integrity="sha384-sS8g4x4OiOuWGfKTzNVEg0aqv3YczY+l/Rm7g2ZfN8X7tX0h2k2+dq1HusGH+WqB"
+  src="https://unpkg.com/hmpl-js@2.1.8/dist/hmpl.min.js"
+  integrity="sha384-DJU1TF1rRg4OKQ+3hxQE1v0642zrROdyeTEdzYetxWvrfIhk/w4PmcEzOBSXTTg5"
   crossorigin="anonymous"
 ></script>
 ```

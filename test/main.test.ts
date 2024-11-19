@@ -9,6 +9,7 @@ import {
   ID,
   INDICATORS,
   MEMO,
+  METHOD,
   MODE,
   PARSE_ERROR,
   RENDER_ERROR,
@@ -21,29 +22,29 @@ import { HMPLRequestInfo } from "../src/types";
  * Function "compile"
  */
 
+const e = (text: string, block: () => unknown, message: string) => {
+  it(text, () => {
+    assert.throws(block, {
+      message
+    });
+  });
+};
+
+const eq = (text: string, block: unknown, equality: any) => {
+  it(text, () => {
+    assert.strictEqual(block, equality);
+  });
+};
+
+const createTestObj1 = (obj: Record<string, any>) => {
+  return `<div>{${stringify(obj as HMPLRequestInfo)}}</div>`;
+};
+
+const createTestObj2 = (text: string) => {
+  return `<div>${text}</div>`;
+};
+
 describe("compile function", () => {
-  const e = (text: string, block: () => unknown, message: string) => {
-    it(text, () => {
-      assert.throws(block, {
-        message
-      });
-    });
-  };
-
-  const createTestObj1 = (obj: Record<string, any>) => {
-    return `<div>{${stringify(obj as HMPLRequestInfo)}}</div>`;
-  };
-
-  const createTestObj2 = (text: string) => {
-    return `<div>${text}</div>`;
-  };
-
-  const eq = (text: string, block: unknown, equality: any) => {
-    it(text, () => {
-      assert.strictEqual(block, equality);
-    });
-  };
-
   e(
     "",
     () => compile(123 as any),
@@ -155,5 +156,61 @@ describe("compile function", () => {
     "",
     checkFunction(compile(createTestObj2(`{{ "src":"/api/test" }}`))),
     true
+  );
+});
+
+/**
+ * Function "stringify"
+ */
+
+describe("stringify function", () => {
+  eq(
+    "",
+    stringify({ src: "/api/test", method: "GET" }),
+    '{"src":"/api/test","method":"GET"}'
+  );
+});
+
+/**
+ * Template function
+ */
+
+describe("template function", () => {
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(
+          `<button>Click</button>{{ "src":"/api/test", "method": "test", "after": "click:#increment" }}`
+        )
+      )(),
+    `${REQUEST_OBJECT_ERROR}: The "${METHOD}" property has only GET, POST, PUT, PATCH or DELETE values`
+  );
+  // e(
+  //   "",
+  //   () =>
+  //     compile(
+  //       `{{ "src":"/api/test", "method": "test", "after": "click:#increment" }}`
+  //     )(),
+  //   `${REQUEST_OBJECT_ERROR}: The "${METHOD}" property has only GET, POST, PUT, PATCH or DELETE values`
+  // );
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(
+          `<button>Click</button>{{ "src":"/api/test", "after":"click:#increment" }}`
+        )
+      )(),
+    `${RENDER_ERROR}: Selectors nodes not found`
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment" }}`
+      )
+    )().response?.outerHTML,
+    '<div><button id="increment">Click</button><!--hmpl0--></div>'
   );
 });

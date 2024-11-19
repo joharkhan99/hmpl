@@ -15,6 +15,10 @@ const REQUEST_OBJECT_ERROR = `Request Object error`;
 const PARSE_ERROR = `Parse error`;
 const COMPILE_ERROR = `Compile error`;
 
+const checkFunction = (val: any) => {
+  return Object.prototype.toString.call(val) === "[object Function]";
+};
+
 export {
   SOURCE,
   METHOD,
@@ -31,5 +35,6 @@ export {
   RENDER_ERROR,
   REQUEST_OBJECT_ERROR,
   PARSE_ERROR,
-  COMPILE_ERROR
+  COMPILE_ERROR,
+  checkFunction
 };

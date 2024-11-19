@@ -3,6 +3,7 @@ import { strict as assert } from "assert";
 import { compile, stringify } from "../src/main";
 import {
   AUTO_BODY,
+  checkFunction,
   COMPILE_ERROR,
   FORM_DATA,
   ID,
@@ -10,6 +11,7 @@ import {
   MEMO,
   MODE,
   PARSE_ERROR,
+  RENDER_ERROR,
   REQUEST_OBJECT_ERROR,
   SOURCE
 } from "./config";
@@ -35,15 +37,12 @@ describe("compile function", () => {
   const createTestObj2 = (text: string) => {
     return `<div>${text}</div>`;
   };
-  // const eq = (
-  //   text: string,
-  //   block: () => unknown,
-  //   error: assert.AssertPredicate
-  // ) => {
-  //   it(text, () => {
-  //     assert.equal(block, error);
-  //   });
-  // };
+
+  const eq = (text: string, block: unknown, equality: any) => {
+    it(text, () => {
+      assert.strictEqual(block, equality);
+    });
+  };
 
   e(
     "",
@@ -135,5 +134,26 @@ describe("compile function", () => {
     "",
     () => compile(createTestObj2(`{{ "src":"/api/test" }e}}`)),
     `${PARSE_ERROR}: There is no empty space between the curly brackets`
+  );
+
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(`{{ "src":"/api/test", "indicators":{"property":{}}}`)
+      ),
+    `${PARSE_ERROR}: There is no empty space between the curly brackets`
+  );
+
+  e(
+    "",
+    () => compile(`${createTestObj2(`{{ "src":"/api/test" }}`)}<div></div>`),
+    `${RENDER_ERROR}: Template include only one node with type Element or Comment`
+  );
+
+  eq(
+    "",
+    checkFunction(compile(createTestObj2(`{{ "src":"/api/test" }}`))),
+    true
   );
 });

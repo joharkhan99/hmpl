@@ -7,7 +7,7 @@ export default defineConfig([
     dts: { entry: "src/types.ts" }, // Generates a types file
     minify: false, // Ensure this is false for non-minified output
     sourcemap: false,
-    outDir: "build", // Change output directory to build
+    outDir: "package", // Change output directory to build
     outExtension: () => ({ js: ".runtime.js" }) // CommonJS runtime file
   },
   {
@@ -15,7 +15,7 @@ export default defineConfig([
     format: ["esm"],
     minify: true, // Keep minification for ESM
     sourcemap: false,
-    outDir: "build", // Change output directory to build
+    outDir: "package", // Change output directory to build
     outExtension: () => ({ js: ".min.js" }) // ESM minified file
   },
   {
@@ -23,7 +23,7 @@ export default defineConfig([
     format: ["cjs"],
     minify: false, // Ensure this is false for non-minified output
     sourcemap: false,
-    outDir: "build", // Change output directory to build
+    outDir: "package", // Change output directory to build
     outExtension: () => ({ js: ".js" }) // Unminified hmpl.js
   }
 ]);

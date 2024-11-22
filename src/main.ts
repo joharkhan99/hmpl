@@ -1278,7 +1278,8 @@ export const compile: HMPLCompile = (
     ) as HTMLTemplateElement;
     if (
       elWrapper.content.childNodes.length > 1 ||
-      elWrapper.content.children.length !== 1
+      (elWrapper.content.children.length !== 1 &&
+        elWrapper.content.childNodes[0].nodeType !== 8)
     ) {
       createError(
         `${RENDER_ERROR}: Template include only one node with type Element or Comment`

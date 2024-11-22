@@ -1,4 +1,6 @@
+import nock from "nock";
 import "./setup";
+import "./server.setup";
 import { strict as assert } from "assert";
 import { compile, stringify } from "../src/main";
 import {
@@ -22,6 +24,21 @@ import { HMPLRequestInfo } from "../src/types";
  * Function "compile"
  */
 
+const baseUrl = "https://hmpl-lang.dev";
+
+const createScope = (
+  code: number = 200,
+  template: string = "<div>123</div>",
+  route: string = "/api/test"
+) => {
+  return nock(baseUrl).get(route).reply(code, template);
+};
+
+const clearScope = (scope: nock.Scope) => {
+  assert.strictEqual(scope.isDone(), true, "Not all requests were completed");
+  nock.cleanAll();
+};
+
 const e = (text: string, block: () => unknown, message: string) => {
   it(text, () => {
     assert.throws(block, {
@@ -33,6 +50,24 @@ const e = (text: string, block: () => unknown, message: string) => {
 const eq = (text: string, block: unknown, equality: any) => {
   it(text, () => {
     assert.strictEqual(block, equality);
+  });
+};
+
+const aeq = (
+  template: string,
+  get: (...args: any[]) => void,
+  options: any = {}
+) => {
+  it("", async () => {
+    const scope = createScope();
+    const req = await new Promise((res) => {
+      compile(template)({
+        ...options,
+        get: (...args) => get(res, ...args)
+      });
+    });
+    assert.deepEqual(req, true);
+    clearScope(scope);
   });
 };
 
@@ -186,14 +221,26 @@ describe("template function", () => {
       )(),
     `${REQUEST_OBJECT_ERROR}: The "${METHOD}" property has only GET, POST, PUT, PATCH or DELETE values`
   );
-  // e(
-  //   "",
-  //   () =>
-  //     compile(
-  //       `{{ "src":"/api/test", "method": "test", "after": "click:#increment" }}`
-  //     )(),
-  //   `${REQUEST_OBJECT_ERROR}: The "${METHOD}" property has only GET, POST, PUT, PATCH or DELETE values`
-  // );
+  e(
+    "",
+    () => compile(`{{ "src":"/api/test", "after": "click:#increment" }}`)(),
+    `${RENDER_ERROR}: EventTarget is undefined`
+  );
+  e(
+    "",
+    () => compile(`{{ "src":"/api/test", "memo": true }}`)(),
+    `${REQUEST_OBJECT_ERROR}: Memoization works in the enabled repetition mode`
+  );
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(
+          `<button>Click</button>{{ "src":"/api/test", "after": "click:#increment", "memo": true, "repeat": false }}`
+        )
+      )(),
+    `${REQUEST_OBJECT_ERROR}: Memoization works in the enabled repetition mode`
+  );
   e(
     "",
     () =>
@@ -209,8 +256,123 @@ describe("template function", () => {
     compile(
       createTestObj2(
         `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment" }}`
+      ),
+      { memo: true }
+    )().response?.outerHTML,
+    '<div><button id="increment">Click</button><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment", "repeat": false }}`
+      ),
+      { memo: true }
+    )().response?.outerHTML,
+    '<div><button id="increment">Click</button><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment", "memo": true }}`
+      ),
+      { memo: false }
+    )().response?.outerHTML,
+    '<div><button id="increment">Click</button><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment", "memo": true }}`
+      ),
+      { memo: false }
+    )().response?.outerHTML,
+    '<div><button id="increment">Click</button><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment", "memo": false }}`
+      ),
+      { memo: true }
+    )().response?.outerHTML,
+    '<div><button id="increment">Click</button><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(createTestObj2(`{{ "src":"${baseUrl}/api/test" }}`))().response
+      ?.outerHTML,
+    "<div><!--hmpl0--></div>"
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment" }}`
       )
     )().response?.outerHTML,
     '<div><button id="increment">Click</button><!--hmpl0--></div>'
+  );
+  aeq(
+    createTestObj2(`{{ "src":"${baseUrl}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    }
+  );
+  const aeq0 = stringify({
+    src: `${baseUrl}/api/test`,
+    indicators: [
+      {
+        trigger: "pending",
+        content: "<p>Loading...</p>"
+      }
+    ]
+  });
+  aeq(createTestObj2(`{${aeq0}}`), (res, prop, value) => {
+    switch (prop) {
+      case "response":
+        if (value?.outerHTML === `<div><p>Loading...</p></div>`) {
+          res(true);
+        } else {
+          res(false);
+        }
+        break;
+    }
+  });
+  aeq(
+    createTestObj2(`{${aeq0}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><p>Loading...</p></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      timeout: 4000,
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      headers: {
+        "Cache-Control": "no-cache"
+      }
+    }
   );
 });

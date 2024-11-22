@@ -140,7 +140,7 @@ interface HMPLIndicator {
  */
 interface HMPLRequestInfo {
   src: string; // The source URL of the request.
-  method: string; // The HTTP method used for the request (GET, POST, etc.).
+  method?: string; // The HTTP method used for the request (GET, POST, etc.).
   initId?: string | number; // Optional identifier for initializing this request.
   after?: string; // Optional identifier for actions to perform after this request.
   repeat?: boolean; // Indicates if this request should be repeated.

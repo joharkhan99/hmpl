@@ -14,10 +14,7 @@ const RENDER_ERROR = `Render error`;
 const REQUEST_OBJECT_ERROR = `Request Object error`;
 const PARSE_ERROR = `Parse error`;
 const COMPILE_ERROR = `Compile error`;
-
-const checkFunction = (val: any) => {
-  return Object.prototype.toString.call(val) === "[object Function]";
-};
+const BASE_URL = "https://hmpl-lang.dev";
 
 export {
   SOURCE,
@@ -36,5 +33,5 @@ export {
   REQUEST_OBJECT_ERROR,
   PARSE_ERROR,
   COMPILE_ERROR,
-  checkFunction
+  BASE_URL
 };

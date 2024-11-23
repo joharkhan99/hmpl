@@ -585,6 +585,9 @@ const renderTemplate = (
             }
           } else {
             autoBody = false;
+            createError(
+              `${REQUEST_OBJECT_ERROR}: The "${AUTO_BODY}" property does not work without the "${AFTER}" property`
+            );
           }
         } else {
           if (autoBody === true) {

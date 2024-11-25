@@ -18,8 +18,8 @@ const templateFn = hmpl.compile(
   {
     memo: true,
     autoBody: {
-      formData: true,
-    },
+      formData: true
+    }
   }
 );
 ```
@@ -72,7 +72,7 @@ const elementObj = templateFn({
   cache: "no-cache",
   credentials: "same-origin",
   headers: {
-    "Content-Type": "text/html",
+    "Content-Type": "text/html"
   },
   redirect: "follow",
   get: (prop, value) => {},
@@ -81,7 +81,7 @@ const elementObj = templateFn({
   signal: new AbortController().signal,
   integrity: "...",
   window: null,
-  refferer: "about:client",
+  refferer: "about:client"
 });
 ```
 
@@ -96,14 +96,14 @@ const elementObj = templateFn([
       cache: "no-cache",
       credentials: "same-origin",
       headers: {
-        "Content-Type": "text/html",
+        "Content-Type": "text/html"
       },
       redirect: "follow",
       get: (prop, value) => {},
       referrerPolicy: "no-referrer",
-      body: JSON.stringify(data),
-    },
-  },
+      body: JSON.stringify(data)
+    }
+  }
 ]);
 ```
 
@@ -177,30 +177,6 @@ Values are dynamically assigned to the object depending on the server response.
 
 > The status changes depending on the server response. But, the most important thing is that it is not assigned several times if it is the same. When working with `Proxy` or `Object.defineProperty` or `get` or something like that, this will not give the object unnecessary updates!
 
-#### get
-
-The get property takes the value of a function that fires every time one of the properties is updated.
-
-```javascript
-const elementObj = templateFn({
-  get: (prop, value, requestObject) => {
-    switch (prop) {
-      case "response":
-        if (!requestObject) console.log(requestObject);
-        console.log("Response:");
-        console.log(value);
-        break;
-      case "status":
-        console.log("Status:");
-        console.log(value);
-        break;
-    }
-  },
-});
-```
-
-It is worth noting that the `requests` property is not called when the value changes, because the function is called when the values ​​in this property change only for array elements. This is a debatable thing, but it may not be necessary to call this function when a specific property of an object is called.
-
 ### RequestInit function
 
 In order to work with the [context](#concept-of-context), the new version introduced the [HMPLRequestInitFunction](/types.md#hmplrequestinitfunction) function. It takes as an argument the [HMPLInstanceContext](/types.md#hmplinstancecontext) object. Returns [HMPLRequestInit](/types.md#hmplrequestinit).
@@ -226,13 +202,56 @@ const elementObj = templateFn(({
 
 Also, the function value can be used as a `value` for the identification RequestInit.
 
+#### get
+
+The get property takes the value of a function that fires every time one of the properties is updated.
+
+```javascript
+const elementObj = templateFn({
+  get: (prop, value, requestObject) => {
+    switch (prop) {
+      case "response":
+        if (!requestObject) console.log(requestObject);
+        console.log("Response:");
+        console.log(value);
+        break;
+      case "status":
+        console.log("Status:");
+        console.log(value);
+        break;
+    }
+  }
+});
+```
+
+It is worth noting that the `requests` property is not called when the value changes, because the function is called when the values ​​in this property change only for array elements. This is a debatable thing, but it may not be necessary to call this function when a specific property of an object is called.
+
+Also, to work with `async` `await` you can use a similar construct that uses a vanilla `Promise` object:
+
+```javascript
+const val = await new Promise((res, rej) => {
+  templateFn({
+    get: (prop, value, requestObject) => {
+      switch (prop) {
+        case "response":
+          if (!value) return;
+          res(value);
+          break;
+      }
+    }
+  });
+});
+```
+
+This is described in more detail in the blog in [this article](https://blog.hmpl-lang.dev/2024/11/26/asynchronicity-async-await-support-when-working-with-hmpl.html).
+
 ## stringify
 
 This function accepts an object of type [HMPLRequestInfo](/types.md#hmplrequestinfo) with request data and returns a string request object.
 
 ```javascript
 const request = hmpl.stringify({
-  src: "/api/test",
+  src: "/api/test"
 });
 const templateFn = hmpl.compile(`{${request}}`);
 ```
@@ -265,7 +284,7 @@ const initFn = (ctx) => {
   const event = ctx.request.event;
   const text = event.target.textContent;
   return {
-    body: text,
+    body: text
   };
 };
 const elementObj = templateFn(initFn);

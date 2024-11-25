@@ -26,31 +26,31 @@ export default defineUserConfig({
         "SocialLink",
         "Repo",
         "Outlook",
-        "Search",
-      ],
+        "Search"
+      ]
     },
     navbar: [
       // NavbarLink
       {
         text: "Home",
-        link: "/",
+        link: "/"
       },
       {
         text: "Docs",
-        link: "introduction.md",
+        link: "introduction.md"
       },
       {
         text: "Examples",
-        link: "examples.md",
+        link: "examples.md"
       },
       {
         text: "Blog",
-        link: "https://blog.hmpl-lang.dev",
+        link: "https://blog.hmpl-lang.dev"
       },
       {
         text: "Why hmpl?",
-        link: "#why-hmpl",
-      },
+        link: "#why-hmpl"
+      }
     ],
 
     iconAssets: "fontawesome-with-brands",
@@ -58,15 +58,15 @@ export default defineUserConfig({
     sidebar: [
       {
         text: "Introduction",
-        link: "introduction.md",
+        link: "introduction.md"
       },
       {
         text: "Installation",
-        link: "installation.md",
+        link: "installation.md"
       },
       {
         text: "Getting started",
-        link: "getting-started.md",
+        link: "getting-started.md"
       },
       {
         text: "hmpl",
@@ -75,16 +75,28 @@ export default defineUserConfig({
           {
             text: "compile",
             link: "hmpl.md#compile",
+            children: [
+              {
+                text: "RequestInit",
+                link: "hmpl.md#requestinit",
+                children: [
+                  {
+                    text: "get",
+                    link: "hmpl.md#get"
+                  }
+                ]
+              }
+            ]
           },
           {
             text: "stringify",
-            link: "hmpl.md#stringify",
+            link: "hmpl.md#stringify"
           },
           {
             text: "Concept of context",
-            link: "hmpl.md#concept-of-context",
-          },
-        ],
+            link: "hmpl.md#concept-of-context"
+          }
+        ]
       },
       {
         text: "Request",
@@ -92,49 +104,49 @@ export default defineUserConfig({
         children: [
           {
             text: "src",
-            link: "request.md#src",
+            link: "request.md#src"
           },
           {
             text: "method",
-            link: "request.md#method",
+            link: "request.md#method"
           },
           {
             text: "after",
-            link: "request.md#after",
+            link: "request.md#after"
           },
           {
             text: "indicators",
-            link: "request.md#indicators",
+            link: "request.md#indicators"
           },
           {
             text: "repeat",
-            link: "request.md#repeat",
+            link: "request.md#repeat"
           },
           {
             text: "memo",
-            link: "request.md#memo",
+            link: "request.md#memo"
           },
           {
             text: "autoBody",
-            link: "request.md#autobody",
+            link: "request.md#autobody"
           },
           {
             text: "initId",
-            link: "request.md#initid",
-          },
-        ],
+            link: "request.md#initid"
+          }
+        ]
       },
       {
         text: "Types",
-        link: "types.md",
+        link: "types.md"
       },
       {
         text: "Webpack",
-        link: "webpack.md",
+        link: "webpack.md"
       },
       {
         text: "Examples",
-        link: "examples.md",
+        link: "examples.md"
       },
       {
         text: "About",
@@ -144,41 +156,41 @@ export default defineUserConfig({
         children: [
           {
             text: "Discussion and development of an open-source project",
-            link: "discussion-and-development-of-an-open-source-project.md",
+            link: "discussion-and-development-of-an-open-source-project.md"
           },
           {
             text: "GitHub repository with examples",
-            link: "github-repository-with-examples.md",
+            link: "github-repository-with-examples.md"
           },
           {
             text: "Server-side rendering",
-            link: "server-side-rendering.md",
-          },
-        ],
+            link: "server-side-rendering.md"
+          }
+        ]
       },
       {
         text: "Changelog",
-        link: "changelog.md",
-      },
+        link: "changelog.md"
+      }
     ],
     plugins: {
       search: true,
       sitemap: {
-        hostname: "hmpl-lang.dev",
+        hostname: "hmpl-lang.dev"
       },
       git: {
         createdTime: false,
         updatedTime: false,
-        contributors: false,
+        contributors: false
       },
       shiki: {
         langAlias: {
-          hmpl: "html",
+          hmpl: "html"
         },
-        theme: "min-light",
-      },
-    },
+        theme: "min-light"
+      }
+    }
   }),
   head: [["link", { rel: "icon", href: "/images/favicon.ico" }]],
-  bundler: viteBundler(),
+  bundler: viteBundler()
 });

@@ -243,7 +243,7 @@ const val = await new Promise((res, rej) => {
 });
 ```
 
-This is described in more detail in the blog in [this article](https://blog.hmpl-lang.dev/2024/11/25/asynchronicity-async-await-support-when-working-with-hmpl.html).
+This is described in more detail in the blog in [this article](https://blog.hmpl-lang.dev/blog/2024/11/25/asynchronicity-async-await-support-when-working-with-hmpl.html).
 
 ## stringify
 

@@ -5,7 +5,7 @@ import { hopeTheme } from "vuepress-theme-hope";
 export default defineUserConfig({
   lang: "en-US",
   title: "HMPL.js",
-  description: "🐜Server-oriented customizable templating for JavaScript",
+  description: "🐜 Server-oriented customizable templating for JavaScript",
   port: 3000,
 
   theme: hopeTheme({

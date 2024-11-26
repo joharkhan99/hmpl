@@ -3,7 +3,7 @@ author:
   name: ""
   email: ""
 description: >
-  HMPL - Server-oriented customizable 
+  HMPL - 🐜 Server-oriented customizable 
   templating for JavaScript
 theme: minima
 plugins:

@@ -12,7 +12,7 @@ export default defineComponent({
           "a",
           {
             class: "vp-action-link",
-            href: "https://github.com/hmpl-language/hmpl",
+            href: "https://github.com/hmpl-language/hmpl/stargazers",
             target: "_blank",
             rel: "noopener noreferrer",
             "aria-label": "Stars",

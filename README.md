@@ -80,12 +80,14 @@ Along the path node-modules/hmpl/dist you can find two files that contain a regu
 You can install the package by simply [downloading](https://unpkg.com/hmpl-js/dist/hmpl.min.js) it as a file and moving it to the project folder.
 
 ```html
+<script src="https://unpkg.com/json5/dist/index.js"></script>
 <script src="./hmpl.min.js"></script>
 ```
 
 If, for some reason, you do not need the minified file, then you can download the full file from this [link](https://unpkg.com/hmpl-js/dist/hmpl.js).
 
 ```html
+<script src="https://unpkg.com/json5/dist/index.js"></script>
 <script src="./hmpl.js"></script>
 ```
 
@@ -96,6 +98,7 @@ The non-minified file is larger in size, but it is there as it is with all the f
 This method involves connecting the file through a third-party resource, which provides the ability to obtain a javascript file from npm via a link.
 
 ```html
+<script src="https://unpkg.com/json5/dist/index.js"></script>
 <script src="https://unpkg.com/hmpl-js/dist/hmpl.min.js"></script>
 <!--
   integrity="sha384-..."

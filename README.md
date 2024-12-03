@@ -21,7 +21,7 @@
 <div><a href="https://hmpl-lang.dev">Website</a> • <a href="https://hmpl-lang.dev/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.dev/examples.html">Examples</a></div>
 <br/>
 
-<div>hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.</div>
+<div>hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. The language is syntactically object-based and integrated with <a href="https://www.npmjs.com/package/json5">JSON5</a>. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.</div>
 
 ## Usage
 
@@ -31,7 +31,7 @@ import hmpl from "hmpl-js";
 const templateFn = hmpl.compile(
   `<div>
       <button data-action="increment" id="btn">Click!</button>
-      <div>Clicks: {{ "src": "/api/clicks", "after": "click:#btn" }}</div>
+      <div>Clicks: {{ src: "/api/clicks", after: "click:#btn" }}</div>
   </div>`
 );
 
@@ -55,7 +55,7 @@ Using HMPL, you can multiply reduce the size of the application bundle. Full cus
 - **Generate thousands of DOM nodes from a single template**: Work with large components not only on the server but also on the client
 - **Simple**: Get ready-made UI from the server by writing a couple of lines of familiar object syntax
 - **Flexible**: Can be used in almost any project due to not only working through a script, but also working in files with the `.hmpl` extension
-- **No dependencies**: Can connect from one js file
+- **Integrated with JSON5**: Flexible writing of objects by [specs](https://spec.json5.org) as in vanilla js, as well as the reliability of the parser used by millions of people.
 - **Small bundle size**: Lots of functionality in a couple of kilobytes
 
 ## Installation

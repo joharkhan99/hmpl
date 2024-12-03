@@ -3,6 +3,7 @@
         <img width="200" src="https://raw.githubusercontent.com/hmpl-language/media/refs/heads/main/logo_transparent.png" alt="hmpl">
     </a>
 </div>
+
 <div>
 
 [![npm-version](https://img.shields.io/npm/v/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://www.npmjs.com/package/hmpl-js)
@@ -14,6 +15,8 @@
 [![x.com](https://img.shields.io/badge/follow-0183ff?style=for-the-badge&logo=x&labelColor=555555)](https://x.com/hmpljs)
 [![product hunt](https://img.shields.io/badge/Upvote-0183ff?style=for-the-badge&logo=producthunt&logoColor=fff&label=Product%20Hunt
 )](https://www.producthunt.com/posts/hmpl-2)
+
+## Server-oriented customizable templating for JavaScript
 
 </div>
 

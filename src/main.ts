@@ -1,4 +1,5 @@
 "use strict";
+import JSON5 from "json5";
 
 import {
   HMPLNodeObj,
@@ -62,7 +63,7 @@ const createWarning = (text: string) => {
 /**
  * Validates the HTTP method.
  * @param method - The HTTP method to validate.
- * @returns True if the method is invalid, false otherwise.
+ * @returns False if the method is valid, true otherwise.
  */
 const getIsMethodValid = (method: string) => {
   return (
@@ -1218,7 +1219,7 @@ const validIdentificationOptionsArray = (
  * @returns The JSON string representation.
  */
 export const stringify = (info: HMPLRequestInfo) => {
-  return JSON.stringify(info);
+  return JSON5.stringify(info);
 };
 
 /**
@@ -1260,7 +1261,7 @@ export const compile: HMPLCompile = (
     return text;
   };
   const setRequest = (text: string, i: number) => {
-    const parsedData = JSON.parse(text);
+    const parsedData = JSON5.parse(text);
     for (const key in parsedData) {
       const value = parsedData[key];
       if (!requestOptions.includes(key))

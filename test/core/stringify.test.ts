@@ -9,6 +9,6 @@ describe("stringify function", () => {
   eq(
     "",
     stringify({ src: "/api/test", method: "GET" }),
-    '{"src":"/api/test","method":"GET"}'
+    "{src:'/api/test',method:'GET'}"
   );
 });

@@ -20,7 +20,7 @@ export default defineConfig([
   },
   {
     entry: ["src/main.ts"],
-    format: ["cjs"],
+    format: ["esm"],
     minify: false, // Ensure this is false for non-minified output
     sourcemap: false,
     outDir: "package", // Change output directory to build

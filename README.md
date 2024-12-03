@@ -1,9 +1,8 @@
 <div>
     <a href="https://www.npmjs.com/package/hmpl-js">
-        <img src="https://raw.githubusercontent.com/hmpl-language/media/5fa1a22fdec0fcc1820440b16f46d63b7bfd14ee/banner.png" alt="hmpl">
+        <img width="200" src="https://raw.githubusercontent.com/hmpl-language/media/refs/heads/main/logo_transparent.png" alt="hmpl">
     </a>
 </div>
-<br/>
 <div>
 
 [![npm-version](https://img.shields.io/npm/v/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://www.npmjs.com/package/hmpl-js)
@@ -18,8 +17,7 @@
 
 </div>
 
-<div><a href="https://hmpl-lang.dev">Website</a> • <a href="https://hmpl-lang.dev/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.dev/examples.html">Examples</a></div>
-<br/>
+<div><a href="https://hmpl-lang.dev">Website</a> • <a href="https://hmpl-lang.dev/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.dev/examples.html">Examples</a></div><br/>
 
 <div>hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. The language is syntactically object-based and integrated with <a href="https://www.npmjs.com/package/json5">JSON5</a>. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework.</div>
 

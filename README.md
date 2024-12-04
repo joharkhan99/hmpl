@@ -75,6 +75,21 @@ npm i hmpl-js
 
 Along the path node-modules/hmpl/dist you can find two files that contain a regular js file and a minified one.
 
+### CDN
+
+This method involves connecting the file through a third-party resource, which provides the ability to obtain a javascript file from npm via a link.
+
+```html
+<script src="https://unpkg.com/json5/dist/index.js"></script>
+<script src="https://unpkg.com/hmpl-js/dist/hmpl.min.js"></script>
+<!--
+  integrity="sha384-..."
+  crossorigin="anonymous"
+-->
+```
+
+This resource could be unpkg, skypack or other resources. The examples include unpkg simply because it is one of the most popular and its url by characters is not so long.
+
 ### Manual download
 
 You can install the package by simply [downloading](https://unpkg.com/hmpl-js/dist/hmpl.min.js) it as a file and moving it to the project folder.
@@ -92,21 +107,6 @@ If, for some reason, you do not need the minified file, then you can download th
 ```
 
 The non-minified file is larger in size, but it is there as it is with all the formatting.
-
-### CDN
-
-This method involves connecting the file through a third-party resource, which provides the ability to obtain a javascript file from npm via a link.
-
-```html
-<script src="https://unpkg.com/json5/dist/index.js"></script>
-<script src="https://unpkg.com/hmpl-js/dist/hmpl.min.js"></script>
-<!--
-  integrity="sha384-..."
-  crossorigin="anonymous"
--->
-```
-
-This resource could be unpkg, skypack or other resources. The examples include unpkg simply because it is one of the most popular and its url by characters is not so long.
 
 ## Ecosystem
 

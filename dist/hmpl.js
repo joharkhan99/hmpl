@@ -12,18 +12,41 @@
 })(typeof self !== "undefined" ? self : this, function () {
   return (function () {
     "use strict";
+    /**
+     * Checks if the provided value is an object (excluding arrays and null).
+     * @param val - The value to check.
+     * @returns True if val is an object, false otherwise.
+     */
     const checkObject = (val) => {
       return typeof val === "object" && !Array.isArray(val) && val !== null;
     };
+    /**
+     * Checks if the provided value is a function.
+     * @param val - The value to check.
+     * @returns True if val is a function, false otherwise.
+     */
     const checkFunction = (val) => {
       return Object.prototype.toString.call(val) === "[object Function]";
     };
+    /**
+     * Throws a new error with the provided message.
+     * @param text - The error message.
+     */
     const createError = (text) => {
       throw new Error(text);
     };
+    /**
+     * Logs a warning message to the console.
+     * @param text - The warning message.
+     */
     const createWarning = (text) => {
       console.warn(text);
     };
+    /**
+     * Validates the HTTP method.
+     * @param method - The HTTP method to validate.
+     * @returns False if the method is valid, true otherwise.
+     */
     const getIsMethodValid = (method) => {
       return (
         method !== "get" &&
@@ -33,6 +56,9 @@
         method !== "patch"
       );
     };
+    /**
+     * Constants representing various property names and error messages.
+     */
     const SOURCE = `src`;
     const METHOD = `method`;
     const ID = `initId`;
@@ -57,6 +83,9 @@
     };
     const MAIN_REGEX = /(\{\{(?:.|\n|\r)*?\}\}|\{\s*\{(?:.|\n|\r)*?\}\s*\})/g;
     const BRACKET_REGEX = /([{}])|([^{}]+)/g;
+    /**
+     * List of request options that are allowed.
+     */
     const requestOptions = [
       SOURCE,
       METHOD,
@@ -67,13 +96,20 @@
       MEMO,
       AUTO_BODY
     ];
-    // http codes without successful
+    /**
+     * HTTP status codes without successful responses.
+     */
     const codes = [
       100, 101, 102, 103, 300, 301, 302, 303, 304, 305, 306, 307, 308, 400, 401,
       402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416,
       417, 418, 421, 422, 423, 424, 425, 426, 428, 429, 431, 451, 500, 501, 502,
       503, 504, 505, 506, 507, 508, 510, 511
     ];
+    /**
+     * Parses a string into a HTML template element.
+     * @param str - The string to parse.
+     * @returns The first child node of the parsed template.
+     */
     const getTemplateWrapper = (str) => {
       const elementDocument = new DOMParser().parseFromString(
         `<template>${str}</template>`,
@@ -82,6 +118,11 @@
       const elWrapper = elementDocument.childNodes[0].childNodes[0].firstChild;
       return elWrapper;
     };
+    /**
+     * Parses the response string into DOM elements, excluding scripts.
+     * @param response - The response string to parse.
+     * @returns The parsed template wrapper.
+     */
     const getResponseElements = (response) => {
       const typeResponse = typeof response;
       if (typeResponse !== "string")
@@ -97,6 +138,21 @@
       }
       return elWrapper;
     };
+    /**
+     * Makes an HTTP request and handles the response.
+     * @param el - The element related to the request.
+     * @param mainEl - The main element in the DOM.
+     * @param dataObj - The node object containing data.
+     * @param method - The HTTP method to use.
+     * @param source - The source URL for the request.
+     * @param isRequest - Indicates if it's a single request.
+     * @param isRequests - Indicates if it's multiple requests.
+     * @param isMemo - Indicates if memoization is enabled.
+     * @param options - The request initialization options.
+     * @param templateObject - The template instance.
+     * @param reqObject - The request object.
+     * @param indicators - Parsed indicators for the request.
+     */
     const makeRequest = (
       el,
       mainEl,
@@ -129,6 +185,7 @@
       const initRequest = {
         method: method.toUpperCase()
       };
+      // Assign optional properties if they are provided
       if (credentials !== undefined) {
         initRequest.credentials = credentials;
       }
@@ -165,6 +222,7 @@
           `${REQUEST_INIT_ERROR}: The "keepalive" property is not yet supported`
         );
       }
+      // Handle headers if provided
       if (headers) {
         if (checkObject(headers)) {
           const newHeaders = new Headers();
@@ -190,6 +248,7 @@
           );
         }
       }
+      // Handle timeout and signal
       if (timeout) {
         if (!isHaveSignal) {
           initRequest.signal = AbortSignal.timeout(timeout);
@@ -203,6 +262,10 @@
       const getIsNotFullfilledStatus = (status) =>
         status === "rejected" ||
         (typeof status === "number" && (status < 200 || status > 299));
+      /**
+       * Calls the 'get' function with the response if provided.
+       * @param reqResponse - The response to pass to the 'get' function.
+       */
       const callGetResponse = (reqResponse) => {
         if (isRequests) {
           reqObject.response = reqResponse;
@@ -210,6 +273,12 @@
         }
         get?.("response", mainEl);
       };
+      /**
+       * Updates the DOM nodes with new content.
+       * @param content - The content to insert.
+       * @param isClone - Whether to clone the content.
+       * @param isNodes - Whether to update nodes in dataObj.
+       */
       const updateNodes = (content, isClone = true, isNodes = false) => {
         if (isRequest) {
           templateObject.response = content.cloneNode(true);
@@ -258,6 +327,9 @@
       };
       let isOverlap = false;
       let isNotHTMLResponse = false;
+      /**
+       * Replaces nodes with a comment node.
+       */
       const setComment = () => {
         if (isRequest) {
           templateObject.response = undefined;
@@ -291,6 +363,10 @@
           }
         }
       };
+      /**
+       * Updates the indicator based on the request status.
+       * @param status - The current request status.
+       */
       const updateIndicator = (status) => {
         if (indicators) {
           if (
@@ -347,6 +423,10 @@
           }
         }
       };
+      /**
+       * Updates the status and handles dependencies.
+       * @param status - The new request status.
+       */
       const updateStatusDepenencies = (status) => {
         if (isRequests) {
           if (reqObject.status !== status) {
@@ -365,6 +445,9 @@
         }
         updateIndicator(status);
       };
+      /**
+       * Uses cached nodes if available.
+       */
       const takeNodesFromCache = () => {
         if (dataObj.memo.isPending) {
           const parentNode = dataObj.parentNode;
@@ -393,6 +476,7 @@
       };
       let requestStatus = 200;
       updateStatusDepenencies("pending");
+      // Perform the fetch request
       fetch(source, initRequest)
         .then((response) => {
           requestStatus = response.status;
@@ -462,6 +546,12 @@
           throw error;
         });
     };
+    /**
+     * Executes a HMPLRequestInitFunction to obtain request initialization options.
+     * @param fn - The function to execute.
+     * @param event - The event object (if any).
+     * @returns The HMPLRequestInit object.
+     */
     const getRequestInitFromFn = (fn, event) => {
       const request = {};
       if (event !== undefined) {
@@ -473,6 +563,17 @@
       const result = fn(context);
       return result;
     };
+    /**
+     * Renders the template by processing requests and applying options.
+     * @param currentEl - The current element or comment node.
+     * @param fn - The render function.
+     * @param requests - Array of request objects.
+     * @param compileOptions - Options provided during compilation.
+     * @param isMemoUndefined - Indicates if memoization is undefined.
+     * @param isAutoBodyUndefined - Indicates if autoBody is undefined.
+     * @param isRequest - Indicates if it's a single request.
+     * @returns The rendered template function.
+     */
     const renderTemplate = (
       currentEl,
       fn,
@@ -561,6 +662,9 @@
                 }
               } else {
                 autoBody = false;
+                createError(
+                  `${REQUEST_OBJECT_ERROR}: The "${AUTO_BODY}" property does not work without the "${AFTER}" property`
+                );
               }
             } else {
               if (autoBody === true) {
@@ -944,6 +1048,10 @@
       }
       return fn(reqFn);
     };
+    /**
+     * Validates the options provided for a request.
+     * @param currentOptions - The options to validate.
+     */
     const validOptions = (currentOptions) => {
       const isObject = checkObject(currentOptions);
       if (
@@ -962,6 +1070,10 @@
         }
       }
     };
+    /**
+     * Validates the autoBody options.
+     * @param autoBody - The autoBody option to validate.
+     */
     const validAutoBody = (autoBody) => {
       const isObject = checkObject(autoBody);
       if (typeof autoBody !== "boolean" && !isObject)
@@ -986,6 +1098,10 @@
         }
       }
     };
+    /**
+     * Validates the HMPLIdentificationRequestInit object.
+     * @param currentOptions - The identification options to validate.
+     */
     const validIdOptions = (currentOptions) => {
       if (checkObject(currentOptions)) {
         if (
@@ -1002,6 +1118,10 @@
         );
       }
     };
+    /**
+     * Validates an array of HMPLIdentificationRequestInit objects.
+     * @param currentOptions - The array of identification options to validate.
+     */
     const validIdentificationOptionsArray = (currentOptions) => {
       const ids = [];
       for (let i = 0; i < currentOptions.length; i++) {
@@ -1026,9 +1146,20 @@
         }
       }
     };
+    /**
+     * Converts a HMPLRequestInfo object to a JSON string.
+     * @param info - The HMPLRequestInfo object.
+     * @returns The JSON string representation.
+     */
     const stringify = (info) => {
-      return JSON.stringify(info);
+      return JSON5.stringify(info);
     };
+    /**
+     * Compiles a template string into a HMPLTemplateFunction.
+     * @param template - The template string.
+     * @param options - The compilation options.
+     * @returns A function that creates template instances.
+     */
     const compile = (template, options = {}) => {
       if (typeof template !== "string")
         createError(
@@ -1059,7 +1190,7 @@
         return text;
       };
       const setRequest = (text, i) => {
-        const parsedData = JSON.parse(text);
+        const parsedData = JSON5.parse(text);
         for (const key in parsedData) {
           const value = parsedData[key];
           if (!requestOptions.includes(key))
@@ -1233,7 +1364,8 @@
         const elWrapper = getTemplateWrapper(template.trim());
         if (
           elWrapper.content.childNodes.length > 1 ||
-          elWrapper.content.children.length !== 1
+          (elWrapper.content.children.length !== 1 &&
+            elWrapper.content.childNodes[0].nodeType !== 8)
         ) {
           createError(
             `${RENDER_ERROR}: Template include only one node with type Element or Comment`

@@ -29,7 +29,8 @@ a::before {
 
 .vp-project-home div,
 .vp-project-home h1,
-.vp-project-home p {
+.vp-project-home p,
+.vp-hero-info * {
   opacity: 1 !important;
   transform: unset !important;
 }

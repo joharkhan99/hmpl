@@ -14,11 +14,11 @@ The main way to send a request to the server is through a request object. This o
 }
 ```
 
-This object is parsed using `JSON.parse`, so for convenience you can use the `stringify` function by passing the object that needs to be inserted into the string:
+This object is parsed using `JSON5.parse`, so for convenience you can use the `stringify` function by passing the object that needs to be inserted into the string:
 
 ```javascript
 const request = stringify({
-  src: "/api/test",
+  src: "/api/test"
 });
 
 const templateFn = compile(`{${request}}`);

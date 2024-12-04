@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.0 (2024-12-04)
+
+- Integration with [JSON5](https://www.npmjs.com/package/json5). Now, objects can be written in HTML just like in vanilla js
+- A bug with additional nodes has been fixed when you do not specify the request object in the element
+- The `.runtime` file has been updated
+- Comments have been added to the file hmpl.js
+
 ## 2.1.8 (2024-11-18)
 
 - Update package data

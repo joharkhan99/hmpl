@@ -61,7 +61,7 @@ Using HMPL, you can multiply reduce the size of the application bundle. Full cus
 
 ## Installation
 
-hmpl can be installed in several ways, which are described in this section. This tool is a simple javascript file that is connected in the usual way through a `script`, or using the `import` construct in an environment that supports this (webpack build, parcel build etc.). Also, from version `2.2.0`, json5 connection is required. The first and easiest way is to install using a CDN.
+hmpl can be installed in several ways, which are described in this section. This tool is a simple javascript file that is connected in the usual way through a `script`, or using the `import` construct in an environment that supports this (webpack build, parcel build etc.). Also, starting from version `2.2.0`, the connection of the JSON5 module is required. The first and easiest way is to install using a CDN.
 
 ### Package Manager
 

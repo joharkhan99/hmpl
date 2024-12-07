@@ -183,7 +183,7 @@ For this method, we will use a module such as [HMPL](https://github.com/hmpl-lan
 </style>
 ```
 
-After that, we will need to somehow transfer this file to the server. Let the server be on Node.js. We will use express.js as one of the most popular frameworks for creating API. First, we will set the route by which we will receive our component:
+After that, we will need to somehow transfer this file to the server. Let the backend be on Node.js. We will use express.js as one of the most popular frameworks for creating API. First, we will set the route by which we will receive our component:
 
 **buttonController.js**
 

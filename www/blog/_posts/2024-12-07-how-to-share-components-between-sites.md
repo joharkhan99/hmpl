@@ -193,7 +193,7 @@ const expressRouter = express.Router();
 const path = require("path");
 
 const buttonController = (req, res) => {
-  res.sendFile(path.join(__dirname, "../test.html"));
+  res.sendFile(path.join(__dirname, "../button.html"));
 };
 
 expressRouter.use("/getButton", buttonController);
@@ -250,7 +250,7 @@ We use method 1, since index.html is the default on our sites.
     <script src="https://unpkg.com/hmpl-js/dist/hmpl.min.js"></script>
     <script>
       const templateFn = hmpl.compile(
-        `<div id="wrapper">{{ src: "https://.../api/getButton" }}</div>`
+        `<div id="wrapper">{% raw %}{{ src: "https://.../api/getButton" }}{% endraw %}</div>`
       );
       const btnWrapper = templateFn().response;
       document.body.append(btnWrapper);

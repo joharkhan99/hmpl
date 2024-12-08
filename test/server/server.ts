@@ -9,7 +9,7 @@ const createScope = ({
   route = "/api/test",
   method = "get"
 }: ScopeOptions) => {
-  return nock(BASE_URL)[method](route).reply(code, template);
+  return nock(BASE_URL).persist()[method](route).reply(code, template);
 };
 
 const clearScope = (scope: nock.Scope) => {

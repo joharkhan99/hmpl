@@ -6,7 +6,15 @@ import {
 } from "../config/config";
 
 import { compile, stringify } from "../../src/main";
-import { e, eq, aeq, createTestObj2 } from "./functions";
+import {
+  e,
+  eq,
+  aeq,
+  aeqe,
+  createTestObj2,
+  createTestObj3,
+  createTestObj4
+} from "./functions";
 
 /**
  * Template function
@@ -143,22 +151,6 @@ describe("template function", () => {
       }
     }
   );
-  //   aeq(
-  //     createTestObj2(
-  //       `<button id="increment">Click</button>{{ "src":"${BASE_URL}/api/test", "after":"click:#increment", "memo": true }}`
-  //     ),
-  //     (res, prop, value) => {
-  //       switch (prop) {
-  //         case "response":
-  //           if (value?.outerHTML === `<div><div>123</div></div>`) {
-  //             res(true);
-  //           } else {
-  //             res(false);
-  //           }
-  //           break;
-  //       }
-  //     }
-  //   );
   const aeq0 = stringify({
     src: `${BASE_URL}/api/test`,
     indicators: [
@@ -203,5 +195,199 @@ describe("template function", () => {
         "Cache-Control": "no-cache"
       }
     }
+  );
+  const aeq1 = stringify({
+    src: `${BASE_URL}/api/test`,
+    after: "click:#click"
+  });
+
+  aeqe(createTestObj3(`{${aeq1}}`), (res, prop, value) => {
+    switch (prop) {
+      case "response":
+        if (
+          value?.outerHTML ===
+          `<div><button id="click">click</button><div>123</div></div>`
+        ) {
+          res(true);
+        } else {
+          res(false);
+        }
+        break;
+    }
+  });
+  let memoItem: Element | undefined = undefined;
+  aeqe(
+    createTestObj3(`{${aeq1}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div></div>`
+          ) {
+            if (!memoItem) {
+              memoItem = value;
+            } else {
+              res(memoItem.childNodes[1] === value.childNodes[1]);
+            }
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {},
+    2
+  );
+
+  let memoItem1: Element | undefined = undefined;
+  aeqe(
+    createTestObj3(`{${aeq1}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div></div>`
+          ) {
+            if (!memoItem1) {
+              memoItem1 = value;
+            } else {
+              // this is false
+              res(memoItem1.childNodes[1] === value.childNodes[1]);
+            }
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {},
+    2
+  );
+  let memoItem2: Element | undefined = undefined;
+  const aeq2 = stringify({
+    src: `${BASE_URL}/api/test`,
+    after: "click:#click",
+    indicators: [
+      {
+        trigger: "pending",
+        content: "<p>Loading...</p>"
+      }
+    ]
+  });
+  aeqe(
+    createTestObj3(`{${aeq2}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div></div>`
+          ) {
+            if (!memoItem2) {
+              memoItem2 = value;
+            } else {
+              res(memoItem2.childNodes[1] === value.childNodes[1]);
+            }
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {},
+    2
+  );
+  aeqe(
+    createTestObj3(`{${aeq2}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div></div>`
+          ) {
+            if (!memoItem2) {
+              memoItem2 = value;
+            } else {
+              res(memoItem2.childNodes[1] !== value.childNodes[1]);
+            }
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {},
+    2
+  );
+  aeqe(
+    createTestObj3(`{${aeq2}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div></div>`
+          ) {
+            if (!memoItem2) {
+              memoItem2 = value;
+            } else {
+              res(memoItem2.childNodes[1] !== value.childNodes[1]);
+            }
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {},
+    2
+  );
+  const aeq3 = stringify({
+    src: `${BASE_URL}/api/getFormComponent`,
+    after: "submit:#form",
+    method: "post"
+  });
+  aeqe(
+    createTestObj4(`{${aeq3}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><form onsubmit="function prevent(e){e.preventDefault();};return prevent(event);" id="form"></form><div>123</div></div>`
+          ) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {
+      autoBody: true
+    },
+    {},
+    {
+      route: "/api/getFormComponent",
+      method: "post"
+    },
+    1,
+    (el) => {
+      return el?.getElementsByTagName("form")?.[0];
+    },
+    "submit"
   );
 });

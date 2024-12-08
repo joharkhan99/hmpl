@@ -126,23 +126,42 @@ describe("template function", () => {
     )().response?.outerHTML,
     '<div><button id="increment">Click</button><!--hmpl0--></div>'
   );
-  eq(
-    "",
-    compile(
-      createTestObj2(
-        `<button id="increment">Click</button>{{ "src":"/api/test", "after":"click:#increment" }}`
-      )
-    )({
-      keepalive: true
-    } as any).response?.outerHTML,
-    '<div><button id="increment">Click</button><!--hmpl0--></div>'
-  );
+  aeq(`{{ "src":"${BASE_URL}/api/test" }}`, (res, prop, value) => {
+    switch (prop) {
+      case "response":
+        if (value?.outerHTML === `<template><div>123</div></template>`) {
+          res(true);
+        } else {
+          res(false);
+        }
+        break;
+    }
+  });
   aeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     (res, prop, value) => {
       switch (prop) {
         case "response":
           if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    }
+  );
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test",     indicators: [
+      {
+        trigger: "pending",
+        content: "<p>Loading...</p>"
+      }
+    ] }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><p>Loading...</p></div>`) {
             res(true);
           } else {
             res(false);
@@ -379,7 +398,9 @@ describe("template function", () => {
     {
       autoBody: true
     },
-    {},
+    {
+      keepalive: true
+    },
     {
       route: "/api/getFormComponent",
       method: "post"

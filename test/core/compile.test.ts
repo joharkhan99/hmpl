@@ -232,4 +232,27 @@ describe("compile function", () => {
     )().response?.outerHTML,
     '<div><form id="form"></form><!--hmpl0--></div>'
   );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<form id="form"></form>{{ "src":"/api/test", "after":"submit:#form", "autoBody": { "formData": false } }}`
+      )
+    )(() => ({})).response?.outerHTML,
+    '<div><form id="form"></form><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<form id="form"></form>{{ "src":"/api/test", "after":"submit:#form", "autoBody": { "formData": false }, "initId":"1" }}`
+      )
+    )([
+      {
+        id: "1",
+        value: {}
+      }
+    ]).response?.outerHTML,
+    '<div><form id="form"></form><!--hmpl0--></div>'
+  );
 });

@@ -141,8 +141,12 @@ export default defineUserConfig({
         link: "types.md"
       },
       {
-        text: "Webpack",
+        text: "Webpack Loader",
         link: "webpack.md"
+      },
+      {
+        text: "VS Code Extension",
+        link: "vs-code-extension.md"
       },
       {
         text: "Examples",

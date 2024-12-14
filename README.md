@@ -15,6 +15,8 @@
 [![x.com](https://img.shields.io/badge/follow-0183ff?style=for-the-badge&logo=x&labelColor=555555)](https://x.com/hmpljs)
 [![product hunt](https://img.shields.io/badge/Upvote-0183ff?style=for-the-badge&logo=producthunt&logoColor=fff&label=Product%20Hunt
 )](https://www.producthunt.com/posts/hmpl-2)
+[![discord](https://img.shields.io/badge/Join-0183ff?style=for-the-badge&logo=discord&logoColor=fff&label=Discord
+)](https://discord.gg/KFunMep36n)
 
 ## Server-oriented customizable templating for JavaScript
 

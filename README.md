@@ -119,7 +119,8 @@ The non-minified file is larger in size, but it is there as it is with all the f
 
 The [documentation](https://hmpl-lang.dev/introduction.html) contains main information on how the HMPL template language works. If you have any questions about how HMPL works, you can use the following resources:
 
-- [Github](https://github.com/hmpl-language/hmpl) -  In the discussion and issues sections you can ask any question you are interested in.
+- [Github](https://github.com/hmpl-language/hmpl) -  In the discussion and issues sections you can ask any question you are interested in
+- [Discord](https://discord.gg/KFunMep36n) - You can ask your question in the thematic channel "support"
 - [𝕏 (Twitter)](https://x.com/hmpljs) - There is a lot of interesting stuff there, concerning the template language and not only :)
 
 You can also ask your question on [Stack Overflow](https://stackoverflow.com/) and address it in the resources described above.

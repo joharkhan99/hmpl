@@ -286,7 +286,7 @@
         } else {
           let reqResponse = [];
           const newContent = isClone ? content.cloneNode(true) : content;
-          const nodes = newContent.content.childNodes;
+          const nodes = [...newContent.content.childNodes];
           if (dataObj.nodes) {
             const parentNode = dataObj.parentNode;
             if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
@@ -308,7 +308,8 @@
           } else {
             const parentNode = el.parentNode;
             const newNodes = [];
-            for (let i = 0; i < nodes.length; i++) {
+            const nodesLength = nodes.length;
+            for (let i = 0; i < nodesLength; i++) {
               const node = nodes[i];
               const newNode = parentNode.insertBefore(node, el);
               newNodes.push(newNode);
@@ -511,7 +512,7 @@
                 get?.("response", templateWrapper);
               } else {
                 const reqResponse = [];
-                const nodes = templateWrapper.content.childNodes;
+                const nodes = [...templateWrapper.content.childNodes];
                 if (dataObj) {
                   updateNodes(templateWrapper, false, true);
                 } else {

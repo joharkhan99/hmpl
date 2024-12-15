@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1 (2024-12-16)
+
+- Fix loading multiple nodes from server
+
 ## 2.2.0 (2024-12-04)
 
 - Integration with [JSON5](https://www.npmjs.com/package/json5). Now, objects can be written in HTML just like in vanilla js

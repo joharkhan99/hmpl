@@ -324,7 +324,7 @@ const makeRequest = (
     } else {
       let reqResponse: ChildNode[] = [];
       const newContent = isClone ? content!.cloneNode(true) : content;
-      const nodes = (newContent as HTMLTemplateElement).content.childNodes;
+      const nodes = [...(newContent as HTMLTemplateElement).content.childNodes];
       if (dataObj!.nodes) {
         const parentNode = dataObj!.parentNode! as ParentNode;
         if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
@@ -346,7 +346,8 @@ const makeRequest = (
       } else {
         const parentNode = el!.parentNode as ParentNode;
         const newNodes: ChildNode[] = [];
-        for (let i = 0; i < nodes.length; i++) {
+        const nodesLength = nodes.length;
+        for (let i = 0; i < nodesLength; i++) {
           const node = nodes[i];
           const newNode = parentNode.insertBefore(node, el!);
           newNodes.push(newNode);
@@ -556,8 +557,9 @@ const makeRequest = (
             get?.("response", templateWrapper);
           } else {
             const reqResponse: ChildNode[] = [];
-            const nodes = (templateWrapper as HTMLTemplateElement).content
-              .childNodes;
+            const nodes = [
+              ...(templateWrapper as HTMLTemplateElement).content.childNodes
+            ];
             if (dataObj) {
               updateNodes(templateWrapper as HTMLTemplateElement, false, true);
             } else {

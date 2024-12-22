@@ -135,8 +135,10 @@ Thank you to all the people who have already contributed to HMPL, or related pro
   <img src="https://contrib.rocks/image?repo=hmpl-language/hmpl" />
 </a>
 
-And also to other [contributors](https://github.com/hmpl-language/hmpl/discussions/2)
+And also to old [contributors](https://github.com/hmpl-language/hmpl/discussions/2)
 
 ## Fossa status
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhmpl-language%2Fhmpl.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhmpl-language%2Fhmpl?ref=badge_large&issueType=license)
+
+Licensed under [MIT](https://github.com/hmpl-language/hmpl/blob/main/LICENSE)

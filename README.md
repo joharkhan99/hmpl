@@ -39,7 +39,7 @@ const templateFn = hmpl.compile(
 );
 
 const clicker = templateFn(({ request: { event } }) => ({
-  body: event.target.getAttribute("data-action"),
+  body: JSON.stringify({ action: event.target.getAttribute("data-action") }),
 })).response;
 
 document.querySelector("#app").append(clicker);

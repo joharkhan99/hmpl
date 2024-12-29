@@ -14,8 +14,8 @@
 )](https://codecov.io/github/hmpl-language/hmpl)
 [![issues](https://img.shields.io/github/issues/hmpl-language/hmpl?logo=github&color=0183ff&style=for-the-badge)](https://github.com/hmpl-language/hmpl/issues)
 
-[![x.com](https://img.shields.io/badge/follow-0183ff?style=for-the-badge&logo=x&labelColor=555555)](https://x.com/hmpljs)
-[![discord](https://img.shields.io/badge/Online-0183ff?style=for-the-badge&logo=discord&logoColor=fff&label=Discord
+[![x.com](https://img.shields.io/badge/Twitter-000?style=for-the-badge&logo=x&logoColor=fff)](https://x.com/hmpljs)
+[![discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=fff
 )](https://discord.gg/KFunMep36n)
 
 </div>

@@ -1,3 +1,4 @@
+import nock from "nock";
 import {
   RENDER_ERROR,
   REQUEST_OBJECT_ERROR,
@@ -8,6 +9,7 @@ import {
 import { compile, stringify } from "../../src/main";
 import {
   e,
+  // ee,
   eq,
   aeq,
   aeqe,
@@ -149,6 +151,35 @@ describe("template function", () => {
           }
           break;
       }
+    },
+    {},
+    {
+      template: "<div>123</div><script></script>"
+    }
+  );
+  // ee(
+  //   createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+  //   "block",
+  //   {},
+  //   {
+  //     template: Buffer.from("<div>123</div>", "utf-8"),
+  //     headers: {
+  //       "Content-Type": "application/octet-stream"
+  //     }
+  //   }
+  // );
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
     }
   );
   aeq(
@@ -170,6 +201,157 @@ describe("template function", () => {
       }
     }
   );
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": "application/octet-stream"
+      }
+    },
+    {
+      allowedContentTypes: ["application/octet-stream"]
+    }
+  );
+
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": "application/octet-stream"
+      }
+    },
+    {
+      allowedContentTypes: ["text/html", "application/octet-stream"]
+    }
+  );
+
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": "application/octet-stream"
+      }
+    },
+    {
+      allowedContentTypes: []
+    }
+  );
+
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": "application/octet-stream"
+      }
+    },
+    {
+      allowedContentTypes: "*"
+    }
+  );
+
+  aeq(
+    createTestObj2(
+      `{{ "src":"${BASE_URL}/api/test", allowedContentTypes: ["application/octet-stream"] }}`
+    ),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": "application/octet-stream"
+      }
+    },
+    {
+      allowedContentTypes: ["text/html"]
+    }
+  );
+
+  aeq(
+    createTestObj2(
+      `{{ "src":"${BASE_URL}/api/test", allowedContentTypes: ["application/octet-stream"] }}`
+    ),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": "application/octet-stream"
+      }
+    }
+  );
+
   const aeq0 = stringify({
     src: `${BASE_URL}/api/test`,
     indicators: [
@@ -190,6 +372,15 @@ describe("template function", () => {
         break;
     }
   });
+  aeq(`{${aeq0}}`, (res, prop, value) => {
+    switch (prop) {
+      case "response":
+        if (value?.outerHTML === `<template><div>123</div></template>`) {
+          res(true);
+        }
+        break;
+    }
+  });
   aeq(
     createTestObj2(`{${aeq0}}`),
     (res, prop, value) => {
@@ -206,9 +397,13 @@ describe("template function", () => {
     {
       mode: "cors",
       cache: "no-cache",
+      integrity: "sha256",
+      referrer: "about:client",
       credentials: "same-origin",
       timeout: 4000,
       redirect: "follow",
+      window: "",
+      signal: new AbortController().signal,
       referrerPolicy: "no-referrer",
       headers: {
         "Cache-Control": "no-cache"
@@ -219,7 +414,6 @@ describe("template function", () => {
     src: `${BASE_URL}/api/test`,
     after: "click:#click"
   });
-
   aeqe(createTestObj3(`{${aeq1}}`), (res, prop, value) => {
     switch (prop) {
       case "response":
@@ -230,6 +424,18 @@ describe("template function", () => {
           res(true);
         } else {
           res(false);
+        }
+        break;
+    }
+  });
+  aeqe(createTestObj3(`{${aeq1}}{${aeq1}}`), (res, prop, value) => {
+    switch (prop) {
+      case "response":
+        if (
+          value?.outerHTML ===
+          `<div><button id="click">click</button><div>123</div><div>123</div></div>`
+        ) {
+          res(true);
         }
         break;
     }
@@ -411,4 +617,7 @@ describe("template function", () => {
     },
     "submit"
   );
+  afterEach(() => {
+    nock.cleanAll();
+  });
 });

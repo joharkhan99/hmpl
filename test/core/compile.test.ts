@@ -6,9 +6,11 @@ import {
   INDICATORS,
   MEMO,
   MODE,
+  ALLOWED_CONTENT_TYPES,
   PARSE_ERROR,
   RENDER_ERROR,
   REQUEST_OBJECT_ERROR,
+  COMPILE_OPTIONS_ERROR,
   SOURCE,
   AFTER
 } from "../config/config";
@@ -37,13 +39,12 @@ describe("compile function", () => {
   e(
     "",
     () => compile("some template", "some text" as any),
-    `${COMPILE_ERROR}: Options must be an object`
+    `${COMPILE_OPTIONS_ERROR}: Options must be an object`
   );
-
   e(
     "",
     () => compile("some template", { memo: 123 as unknown as boolean }),
-    `${REQUEST_OBJECT_ERROR}: The value of the property ${MEMO} must be a boolean value`
+    `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
   );
 
   e("", () => compile("<div></div>"), `${PARSE_ERROR}: Request not found`);
@@ -94,6 +95,36 @@ describe("compile function", () => {
     "",
     () => compile(createTestObj1({ [AUTO_BODY]: { [FORM_DATA]: "" } })),
     `${REQUEST_OBJECT_ERROR}: The "${FORM_DATA}" property should be a boolean`
+  );
+
+  e(
+    "",
+    () => compile(createTestObj1({ [ALLOWED_CONTENT_TYPES]: {} })),
+    `${REQUEST_OBJECT_ERROR}: Expected "*" or string array, but got neither`
+  );
+
+  e(
+    "",
+    () => compile(createTestObj1({ [ALLOWED_CONTENT_TYPES]: [1] })),
+    `${REQUEST_OBJECT_ERROR}: In the array, the element with index 0 is not a string`
+  );
+
+  e(
+    "",
+    () =>
+      compile(createTestObj2(`{{ "src":"/api/test" }}`), {
+        allowedContentTypes: {} as any
+      }),
+    `${COMPILE_OPTIONS_ERROR}: Expected "*" or string array, but got neither`
+  );
+
+  e(
+    "",
+    () =>
+      compile(createTestObj2(`{{ "src":"/api/test" }}`), {
+        allowedContentTypes: [1] as any
+      }),
+    `${COMPILE_OPTIONS_ERROR}: In the array, the element with index 0 is not a string`
   );
 
   e(

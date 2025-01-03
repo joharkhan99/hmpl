@@ -136,6 +136,13 @@ interface HMPLIndicator {
 }
 
 /**
+ * Represents the allowed content types for a request or response.
+ * Can be either an array of strings specifying content type substrings (e.g., ["text/html", "application/json"])
+ * or a wildcard "*" indicating that all content types are allowed.
+ */
+type HMPLContentTypes = string[] | "*";
+
+/**
  * An object that defines the properties of a request.
  */
 interface HMPLRequestInfo {
@@ -145,6 +152,7 @@ interface HMPLRequestInfo {
   after?: string; // Optional identifier for actions to perform after this request.
   repeat?: boolean; // Indicates if this request should be repeated.
   memo?: boolean; // Indicates if this request should be memoized.
+  allowedContentTypes?: HMPLContentTypes; // Allowed Content-Types for response processing.
   indicators?: HMPLIndicator[]; // Array of indicators related to this request.
   autoBody?: boolean | HMPLAutoBodyOptions; // Automatic generation of body for request.
 }
@@ -162,6 +170,7 @@ interface HMPLAutoBodyOptions {
 interface HMPLCompileOptions {
   memo?: boolean; // Indicates if memoization should be applied during compilation.
   autoBody?: boolean | HMPLAutoBodyOptions; // Automatic generation of body for request.
+  allowedContentTypes?: HMPLContentTypes; // Allowed Content-Types for response processing.
 }
 
 interface HMPLParsedIndicators {
@@ -209,13 +218,16 @@ type HMPLRequestStatus =
   | 208 // Already Reported - Members of a collection have already been enumerated.
   | 226; // IM Used - Server has fulfilled a GET request and is delivering an instance-manipulation result.
 
+/**
+ * The returned object for each request, if there are several in the template.
+ */
 interface HMPLRequest {
   response: undefined | Element | null | ChildNode[]; // Response data from the server or undefined/null if not available.
   status?: HMPLRequestStatus; // Status code or state of the current request.
 }
 
 /**
- * Return object of template function.
+ * An object containing information about the response from the server to the request.
  */
 interface HMPLInstance {
   response: undefined | Element | null; // Response element or null if not available.
@@ -288,6 +300,7 @@ export {
   HMPLInitalStatus,
   HMPLIndicatorTrigger,
   HMPLIndicator,
+  HMPLContentTypes,
   HMPLRequestInfo,
   HMPLCompileOptions,
   HMPLParsedIndicators,

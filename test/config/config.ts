@@ -8,12 +8,14 @@ const INDICATORS = `indicators`;
 const AUTO_BODY = `autoBody`;
 const COMMENT = `hmpl`;
 const FORM_DATA = `formData`;
-const RESPONSE_ERROR = `Bad response`;
-const REQUEST_INIT_ERROR = `RequestInit error`;
-const RENDER_ERROR = `Render error`;
-const REQUEST_OBJECT_ERROR = `Request Object error`;
-const PARSE_ERROR = `Parse error`;
-const COMPILE_ERROR = `Compile error`;
+const ALLOWED_CONTENT_TYPES = "allowedContentTypes";
+const RESPONSE_ERROR = `BadResponseError`;
+const REQUEST_INIT_ERROR = `RequestInitError`;
+const RENDER_ERROR = `RenderError`;
+const REQUEST_OBJECT_ERROR = `RequestObjectError`;
+const COMPILE_OPTIONS_ERROR = `CompileOptionsError`;
+const PARSE_ERROR = `ParseError`;
+const COMPILE_ERROR = `CompileError`;
 const BASE_URL = "https://hmpl-lang.dev";
 
 export {
@@ -27,10 +29,12 @@ export {
   AUTO_BODY,
   COMMENT,
   FORM_DATA,
+  ALLOWED_CONTENT_TYPES,
   RESPONSE_ERROR,
   REQUEST_INIT_ERROR,
   RENDER_ERROR,
   REQUEST_OBJECT_ERROR,
+  COMPILE_OPTIONS_ERROR,
   PARSE_ERROR,
   COMPILE_ERROR,
   BASE_URL

@@ -6,6 +6,8 @@ import { createScope, clearScope } from "../server/server";
 import { compile, stringify } from "../../src/main";
 import { checkFunction } from "../shared/utils";
 import type { ScopeOptions } from "./functions.types";
+import sinon from "sinon";
+import rewire from "rewire";
 
 const e = (text: string, block: () => unknown, message: string) => {
   it(text, () => {
@@ -15,22 +17,39 @@ const e = (text: string, block: () => unknown, message: string) => {
   });
 };
 
-const ee = (
+const eaeq = (
   template: string,
   message: string,
+  get: (...args: any[]) => void,
   options: any = {},
-  scopeOptions: ScopeOptions = {}
+  scopeOptions: ScopeOptions = {},
+  compileOptions: any = {}
 ) => {
   it("", async () => {
     const scope = createScope({ ...scopeOptions });
-    await new Promise<string>((resolve) => {
-      compile(template)({
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const moduleUnderTest = rewire("../../src/main");
+    const createErrorStub = sinon.stub();
+
+    moduleUnderTest.__set__("createError", createErrorStub);
+
+    const compile = moduleUnderTest.__get__("compile");
+    await new Promise((res) => {
+      compile(
+        template,
+        compileOptions
+      )({
+        get: (...args: any) => get(res, ...args),
         ...options
       });
-    }).catch((e) => {
-      console.log(e);
+      setTimeout(() => {
+        res(true);
+      }, 300);
     });
-    assert.strictEqual("block", message);
+    sinon.assert.calledOnce(createErrorStub);
+    sinon.assert.calledWith(createErrorStub, message);
+    sinon.restore();
     clearScope(scope);
   });
 };
@@ -151,7 +170,7 @@ const createTestObj4 = (text: string) => {
 
 export {
   e,
-  ee,
+  eaeq,
   eq,
   aeq,
   aeqe,

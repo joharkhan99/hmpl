@@ -17,6 +17,7 @@ const COMPILE_OPTIONS_ERROR = `CompileOptionsError`;
 const PARSE_ERROR = `ParseError`;
 const COMPILE_ERROR = `CompileError`;
 const BASE_URL = "https://hmpl-lang.dev";
+const DEFAULT_ALLOWED_CONTENT_TYPES = ["text/html"];
 
 export {
   SOURCE,
@@ -37,5 +38,6 @@ export {
   COMPILE_OPTIONS_ERROR,
   PARSE_ERROR,
   COMPILE_ERROR,
-  BASE_URL
+  BASE_URL,
+  DEFAULT_ALLOWED_CONTENT_TYPES
 };

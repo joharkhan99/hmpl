@@ -3,14 +3,16 @@ import {
   RENDER_ERROR,
   REQUEST_OBJECT_ERROR,
   METHOD,
-  BASE_URL
+  BASE_URL,
+  RESPONSE_ERROR,
+  DEFAULT_ALLOWED_CONTENT_TYPES
 } from "../config/config";
 
 import { compile, stringify } from "../../src/main";
 import {
   e,
-  // ee,
   eq,
+  eaeq,
   aeq,
   aeqe,
   createTestObj2,
@@ -176,17 +178,6 @@ describe("template function", () => {
       memo: true
     }
   );
-  // ee(
-  //   createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
-  //   "block",
-  //   {},
-  //   {
-  //     template: Buffer.from("<div>123</div>", "utf-8"),
-  //     headers: {
-  //       "Content-Type": "application/octet-stream"
-  //     }
-  //   }
-  // );
   aeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     (res, prop, value) => {
@@ -400,6 +391,97 @@ describe("template function", () => {
         break;
     }
   });
+  const aeq4 = stringify({
+    src: `${BASE_URL}/api/test`,
+    indicators: [
+      {
+        trigger: 405,
+        content: "<p>405</p>"
+      }
+    ]
+  });
+  aeq(
+    `{${aeq4}}`,
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<template><p>405</p></template>`) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      code: 405
+    }
+  );
+  const aeq5 = stringify({
+    src: `${BASE_URL}/api/test`,
+    indicators: [
+      {
+        trigger: "error",
+        content: "<p>405</p>"
+      }
+    ]
+  });
+  aeq(
+    `{${aeq5}}`,
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<template><p>405</p></template>`) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      code: 405
+    }
+  );
+  // const aeq6 = stringify({
+  //   src: `${BASE_URL}/api/test`,
+  //   indicators: [
+  //     {
+  //       trigger: 300,
+  //       content: "<p>405</p>"
+  //     }
+  //   ]
+  // });
+  // eaeq(
+  //   createTestObj2(`{${aeq6}}`),
+  //   (res, prop, value) => {
+  //     switch (prop) {
+  //       case "response":
+  //         console.log(value?.outerHTML);
+  //         if (value?.outerHTML === `<template><p>405</p></template>`) {
+  //           res(true);
+  //         }
+  //         break;
+  //     }
+  //   },
+  //   {},
+  //   {
+  //     code: 405
+  //   }
+  // );
+  const contentType1 = "application/octet-stream";
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
+      ", "
+    )}, but received ${contentType1}`,
+    () => ({}) as any,
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": contentType1
+      }
+    }
+  );
   aeq(
     createTestObj2(`{${aeq0}}`),
     (res, prop, value) => {
@@ -419,7 +501,6 @@ describe("template function", () => {
       integrity: "sha256",
       referrer: "about:client",
       credentials: "same-origin",
-      timeout: 4000,
       redirect: "follow",
       window: "",
       signal: new AbortController().signal,
@@ -533,7 +614,8 @@ describe("template function", () => {
       }
     },
     {
-      memo: true
+      memo: true,
+      timeout: 1000
     },
     {},
     {},
@@ -687,6 +769,88 @@ describe("template function", () => {
       return el?.getElementsByTagName("form")?.[0];
     },
     "submit"
+  );
+  aeqe(
+    `{${aeq0}}`,
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value === undefined) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {
+      code: 405
+    }
+  );
+  aeqe(
+    createTestObj3(`{${aeq0}}{${aeq0}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><!--hmpl0--><!--hmpl1--></div>`
+          ) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {
+      code: 405,
+      times: 1,
+      isAfter: true
+    },
+    2
+  );
+  aeqe(
+    createTestObj3(`{${aeq2}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><!--hmpl0--></div>`
+          ) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {
+      afterCode: 405,
+      times: 1,
+      isAfter: true
+    },
+    2
+  );
+  aeqe(
+    `{${aeq0}}`,
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value === undefined) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {
+      code: 405
+    }
   );
   afterEach(() => {
     nock.cleanAll();

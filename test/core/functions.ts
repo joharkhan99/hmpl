@@ -4,6 +4,7 @@ import { strict as assert } from "assert";
 import { HMPLRequestInfo } from "../../src/types";
 import { createScope, clearScope } from "../server/server";
 import { compile, stringify } from "../../src/main";
+import { checkFunction } from "../shared/utils";
 import type { ScopeOptions } from "./functions.types";
 
 const e = (text: string, block: () => unknown, message: string) => {
@@ -110,13 +111,13 @@ const aeqe = (
   it("", async () => {
     const scope = createScope({ ...scopeOptions });
     const req = await new Promise((res) => {
-      const instance = compile(
-        template,
-        compileOptions
-      )({
-        get: (...args) => get(res, ...args),
-        ...options
-      });
+      const currentOptions = checkFunction(options)
+        ? options(res)
+        : {
+            get: (...args: any) => get(res, ...args),
+            ...options
+          };
+      const instance = compile(template, compileOptions)(currentOptions);
       const el = instance.response;
       const currentEl = getEl(el);
       if (currentEl) {

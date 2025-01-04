@@ -249,6 +249,30 @@ describe("compile function", () => {
     "",
     compile(
       createTestObj2(
+        `<form id="form"></form>{{ "src":"/api/test", "after":"submit:#form", "autoBody": { "formData": true }  }}`
+      ),
+      {
+        autoBody: false
+      }
+    )().response?.outerHTML,
+    '<div><form id="form"></form><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<form id="form"></form>{{ "src":"/api/test", "after":"submit:#form", "autoBody": { "formData": true }  }}`
+      ),
+      {
+        autoBody: true
+      }
+    )().response?.outerHTML,
+    '<div><form id="form"></form><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
         `<form id="form"></form>{{ "src":"/api/test", "after":"submit:#form", "autoBody": { "formData": true } }}`
       )
     )().response?.outerHTML,
@@ -285,5 +309,23 @@ describe("compile function", () => {
       }
     ]).response?.outerHTML,
     '<div><form id="form"></form><!--hmpl0--></div>'
+  );
+  eq(
+    "",
+    compile(
+      createTestObj2(
+        `<form id="form"></form>{{ "src":"/api/test", "after":"submit:#form", "initId":"1" }} {{ "src":"/api/test", "after":"submit:#form", "initId":"2" }}`
+      )
+    )([
+      {
+        id: "1",
+        value: {}
+      },
+      {
+        id: "2",
+        value: {}
+      }
+    ]).response?.outerHTML,
+    '<div><form id="form"></form><!--hmpl0--><!--hmpl1--></div>'
   );
 });

@@ -157,6 +157,25 @@ describe("template function", () => {
       template: "<div>123</div><script></script>"
     }
   );
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {
+      memo: true
+    }
+  );
   // ee(
   //   createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
   //   "block",
@@ -428,6 +447,58 @@ describe("template function", () => {
         break;
     }
   });
+  aeqe(
+    createTestObj3(`{${aeq1}}`),
+    () => ({}),
+    {},
+    (res: any) => () => {
+      return {
+        get: (prop: any, value: any) => {
+          switch (prop) {
+            case "response":
+              if (
+                value?.outerHTML ===
+                `<div><button id="click">click</button><div>123</div></div>`
+              ) {
+                res(true);
+              } else {
+                res(false);
+              }
+              break;
+          }
+        }
+      };
+    }
+  );
+  const aeqe0 = stringify({
+    src: `${BASE_URL}/api/test`,
+    after: "click:#click",
+    initId: "1"
+  });
+  aeqe(
+    createTestObj3(`{${aeqe0}}`),
+    () => ({}),
+    {},
+    (res: any) => [
+      {
+        id: "1",
+        value: {
+          get: (prop: any, value: any) => {
+            switch (prop) {
+              case "response":
+                if (
+                  value?.outerHTML ===
+                  `<div><button id="click">click</button><div>123</div></div>`
+                ) {
+                  res(true);
+                }
+                break;
+            }
+          }
+        }
+      }
+    ]
+  );
   aeqe(createTestObj3(`{${aeq1}}{${aeq1}}`), (res, prop, value) => {
     switch (prop) {
       case "response":

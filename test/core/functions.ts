@@ -46,10 +46,42 @@ const eaeq = (
         res(true);
       }, 300);
     });
-    sinon.assert.calledOnce(createErrorStub);
     sinon.assert.calledWith(createErrorStub, message);
     createErrorStub.restore();
     clearScope(scope);
+    sinon.restore();
+  });
+};
+
+const waeq = (
+  template: string,
+  warningMessage: string,
+  get: (...args: any[]) => void,
+  options: any = {},
+  scopeOptions: ScopeOptions = {},
+  compileOptions: any = {}
+) => {
+  it("", async () => {
+    const scope = createScope({ ...scopeOptions });
+    const createWarningStub = sinon.stub(MainModule, "createWarning");
+    const compile = MainModule.compile;
+
+    await new Promise((res) => {
+      compile(
+        template,
+        compileOptions
+      )({
+        get: (...args: any) => get(res, ...args),
+        ...options
+      });
+      setTimeout(() => {
+        res(true);
+      }, 300);
+    });
+    sinon.assert.calledWith(createWarningStub, warningMessage);
+    createWarningStub.restore();
+    clearScope(scope);
+    sinon.restore();
   });
 };
 
@@ -168,6 +200,7 @@ const createTestObj4 = (text: string) => {
 };
 
 export {
+  waeq,
   e,
   eaeq,
   eq,

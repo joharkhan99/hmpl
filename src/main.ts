@@ -80,7 +80,7 @@ export const createError = (text: string) => {
  * Logs a warning message to the console.
  * @param text - The warning message.
  */
-const createWarning = (text: string) => {
+export const createWarning = (text: string) => {
   console.warn(text);
 };
 
@@ -310,11 +310,7 @@ const makeRequest = (
         const value = headers[key];
         const valueType = typeof value;
         if (valueType === "string") {
-          try {
-            newHeaders.set(key, value);
-          } catch (e) {
-            throw e;
-          }
+          newHeaders.set(key, value);
         } else {
           createError(
             `${REQUEST_INIT_ERROR}: Expected type string, but received type ${valueType}`

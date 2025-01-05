@@ -11,6 +11,8 @@ const createScope = ({
   method = "get",
   times = 999,
   isAfter = false,
+  isRejected = false,
+  afterTemplate = "",
   headers = {
     "Content-Type": "text/html"
   }
@@ -21,12 +23,16 @@ const createScope = ({
     .persist()
     [method](route)
     .reply(() => {
+      if (isRejected) {
+        return new Error("Network error occurred");
+      }
+
       if (isAfter) {
         callCount++;
         if (callCount <= times) {
           return [code, template, headers];
         } else {
-          return [afterCode, "", headers];
+          return [afterCode, afterTemplate, headers];
         }
       } else {
         return [code, template, headers];

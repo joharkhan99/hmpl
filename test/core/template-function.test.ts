@@ -5,11 +5,13 @@ import {
   METHOD,
   BASE_URL,
   RESPONSE_ERROR,
-  DEFAULT_ALLOWED_CONTENT_TYPES
+  DEFAULT_ALLOWED_CONTENT_TYPES,
+  REQUEST_INIT_ERROR
 } from "../config/config";
 
 import { compile, stringify } from "../../src/main";
 import {
+  waeq,
   e,
   eq,
   eaeq,
@@ -19,10 +21,81 @@ import {
   createTestObj3,
   createTestObj4
 } from "./functions";
+import sinon from "sinon";
 
 /**
  * Template function
  */
+
+const aeq0 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: "pending",
+      content: "<p>Loading...</p>"
+    }
+  ]
+});
+
+const aeq1 = stringify({
+  src: `${BASE_URL}/api/test`,
+  after: "click:#click"
+});
+
+const aeq2 = stringify({
+  src: `${BASE_URL}/api/test`,
+  after: "click:#click",
+  indicators: [
+    {
+      trigger: "pending",
+      content: "<p>Loading...</p>"
+    }
+  ]
+});
+
+const aeq3 = stringify({
+  src: `${BASE_URL}/api/getFormComponent`,
+  after: "submit:#form",
+  method: "post"
+});
+
+const aeq4 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: 405,
+      content: "<p>405</p>"
+    }
+  ]
+});
+
+const aeq5 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: "error",
+      content: "<p>405</p>"
+    }
+  ]
+});
+
+// const aeq6 = stringify({
+//   src: `${BASE_URL}/api/test1`,
+//   indicators: [
+//     {
+//       trigger: "error",
+//       content: "<p>405</p>"
+//     }
+//   ]
+// });
+
+const aeqe0 = stringify({
+  src: `${BASE_URL}/api/test`,
+  after: "click:#click",
+  initId: "1"
+});
+
+const contentType1 = "application/octet-stream";
 
 describe("template function", () => {
   e(
@@ -130,17 +203,88 @@ describe("template function", () => {
     )().response?.outerHTML,
     '<div><button id="increment">Click</button><!--hmpl0--></div>'
   );
-  aeq(`{{ "src":"${BASE_URL}/api/test" }}`, (res, prop, value) => {
-    switch (prop) {
-      case "response":
-        if (value?.outerHTML === `<template><div>123</div></template>`) {
-          res(true);
-        } else {
-          res(false);
-        }
-        break;
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
+      ", "
+    )}, but received ${contentType1}`,
+    () => ({}) as any,
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": contentType1
+      }
     }
-  });
+  );
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
+      ", "
+    )}, but received `,
+    () => ({}) as any,
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": ""
+      }
+    }
+  );
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${REQUEST_INIT_ERROR}: Expected type string, but received type object`,
+    () => ({}) as any,
+    {
+      headers: {
+        a: {}
+      }
+    },
+    {}
+  );
+  // eaeq(
+  //   createTestObj2(`{${aeq5}}`),
+  //   `${REQUEST_INIT_ERROR}: Expected type string, but received type object`,
+  //   () => ({}) as any,
+  //   {},
+  //   {
+  //     isRejected: true
+  //   }
+  // );
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${REQUEST_INIT_ERROR}: The "headers" property must contain a value object`,
+    () => ({}) as any,
+    {
+      headers: []
+    },
+    {}
+  );
+  aeq(
+    `{{ "src":"${BASE_URL}/api/test" }}`,
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<template><div>123</div></template>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {}
+  );
+  waeq(
+    `{{ "src":"${BASE_URL}/api/test" }}`,
+    `${REQUEST_INIT_ERROR}: The "signal" property overwrote the AbortSignal from "timeout"`,
+    () => ({}) as any,
+    {
+      timeout: 1000,
+      signal: new AbortController().signal
+    },
+    {}
+  );
   aeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     (res, prop, value) => {
@@ -353,7 +497,9 @@ describe("template function", () => {
           break;
       }
     },
-    {},
+    {
+      timeout: 1000
+    },
     {
       template: Buffer.from("<div>123</div>", "utf-8"),
       headers: {
@@ -361,16 +507,6 @@ describe("template function", () => {
       }
     }
   );
-
-  const aeq0 = stringify({
-    src: `${BASE_URL}/api/test`,
-    indicators: [
-      {
-        trigger: "pending",
-        content: "<p>Loading...</p>"
-      }
-    ]
-  });
   aeq(createTestObj2(`{${aeq0}}`), (res, prop, value) => {
     switch (prop) {
       case "response":
@@ -391,15 +527,6 @@ describe("template function", () => {
         break;
     }
   });
-  const aeq4 = stringify({
-    src: `${BASE_URL}/api/test`,
-    indicators: [
-      {
-        trigger: 405,
-        content: "<p>405</p>"
-      }
-    ]
-  });
   aeq(
     `{${aeq4}}`,
     (res, prop, value) => {
@@ -416,15 +543,6 @@ describe("template function", () => {
       code: 405
     }
   );
-  const aeq5 = stringify({
-    src: `${BASE_URL}/api/test`,
-    indicators: [
-      {
-        trigger: "error",
-        content: "<p>405</p>"
-      }
-    ]
-  });
   aeq(
     `{${aeq5}}`,
     (res, prop, value) => {
@@ -441,32 +559,6 @@ describe("template function", () => {
       code: 405
     }
   );
-  // const aeq6 = stringify({
-  //   src: `${BASE_URL}/api/test`,
-  //   indicators: [
-  //     {
-  //       trigger: 300,
-  //       content: "<p>405</p>"
-  //     }
-  //   ]
-  // });
-  // eaeq(
-  //   createTestObj2(`{${aeq6}}`),
-  //   (res, prop, value) => {
-  //     switch (prop) {
-  //       case "response":
-  //         console.log(value?.outerHTML);
-  //         if (value?.outerHTML === `<template><p>405</p></template>`) {
-  //           res(true);
-  //         }
-  //         break;
-  //     }
-  //   },
-  //   {},
-  //   {
-  //     code: 405
-  //   }
-  // );
   aeq(
     createTestObj2(`{${aeq0}}`),
     (res, prop, value) => {
@@ -488,17 +580,12 @@ describe("template function", () => {
       credentials: "same-origin",
       redirect: "follow",
       window: "",
-      signal: new AbortController().signal,
       referrerPolicy: "no-referrer",
       headers: {
         "Cache-Control": "no-cache"
       }
     }
   );
-  const aeq1 = stringify({
-    src: `${BASE_URL}/api/test`,
-    after: "click:#click"
-  });
   aeqe(createTestObj3(`{${aeq1}}`), (res, prop, value) => {
     switch (prop) {
       case "response":
@@ -536,11 +623,6 @@ describe("template function", () => {
       };
     }
   );
-  const aeqe0 = stringify({
-    src: `${BASE_URL}/api/test`,
-    after: "click:#click",
-    initId: "1"
-  });
   aeqe(
     createTestObj3(`{${aeqe0}}`),
     () => ({}),
@@ -599,8 +681,7 @@ describe("template function", () => {
       }
     },
     {
-      memo: true,
-      timeout: 1000
+      memo: true
     },
     {},
     {},
@@ -635,16 +716,6 @@ describe("template function", () => {
     2
   );
   let memoItem2: Element | undefined = undefined;
-  const aeq2 = stringify({
-    src: `${BASE_URL}/api/test`,
-    after: "click:#click",
-    indicators: [
-      {
-        trigger: "pending",
-        content: "<p>Loading...</p>"
-      }
-    ]
-  });
   aeqe(
     createTestObj3(`{${aeq2}}`),
     (res, prop, value) => {
@@ -668,8 +739,9 @@ describe("template function", () => {
     {},
     2
   );
+  let count = 0;
   aeqe(
-    createTestObj3(`{${aeq2}}`),
+    createTestObj3(`{${aeq1}}`),
     (res, prop, value) => {
       switch (prop) {
         case "response":
@@ -678,20 +750,22 @@ describe("template function", () => {
             `<div><button id="click">click</button><div>123</div></div>`
           ) {
             if (!memoItem2) {
-              memoItem2 = value;
+              if (!count) {
+                count++;
+              } else {
+                memoItem2 = value;
+              }
             } else {
-              res(memoItem2.childNodes[1] !== value.childNodes[1]);
+              res(true);
             }
           }
           break;
       }
     },
-    {
-      memo: true
-    },
     {},
     {},
-    2
+    {},
+    3
   );
   aeqe(
     createTestObj3(`{${aeq2}}`),
@@ -718,11 +792,31 @@ describe("template function", () => {
     {},
     2
   );
-  const aeq3 = stringify({
-    src: `${BASE_URL}/api/getFormComponent`,
-    after: "submit:#form",
-    method: "post"
-  });
+  aeqe(
+    createTestObj3(`{${aeq2}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div></div>`
+          ) {
+            if (!memoItem2) {
+              memoItem2 = value;
+            } else {
+              res(memoItem2.childNodes[1] !== value.childNodes[1]);
+            }
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {},
+    2
+  );
   aeqe(
     createTestObj4(`{${aeq3}}`),
     (res, prop, value) => {
@@ -796,6 +890,32 @@ describe("template function", () => {
     2
   );
   aeqe(
+    createTestObj3(`{${aeq1}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>567</div></div>`
+          ) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {
+      afterCode: 200,
+      afterTemplate: "<div>567</div>",
+      times: 1,
+      isAfter: true
+    },
+    2
+  );
+  aeqe(
     createTestObj3(`{${aeq2}}`),
     (res, prop, value) => {
       switch (prop) {
@@ -837,36 +957,8 @@ describe("template function", () => {
       code: 405
     }
   );
-  const contentType1 = "application/octet-stream";
-  eaeq(
-    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
-    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
-      ", "
-    )}, but received ${contentType1}`,
-    () => ({}) as any,
-    {},
-    {
-      template: Buffer.from("<div>123</div>", "utf-8"),
-      headers: {
-        "Content-Type": contentType1
-      }
-    }
-  );
-  eaeq(
-    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
-    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
-      ", "
-    )}, but received `,
-    () => ({}) as any,
-    {},
-    {
-      template: Buffer.from("<div>123</div>", "utf-8"),
-      headers: {
-        "Content-Type": ""
-      }
-    }
-  );
   afterEach(() => {
+    sinon.restore();
     nock.cleanAll();
   });
 });

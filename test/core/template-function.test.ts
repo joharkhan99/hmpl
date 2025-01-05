@@ -130,6 +130,35 @@ describe("template function", () => {
     )().response?.outerHTML,
     '<div><button id="increment">Click</button><!--hmpl0--></div>'
   );
+  const contentType1 = "application/octet-stream";
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
+      ", "
+    )}, but received ${contentType1}`,
+    () => ({}) as any,
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": contentType1
+      }
+    }
+  );
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
+      ", "
+    )}, but received `,
+    () => ({}) as any,
+    {},
+    {
+      template: Buffer.from("<div>123</div>", "utf-8"),
+      headers: {
+        "Content-Type": ""
+      }
+    }
+  );
   aeq(`{{ "src":"${BASE_URL}/api/test" }}`, (res, prop, value) => {
     switch (prop) {
       case "response":
@@ -467,21 +496,6 @@ describe("template function", () => {
   //     code: 405
   //   }
   // );
-  const contentType1 = "application/octet-stream";
-  eaeq(
-    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
-    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
-      ", "
-    )}, but received ${contentType1}`,
-    () => ({}) as any,
-    {},
-    {
-      template: Buffer.from("<div>123</div>", "utf-8"),
-      headers: {
-        "Content-Type": contentType1
-      }
-    }
-  );
   aeq(
     createTestObj2(`{${aeq0}}`),
     (res, prop, value) => {

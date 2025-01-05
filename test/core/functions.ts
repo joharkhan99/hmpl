@@ -7,7 +7,7 @@ import { compile, stringify } from "../../src/main";
 import { checkFunction } from "../shared/utils";
 import type { ScopeOptions } from "./functions.types";
 import sinon from "sinon";
-import rewire from "rewire";
+import * as MainModule from "../../src/main";
 
 const e = (text: string, block: () => unknown, message: string) => {
   it(text, () => {
@@ -28,13 +28,12 @@ const eaeq = (
   it("", async () => {
     const scope = createScope({ ...scopeOptions });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const moduleUnderTest = rewire("../../src/main");
-    const createErrorStub = sinon.stub();
+    // Подмена createError с использованием sinon.stub
+    const createErrorStub = sinon.stub(MainModule, "createError");
 
-    moduleUnderTest.__set__("createError", createErrorStub);
+    // Вызываем compile из модуля
+    const compile = MainModule.compile;
 
-    const compile = moduleUnderTest.__get__("compile");
     await new Promise((res) => {
       compile(
         template,
@@ -49,7 +48,7 @@ const eaeq = (
     });
     sinon.assert.calledOnce(createErrorStub);
     sinon.assert.calledWith(createErrorStub, message);
-    sinon.restore();
+    createErrorStub.restore();
     clearScope(scope);
   });
 };

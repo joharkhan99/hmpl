@@ -72,7 +72,7 @@ const checkFunction = (val: any) => {
  * Throws a new error with the provided message.
  * @param text - The error message.
  */
-const createError = (text: string) => {
+export const createError = (text: string) => {
   throw new Error(text);
 };
 

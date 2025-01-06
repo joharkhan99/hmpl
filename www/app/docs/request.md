@@ -86,6 +86,20 @@ The `after` property specifies after which event the request will be sent to the
 
 The HTML that comes from the server will change to a new one each time in the DOM if events are triggered.
 
+## repeat
+
+The `repeat` property receives a boolean value. If `true`, the request will be sent every time the event is processed on the `selectors` from the `after` property, and if `false`, the request will be sent only once, and after that all event listeners will be removed.
+
+```hmpl
+{
+  {
+     repeat:false
+  }
+}
+```
+
+By default, the value is `true`.
+
 ## indicators
 
 The indicators property is intended to determine what HTML should be shown for a particular request status. The HTML markup in indicators is not extended by the module (it is not hmpl). The value is an object or an array of objects of type [HMPLIndicator](/types.md#hmplindicator).
@@ -114,42 +128,6 @@ The `trigger` values ​​are [http codes](https://developer.mozilla.org/en-US/
 To avoid writing an indicator for each error, the `error` value is triggered by `rejected` errors and error codes (from 400 to 599).
 
 The values ​​of the http codes that indicate errors (from 400 to 599), as well as the value `rejected`, overlap the value `error`.
-
-## repeat
-
-The `repeat` property receives a boolean value. If `true`, the request will be sent every time the event is processed on the `selectors` from the `after` property, and if `false`, the request will be sent only once, and after that all event listeners will be removed.
-
-```hmpl
-{
-  {
-     repeat:false
-  }
-}
-```
-
-By default, the value is `true`.
-
-## memo
-
-Enables request memoization. Allows you to optimize the application without re-rendering the DOM again. This process can be compared to `no-cache` for [`RequestСache`](https://developer.mozilla.org/en-US/docs/Web/API/Request/cache#value).
-
-```hmpl
-{
-  {
-     memo:true
-  }
-}
-```
-
-By default, the value is `false`.
-
-The memoization process itself looks like this:
-
-<img  src="/images/memo.png" alt="memoization" >
-
-Also, response memoization only works with [repeat](#repeat) enabled.
-
-[More about memo](https://blog.hmpl-lang.dev/2024/10/03/memoization-in-hmpl.html)
 
 ## autoBody
 
@@ -210,6 +188,28 @@ const body = new FormData(event.target, event.submitter);
 
 It is worth considering that automatic generation will only work for the `form` tag and the [SubmitEvent](https://developer.mozilla.org/en-US/docs/Web/API/SubmitEvent) type event.
 
+## memo
+
+Enables request memoization. Allows you to optimize the application without re-rendering the DOM again. This process can be compared to `no-cache` for [`RequestСache`](https://developer.mozilla.org/en-US/docs/Web/API/Request/cache#value).
+
+```hmpl
+{
+  {
+     memo:true
+  }
+}
+```
+
+By default, the value is `false`.
+
+The memoization process itself looks like this:
+
+<img  src="/images/memo.png" alt="memoization" >
+
+Also, response memoization only works with [repeat](#repeat) enabled.
+
+[More about memo](https://blog.hmpl-lang.dev/2024/10/03/memoization-in-hmpl.html)
+
 ## initId
 
 The `initId` property references the `id` of the [HMPLRequestInit](/types.md#hmplrequestinit) dictionary and determines what initialization the request will have. The value accepts both a `number` and a `string`.
@@ -240,3 +240,19 @@ const instance = templateFn(requestInits);
 ```
 
 One dictionary can be referenced by several requests at once. This can be compared to the implementation of keys in databases
+
+## allowedContentTypes
+
+Sets the list of allowed `Content-Types` in the `headers` in the response to a request to the server. The value is either an asterix `*` or an array of strings. If the array is empty, as with asterix, all types that support the `text` method will be passed.
+
+> For security reasons of working with the server, it is better not to change this property. When processing routes with an unknown `Content-Type`, there is a risk of getting uncontrolled behavior in the application. Let's say if this is an `application/octet-stream`, then the simple phrase `Hello, World!` will come in the format `48 65 6C 6C 6F 2C 20 77 6F 72 6C 64 21`
+
+```hmpl
+{
+  {
+     "allowedContentTypes":["application/json; charset=utf-8", "text/plain"]
+  }
+}
+```
+
+The default value of the property is `["text/html"]`. On the [Server Configuration](/server-configuration.md) pages you can see information on how to configure the backend for convenient work with the module.

@@ -69,6 +69,10 @@ export default defineUserConfig({
         link: "getting-started.md"
       },
       {
+        text: "Server Configuration",
+        link: "server-configuration.md"
+      },
+      {
         text: "hmpl",
         link: "hmpl.md",
         children: [
@@ -115,24 +119,28 @@ export default defineUserConfig({
             link: "request.md#after"
           },
           {
-            text: "indicators",
-            link: "request.md#indicators"
-          },
-          {
             text: "repeat",
             link: "request.md#repeat"
           },
           {
-            text: "memo",
-            link: "request.md#memo"
+            text: "indicators",
+            link: "request.md#indicators"
           },
           {
             text: "autoBody",
             link: "request.md#autobody"
           },
           {
+            text: "memo",
+            link: "request.md#memo"
+          },
+          {
             text: "initId",
             link: "request.md#initid"
+          },
+          {
+            text: "allowedContentTypes",
+            link: "request.md#allowedcontenttypes"
           }
         ]
       },
@@ -181,7 +189,7 @@ export default defineUserConfig({
       search: true,
       sitemap: {
         hostname: "hmpl-lang.dev"
-      },
+      } as any,
       git: {
         createdTime: false,
         updatedTime: false,

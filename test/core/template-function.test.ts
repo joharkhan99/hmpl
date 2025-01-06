@@ -8,7 +8,6 @@ import {
   DEFAULT_ALLOWED_CONTENT_TYPES,
   REQUEST_INIT_ERROR
 } from "../config/config";
-
 import { compile, stringify } from "../../src/main";
 import {
   waeq,

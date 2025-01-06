@@ -39,6 +39,7 @@ const eq0 = stringify({
     }
   ]
 });
+
 const eq1 = stringify({
   src: `${BASE_URL}/api/test`,
   indicators: [
@@ -48,6 +49,7 @@ const eq1 = stringify({
     }
   ]
 });
+
 const eq2 = stringify({
   src: `${BASE_URL}/api/test`,
   indicators: [
@@ -56,6 +58,7 @@ const eq2 = stringify({
     } as any
   ]
 });
+
 const eq3 = stringify({
   src: `${BASE_URL}/api/test`,
   indicators: [
@@ -64,6 +67,7 @@ const eq3 = stringify({
     } as any
   ]
 });
+
 const aeq0 = stringify({
   src: `${BASE_URL}/api/test`,
   indicators: [

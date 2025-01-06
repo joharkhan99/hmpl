@@ -26,7 +26,44 @@ import sinon from "sinon";
 /**
  * Template function
  */
-
+const eq0 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: "pending",
+      content: "<p>Loading...</p>"
+    },
+    {
+      trigger: "pending",
+      content: "<p>Loading...</p>"
+    }
+  ]
+});
+const eq1 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: 123 as any,
+      content: "<p>Loading...</p>"
+    }
+  ]
+});
+const eq2 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      content: "<p>Loading...</p>"
+    } as any
+  ]
+});
+const eq3 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: 100 as any
+    } as any
+  ]
+});
 const aeq0 = stringify({
   src: `${BASE_URL}/api/test`,
   indicators: [
@@ -74,20 +111,30 @@ const aeq5 = stringify({
   indicators: [
     {
       trigger: "error",
-      content: "<p>405</p>"
+      content: "<p>Error</p>"
     }
   ]
 });
 
-// const aeq6 = stringify({
-//   src: `${BASE_URL}/api/test1`,
-//   indicators: [
-//     {
-//       trigger: "error",
-//       content: "<p>405</p>"
-//     }
-//   ]
-// });
+const aeq6 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: "rejected",
+      content: "<p>Rejected</p>"
+    }
+  ]
+});
+
+const aeq7 = stringify({
+  src: `${BASE_URL}/api/test`,
+  indicators: [
+    {
+      trigger: 100,
+      content: "<p>100</p>"
+    }
+  ]
+});
 
 const aeqe0 = stringify({
   src: `${BASE_URL}/api/test`,
@@ -158,6 +205,26 @@ describe("template function", () => {
     )().response?.outerHTML,
     '<div><button id="increment">Click</button><!--hmpl0--></div>'
   );
+  e(
+    "",
+    () => compile(createTestObj2(`{${eq0}}`))(),
+    `${REQUEST_OBJECT_ERROR}: Indicator trigger must be unique`
+  );
+  e(
+    "",
+    () => compile(createTestObj2(`{${eq1}}`))(),
+    `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
+  );
+  e(
+    "",
+    () => compile(createTestObj2(`{${eq2}}`))(),
+    `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
+  );
+  e(
+    "",
+    () => compile(createTestObj2(`{${eq3}}`))(),
+    `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
+  );
   eq(
     "",
     compile(
@@ -205,9 +272,9 @@ describe("template function", () => {
   );
   eaeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
-    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
-      ", "
-    )}, but received ${contentType1}`,
+    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.map(
+      (type) => `"${type}"`
+    ).join(", ")}, but received ${contentType1}`,
     () => ({}) as any,
     {},
     {
@@ -219,9 +286,9 @@ describe("template function", () => {
   );
   eaeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
-    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.join(
-      ", "
-    )}, but received `,
+    `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.map(
+      (type) => `"${type}"`
+    ).join(", ")}, but received `,
     () => ({}) as any,
     {},
     {
@@ -242,15 +309,6 @@ describe("template function", () => {
     },
     {}
   );
-  // eaeq(
-  //   createTestObj2(`{${aeq5}}`),
-  //   `${REQUEST_INIT_ERROR}: Expected type string, but received type object`,
-  //   () => ({}) as any,
-  //   {},
-  //   {
-  //     isRejected: true
-  //   }
-  // );
   eaeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     `${REQUEST_INIT_ERROR}: The "headers" property must contain a value object`,
@@ -275,6 +333,79 @@ describe("template function", () => {
     },
     {}
   );
+  aeq(
+    createTestObj2(`{${aeq5}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><p>Error</p></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      isRejected: true
+    }
+  );
+  aeq(
+    createTestObj2(`{${aeq6}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><p>Rejected</p></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      isRejected: true
+    }
+  );
+  aeq(
+    createTestObj2(`{${aeq7}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><p>100</p></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      code: 100
+    }
+  );
+  // aeq(
+  //   createTestObj2(`{${aeq6}}`),
+  //   (res, prop, value) => {
+  //     switch (prop) {
+  //       case "response":
+  //         console.log(value?.outerHTML);
+  //         if (value?.outerHTML === `<div><!--hmpl0--></div>`) {
+  //           res(true);
+  //         } else {
+  //           res(false);
+  //         }
+  //         break;
+  //     }
+  //   },
+  //   {},
+  //   {
+  //     code: 100
+  //   }
+  // );
   waeq(
     `{{ "src":"${BASE_URL}/api/test" }}`,
     `${REQUEST_INIT_ERROR}: The "signal" property overwrote the AbortSignal from "timeout"`,
@@ -548,7 +679,7 @@ describe("template function", () => {
     (res, prop, value) => {
       switch (prop) {
         case "response":
-          if (value?.outerHTML === `<template><p>405</p></template>`) {
+          if (value?.outerHTML === `<template><p>Error</p></template>`) {
             res(true);
           }
           break;
@@ -914,6 +1045,37 @@ describe("template function", () => {
       isAfter: true
     },
     2
+  );
+  let memoItem3: Element | undefined;
+  aeqe(
+    createTestObj3(`{${aeq2}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div></div>`
+          ) {
+            if (!memoItem3) {
+              memoItem3 = value;
+            } else {
+              res(memoItem3.childNodes[1] === value.childNodes[1]);
+            }
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {},
+    2,
+    undefined,
+    undefined,
+    {
+      timeout: 300
+    }
   );
   aeqe(
     createTestObj3(`{${aeq2}}`),

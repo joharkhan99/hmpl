@@ -5,7 +5,7 @@ import { HMPLRequestInfo } from "../../src/types";
 import { createScope, clearScope } from "../server/server";
 import { compile, stringify } from "../../src/main";
 import { checkFunction } from "../shared/utils";
-import type { ScopeOptions } from "./functions.types";
+import type { EventOptions, ScopeOptions } from "./functions.types";
 import sinon from "sinon";
 import * as MainModule from "../../src/main";
 
@@ -153,7 +153,8 @@ const aeqe = (
   quantity = 1,
   getEl = defaultGetEl,
   event: string = "click",
-  eventOptions: EventInit = {
+  eventOptions: EventOptions = {},
+  eventInit: EventInit = {
     bubbles: true,
     cancelable: true
   }
@@ -173,8 +174,20 @@ const aeqe = (
       if (currentEl) {
         for (let i = 0; i < quantity; i++) {
           if (currentEl) {
-            const clickEvent = new window.Event(event, eventOptions);
-            currentEl.dispatchEvent(clickEvent);
+            const dispathCustomEvent = () => {
+              const clickEvent = new window.Event(event, eventInit);
+              currentEl.dispatchEvent(clickEvent);
+            };
+            if (eventOptions.timeout) {
+              setTimeout(
+                () => {
+                  dispathCustomEvent();
+                },
+                eventOptions.timeout + i * 100
+              );
+            } else {
+              dispathCustomEvent();
+            }
           }
         }
       }

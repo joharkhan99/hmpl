@@ -1,4 +1,4 @@
-type ScopeOptions = {
+interface ScopeOptions {
   code?: number;
   afterCode?: number;
   template?: any;
@@ -9,6 +9,10 @@ type ScopeOptions = {
   method?: string;
   afterTemplate?: string;
   headers?: Record<string, string>;
-};
+}
 
-export type { ScopeOptions };
+interface EventOptions {
+  timeout?: number;
+}
+
+export type { ScopeOptions, EventOptions };

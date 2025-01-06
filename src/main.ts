@@ -413,13 +413,13 @@ const makeRequest = (
     }
   };
 
-  let isOverlap = false;
   let isNotHTMLResponse = false;
 
   /**
    * Replaces nodes with a comment node.
    */
   const setComment = () => {
+    // todo: isRejected Request and isRequest
     if (isRequest) {
       templateObject.response = undefined;
       get?.("response", undefined);
@@ -489,7 +489,6 @@ const makeRequest = (
       } else {
         const content = indicators[`${status}`];
         if (status > 399) {
-          isOverlap = true;
           if (content !== undefined) {
             updateNodes(content);
           } else {
@@ -569,10 +568,12 @@ const makeRequest = (
 
   let requestStatus: HMPLRequestStatus = 200;
   updateStatusDepenencies("pending");
+  let isRejectedError = true;
 
   // Perform the fetch request
   fetch(source, initRequest)
     .then((response) => {
+      isRejectedError = false;
       requestStatus = response.status as HMPLRequestStatus;
       updateStatusDepenencies(requestStatus);
       if (
@@ -582,9 +583,9 @@ const makeRequest = (
         const contentType = response.headers.get("Content-Type");
         if (getIsNotAllowedContentType(contentType, allowedContentTypes)) {
           createError(
-            `${RESPONSE_ERROR}: Expected ${allowedContentTypes.join(
-              ", "
-            )}, but received ${contentType}`
+            `${RESPONSE_ERROR}: Expected ${allowedContentTypes
+              .map((type) => `"${type}"`)
+              .join(", ")}, but received ${contentType}`
           );
         }
       }
@@ -646,7 +647,8 @@ const makeRequest = (
       }
     })
     .catch((error) => {
-      if (!isOverlap) {
+      // Errors like CORS, timeout and others.
+      if (isRejectedError) {
         updateStatusDepenencies("rejected");
         if (!indicators) {
           setComment();
@@ -713,11 +715,6 @@ const renderTemplate = (
         if (after && isRequest)
           createError(`${RENDER_ERROR}: EventTarget is undefined`);
         const isModeUndefined = !req.hasOwnProperty(MODE);
-        if (!isModeUndefined && typeof req.repeat !== "boolean") {
-          createError(
-            `${REQUEST_OBJECT_ERROR}: The "${MODE}" property has only boolean value`
-          );
-        }
         const oldMode = isModeUndefined ? true : req.repeat;
         const modeAttr = oldMode ? "all" : "one";
         const isAll = modeAttr === "all";

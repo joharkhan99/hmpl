@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.2 (2025-01-07)
+
+- Adding the `allowedContentTypes` property
+- Fixing `rejected` status
+- Improving security
+- Adding more error messages, reworking old ones
+- Bug fix
+
 ## 2.2.1 (2024-12-16)
 
 - Fix loading multiple nodes from server

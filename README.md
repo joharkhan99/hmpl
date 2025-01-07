@@ -8,14 +8,12 @@
 <div>
 
 [![npm-version](https://img.shields.io/npm/v/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://www.npmjs.com/package/hmpl-js)
-[![minzipped size](https://img.shields.io/bundlephobia/minzip/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://bundlephobia.com/package/hmpl-js) 
-[![codecov](https://img.shields.io/codecov/c/github/hmpl-language/hmpl?style=for-the-badge&logo=codecov&logoColor=ffffff&label=CODECOV&color=0183ff
-)](https://codecov.io/github/hmpl-language/hmpl)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/hmpl-js?logo=npm&color=0183ff&style=for-the-badge)](https://bundlephobia.com/package/hmpl-js)
+[![codecov](https://img.shields.io/codecov/c/github/hmpl-language/hmpl?style=for-the-badge&logo=codecov&logoColor=ffffff&label=CODECOV&color=0183ff)](https://codecov.io/github/hmpl-language/hmpl)
 [![issues](https://img.shields.io/github/issues/hmpl-language/hmpl?logo=github&color=0183ff&style=for-the-badge)](https://github.com/hmpl-language/hmpl/issues)
 
 [![x.com](https://img.shields.io/badge/Twitter-000?style=for-the-badge&logo=x&logoColor=fff)](https://x.com/hmpljs)
-[![discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=fff
-)](https://discord.gg/KFunMep36n)
+[![discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=fff)](https://discord.gg/KFunMep36n)
 
 </div>
 
@@ -38,13 +36,13 @@ const templateFn = hmpl.compile(
 );
 
 const clicker = templateFn(({ request: { event } }) => ({
-  body: JSON.stringify({ action: event.target.getAttribute("data-action") }),
+  body: JSON.stringify({ action: event.target.getAttribute("data-action") })
 })).response;
 
 document.querySelector("#app").append(clicker);
 ```
 
-## Why HMPL? 
+## Why HMPL?
 
 Using HMPL, you can multiply reduce the size of the application bundle. Full customization of the request based on the modern `fetch` standard, as well as support for all the functionality necessary for modern work in applications (request indicator, sending by event, automatic generation of `body` for the `form`, caching) and the syntax of the object in the markup, which requires a minimum number of characters, will help to build interaction with the server and client as efficiently as possible.
 
@@ -118,7 +116,7 @@ The non-minified file is larger in size, but it is there as it is with all the f
 
 The [documentation](https://hmpl-lang.dev/introduction.html) contains main information on how the HMPL template language works. If you have any questions about how HMPL works, you can use the following resources:
 
-- [Github](https://github.com/hmpl-language/hmpl) -  In the discussion and issues sections you can ask any question you are interested in
+- [Github](https://github.com/hmpl-language/hmpl) - In the discussion and issues sections you can ask any question you are interested in
 - [Discord](https://discord.gg/KFunMep36n) - You can ask your question in the thematic channel "support"
 - [𝕏 (Twitter)](https://x.com/hmpljs) - There is a lot of interesting stuff there, concerning the template language and not only :)
 
@@ -129,12 +127,6 @@ You can also ask your question on [Stack Overflow](https://stackoverflow.com/) a
 We have a [Contributing Guide](https://github.com/hmpl-language/hmpl/blob/main/CONTRIBUTING.md) that describes the main steps for contributing to the project.
 
 Thank you to all the people who have already contributed to HMPL, or related projects!
-
-<a href="https://github.com/hmpl-language/hmpl/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=hmpl-language/hmpl" />
-</a>
-
-And also to old [contributors](https://github.com/hmpl-language/hmpl/discussions/2)
 
 ## Fossa status
 

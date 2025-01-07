@@ -585,7 +585,7 @@ const makeRequest = (
           createError(
             `${RESPONSE_ERROR}: Expected ${allowedContentTypes
               .map((type) => `"${type}"`)
-              .join(", ")}, but received ${contentType}`
+              .join(", ")}, but received "${contentType}"`
           );
         }
       }

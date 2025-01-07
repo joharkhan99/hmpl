@@ -277,7 +277,7 @@ describe("template function", () => {
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.map(
       (type) => `"${type}"`
-    ).join(", ")}, but received ${contentType1}`,
+    ).join(", ")}, but received "${contentType1}"`,
     () => ({}) as any,
     {},
     {
@@ -291,7 +291,7 @@ describe("template function", () => {
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     `${RESPONSE_ERROR}: Expected ${DEFAULT_ALLOWED_CONTENT_TYPES.map(
       (type) => `"${type}"`
-    ).join(", ")}, but received `,
+    ).join(", ")}, but received ""`,
     () => ({}) as any,
     {},
     {

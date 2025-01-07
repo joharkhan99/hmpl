@@ -33,6 +33,21 @@ var import_json5 = __toESM(require("json5"));
 var checkObject = (val) => {
   return typeof val === "object" && !Array.isArray(val) && val !== null;
 };
+var checkIsStringArray = (arr, currentError) => {
+  if (!Array.isArray(arr)) return false;
+  let isArrString = true;
+  for (let i = 0; i < arr.length; i++) {
+    const arrItem = arr[i];
+    if (typeof arrItem !== "string") {
+      createError(
+        `${currentError}: In the array, the element with index ${i} is not a string`
+      );
+      isArrString = false;
+      break;
+    }
+  }
+  return isArrString;
+};
 var checkFunction = (val) => {
   return Object.prototype.toString.call(val) === "[object Function]";
 };
@@ -55,12 +70,14 @@ var INDICATORS = `indicators`;
 var AUTO_BODY = `autoBody`;
 var COMMENT = `hmpl`;
 var FORM_DATA = `formData`;
-var RESPONSE_ERROR = `Bad response`;
-var REQUEST_INIT_ERROR = `RequestInit error`;
-var RENDER_ERROR = `Render error`;
-var REQUEST_OBJECT_ERROR = `Request Object error`;
-var PARSE_ERROR = `Parse error`;
-var COMPILE_ERROR = `Compile error`;
+var ALLOWED_CONTENT_TYPES = "allowedContentTypes";
+var RESPONSE_ERROR = `BadResponseError`;
+var REQUEST_INIT_ERROR = `RequestInitError`;
+var RENDER_ERROR = `RenderError`;
+var REQUEST_OBJECT_ERROR = `RequestObjectError`;
+var COMPILE_OPTIONS_ERROR = `CompileOptionsError`;
+var PARSE_ERROR = `ParseError`;
+var COMPILE_ERROR = `CompileError`;
 var DEFAULT_AUTO_BODY = {
   formData: true
 };
@@ -69,7 +86,7 @@ var DEFAULT_FALSE_AUTO_BODY = {
 };
 var MAIN_REGEX = /(\{\{(?:.|\n|\r)*?\}\}|\{\s*\{(?:.|\n|\r)*?\}\s*\})/g;
 var BRACKET_REGEX = /([{}])|([^{}]+)/g;
-var requestOptions = [
+var REQUEST_OPTIONS = [
   SOURCE,
   METHOD,
   ID,
@@ -77,9 +94,10 @@ var requestOptions = [
   MODE,
   INDICATORS,
   MEMO,
-  AUTO_BODY
+  AUTO_BODY,
+  ALLOWED_CONTENT_TYPES
 ];
-var codes = [
+var CODES = [
   100,
   101,
   102,
@@ -134,6 +152,7 @@ var codes = [
   510,
   511
 ];
+var DEFAULT_ALLOWED_CONTENT_TYPES = ["text/html"];
 var getTemplateWrapper = (str) => {
   const elementDocument = new DOMParser().parseFromString(
     `<template>${str}</template>`,
@@ -143,11 +162,6 @@ var getTemplateWrapper = (str) => {
   return elWrapper;
 };
 var getResponseElements = (response) => {
-  const typeResponse = typeof response;
-  if (typeResponse !== "string")
-    createError(
-      `${RESPONSE_ERROR}: Expected type string, but received type ${typeResponse}`
-    );
   const elWrapper = getTemplateWrapper(response);
   const elContent = elWrapper["content"];
   const scripts = elContent.querySelectorAll("script");
@@ -157,7 +171,19 @@ var getResponseElements = (response) => {
   }
   return elWrapper;
 };
-var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, isMemo, options = {}, templateObject, reqObject, indicators) => {
+var getIsNotAllowedContentType = (contentType, allowedContentTypes) => {
+  if (!contentType) return true;
+  let isContain = false;
+  for (let i = 0; i < allowedContentTypes.length; i++) {
+    const allowedContentType = allowedContentTypes[i];
+    if (contentType.includes(allowedContentType)) {
+      isContain = true;
+      break;
+    }
+  }
+  return !isContain;
+};
+var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, isMemo, options = {}, templateObject, allowedContentTypes, reqObject, indicators) => {
   const {
     mode,
     cache,
@@ -219,11 +245,7 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
         const value = headers[key];
         const valueType = typeof value;
         if (valueType === "string") {
-          try {
-            newHeaders.set(key, value);
-          } catch (e) {
-            throw e;
-          }
+          newHeaders.set(key, value);
         } else {
           createError(
             `${REQUEST_INIT_ERROR}: Expected type string, but received type ${valueType}`
@@ -302,7 +324,6 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
       callGetResponse(reqResponse);
     }
   };
-  let isOverlap = false;
   let isNotHTMLResponse = false;
   const setComment = () => {
     if (isRequest) {
@@ -365,7 +386,6 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
       } else {
         const content = indicators[`${status}`];
         if (status > 399) {
-          isOverlap = true;
           if (content !== void 0) {
             updateNodes(content);
           } else {
@@ -435,9 +455,19 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
   };
   let requestStatus = 200;
   updateStatusDepenencies("pending");
+  let isRejectedError = true;
   fetch(source, initRequest).then((response) => {
+    isRejectedError = false;
     requestStatus = response.status;
     updateStatusDepenencies(requestStatus);
+    if (Array.isArray(allowedContentTypes) && allowedContentTypes.length !== 0) {
+      const contentType = response.headers.get("Content-Type");
+      if (getIsNotAllowedContentType(contentType, allowedContentTypes)) {
+        createError(
+          `${RESPONSE_ERROR}: Expected ${allowedContentTypes.map((type) => `"${type}"`).join(", ")}, but received "${contentType}"`
+        );
+      }
+    }
     if (!response.ok) {
       createError(
         `${RESPONSE_ERROR}: Response with status code ${requestStatus}`
@@ -494,7 +524,7 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
       }
     }
   }).catch((error) => {
-    if (!isOverlap) {
+    if (isRejectedError) {
       updateStatusDepenencies("rejected");
       if (!indicators) {
         setComment();
@@ -514,7 +544,7 @@ var getRequestInitFromFn = (fn, event) => {
   const result = fn(context);
   return result;
 };
-var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, isAutoBodyUndefined, isRequest = false) => {
+var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, isAutoBodyUndefined, isAllowedContentTypesUndefined, isRequest = false) => {
   const renderRequest = (req, mainEl) => {
     const source = req.src;
     if (source) {
@@ -528,11 +558,6 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
         if (after && isRequest)
           createError(`${RENDER_ERROR}: EventTarget is undefined`);
         const isModeUndefined = !req.hasOwnProperty(MODE);
-        if (!isModeUndefined && typeof req.repeat !== "boolean") {
-          createError(
-            `${REQUEST_OBJECT_ERROR}: The "${MODE}" property has only boolean value`
-          );
-        }
         const oldMode = isModeUndefined ? true : req.repeat;
         const modeAttr = oldMode ? "all" : "one";
         const isAll = modeAttr === "all";
@@ -572,7 +597,7 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
         if (!isReqAutoBodyUndefined) {
           if (after) {
             let reqAutoBody = req[AUTO_BODY];
-            validAutoBody(reqAutoBody);
+            validateAutoBody(reqAutoBody);
             if (autoBody === true) {
               autoBody = DEFAULT_AUTO_BODY;
             }
@@ -602,6 +627,15 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
             autoBody = false;
           }
         }
+        const isReqAllowedContentTypesUndefined = !req.hasOwnProperty(
+          ALLOWED_CONTENT_TYPES
+        );
+        let allowedContentTypes = isAllowedContentTypesUndefined ? DEFAULT_ALLOWED_CONTENT_TYPES : compileOptions.allowedContentTypes;
+        if (!isReqAllowedContentTypesUndefined) {
+          const currentAllowedContentTypes = req[ALLOWED_CONTENT_TYPES];
+          validateAllowedContentTypes(currentAllowedContentTypes);
+          allowedContentTypes = currentAllowedContentTypes;
+        }
         const initId = req.initId;
         const nodeId = req.nodeId;
         let indicators = req.indicators;
@@ -616,7 +650,7 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
               createError(
                 `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
               );
-            if (codes.indexOf(trigger) === -1 && trigger !== "pending" && trigger !== "rejected" && trigger !== "error") {
+            if (CODES.indexOf(trigger) === -1 && trigger !== "pending" && trigger !== "rejected" && trigger !== "error") {
               createError(
                 `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
               );
@@ -763,6 +797,7 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
             isMemo,
             requestInit,
             templateObject,
+            allowedContentTypes,
             reqObject,
             indicators
           );
@@ -925,7 +960,7 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
   }
   return fn(reqFn);
 };
-var validOptions = (currentOptions) => {
+var validateOptions = (currentOptions) => {
   const isObject = checkObject(currentOptions);
   if (!isObject && !checkFunction(currentOptions) && currentOptions !== void 0)
     createError(
@@ -939,11 +974,20 @@ var validOptions = (currentOptions) => {
     }
   }
 };
-var validAutoBody = (autoBody) => {
+var validateAllowedContentTypes = (allowedContentTypes, isCompile = false) => {
+  const currentError = isCompile ? COMPILE_OPTIONS_ERROR : REQUEST_OBJECT_ERROR;
+  if (allowedContentTypes !== "*" && !checkIsStringArray(allowedContentTypes, currentError)) {
+    createError(
+      `${currentError}: Expected "*" or string array, but got neither`
+    );
+  }
+};
+var validateAutoBody = (autoBody, isCompile = false) => {
   const isObject = checkObject(autoBody);
+  const currentError = isCompile ? COMPILE_OPTIONS_ERROR : REQUEST_OBJECT_ERROR;
   if (typeof autoBody !== "boolean" && !isObject)
     createError(
-      `${REQUEST_OBJECT_ERROR}: Expected a boolean or object, but got neither`
+      `${currentError}: Expected a boolean or object, but got neither`
     );
   if (isObject) {
     for (const key in autoBody) {
@@ -951,11 +995,11 @@ var validAutoBody = (autoBody) => {
         case FORM_DATA:
           if (typeof autoBody[FORM_DATA] !== "boolean")
             createError(
-              `${REQUEST_OBJECT_ERROR}: The "${FORM_DATA}" property should be a boolean`
+              `${currentError}: The "${FORM_DATA}" property should be a boolean`
             );
           break;
         default:
-          createError(`${REQUEST_OBJECT_ERROR}: Unexpected property "${key}"`);
+          createError(`${currentError}: Unexpected property "${key}"`);
           break;
       }
     }
@@ -972,7 +1016,7 @@ var validIdOptions = (currentOptions) => {
     );
   }
 };
-var validIdentificationOptionsArray = (currentOptions) => {
+var validateIdentificationOptionsArray = (currentOptions) => {
   const ids = [];
   for (let i = 0; i < currentOptions.length; i++) {
     const idOptions = currentOptions[i];
@@ -1002,14 +1046,19 @@ var compile = (template, options = {}) => {
   if (!template)
     createError(`${COMPILE_ERROR}: Template must not be a falsey value`);
   if (!checkObject(options))
-    createError(`${COMPILE_ERROR}: Options must be an object`);
+    createError(`${COMPILE_OPTIONS_ERROR}: Options must be an object`);
   const isMemoUndefined = !options.hasOwnProperty(MEMO);
   if (!isMemoUndefined && typeof options[MEMO] !== "boolean")
     createError(
-      `${REQUEST_OBJECT_ERROR}: The value of the property ${MEMO} must be a boolean value`
+      `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
     );
   const isAutoBodyUndefined = !options.hasOwnProperty(AUTO_BODY);
-  if (!isAutoBodyUndefined) validAutoBody(options[AUTO_BODY]);
+  if (!isAutoBodyUndefined) validateAutoBody(options[AUTO_BODY], true);
+  const isAllowedContentTypesUndefined = !options.hasOwnProperty(
+    ALLOWED_CONTENT_TYPES
+  );
+  if (!isAllowedContentTypesUndefined)
+    validateAllowedContentTypes(options[ALLOWED_CONTENT_TYPES], true);
   const requests = [];
   const templateArr = template.split(MAIN_REGEX).filter(Boolean);
   const requestsIndexes = [];
@@ -1027,7 +1076,7 @@ var compile = (template, options = {}) => {
     const parsedData = import_json5.default.parse(text);
     for (const key in parsedData) {
       const value = parsedData[key];
-      if (!requestOptions.includes(key))
+      if (!REQUEST_OPTIONS.includes(key))
         createError(
           `${REQUEST_OBJECT_ERROR}: Property "${key}" is not processed`
         );
@@ -1055,7 +1104,10 @@ var compile = (template, options = {}) => {
           }
           break;
         case AUTO_BODY:
-          validAutoBody(value);
+          validateAutoBody(value);
+          break;
+        case ALLOWED_CONTENT_TYPES:
+          validateAllowedContentTypes(value);
           break;
         default:
           if (typeof value !== "string") {
@@ -1269,7 +1321,7 @@ var compile = (template, options = {}) => {
         getRequests(el);
       }
       if (checkObject(options2) || checkFunction(options2)) {
-        validOptions(options2);
+        validateOptions(options2);
         requestFunction(
           void 0,
           options2,
@@ -1278,7 +1330,7 @@ var compile = (template, options = {}) => {
           el
         );
       } else if (Array.isArray(options2)) {
-        validIdentificationOptionsArray(
+        validateIdentificationOptionsArray(
           options2
         );
         requestFunction(
@@ -1301,6 +1353,7 @@ var compile = (template, options = {}) => {
     options,
     isMemoUndefined,
     isAutoBodyUndefined,
+    isAllowedContentTypesUndefined,
     isRequest
   );
 };

@@ -21,6 +21,28 @@
       return typeof val === "object" && !Array.isArray(val) && val !== null;
     };
     /**
+     * Validates whether the provided value is an array of strings.
+     * @param arr - The value to check, expected to be an array.
+     * @param currentError - The error message prefix for non-string elements.
+     * @returns `true` if the value is an array of strings, `false` otherwise.
+     *          If an element is found that is not of the string type, an error is created with details.
+     */
+    const checkIsStringArray = (arr, currentError) => {
+      if (!Array.isArray(arr)) return false;
+      let isArrString = true;
+      for (let i = 0; i < arr.length; i++) {
+        const arrItem = arr[i];
+        if (typeof arrItem !== "string") {
+          createError(
+            `${currentError}: In the array, the element with index ${i} is not a string`
+          );
+          isArrString = false;
+          break;
+        }
+      }
+      return isArrString;
+    };
+    /**
      * Checks if the provided value is a function.
      * @param val - The value to check.
      * @returns True if val is a function, false otherwise.
@@ -69,12 +91,14 @@
     const AUTO_BODY = `autoBody`;
     const COMMENT = `hmpl`;
     const FORM_DATA = `formData`;
-    const RESPONSE_ERROR = `Bad response`;
-    const REQUEST_INIT_ERROR = `RequestInit error`;
-    const RENDER_ERROR = `Render error`;
-    const REQUEST_OBJECT_ERROR = `Request Object error`;
-    const PARSE_ERROR = `Parse error`;
-    const COMPILE_ERROR = `Compile error`;
+    const ALLOWED_CONTENT_TYPES = "allowedContentTypes";
+    const RESPONSE_ERROR = `BadResponseError`;
+    const REQUEST_INIT_ERROR = `RequestInitError`;
+    const RENDER_ERROR = `RenderError`;
+    const REQUEST_OBJECT_ERROR = `RequestObjectError`;
+    const COMPILE_OPTIONS_ERROR = `CompileOptionsError`;
+    const PARSE_ERROR = `ParseError`;
+    const COMPILE_ERROR = `CompileError`;
     const DEFAULT_AUTO_BODY = {
       formData: true
     };
@@ -86,7 +110,7 @@
     /**
      * List of request options that are allowed.
      */
-    const requestOptions = [
+    const REQUEST_OPTIONS = [
       SOURCE,
       METHOD,
       ID,
@@ -94,17 +118,23 @@
       MODE,
       INDICATORS,
       MEMO,
-      AUTO_BODY
+      AUTO_BODY,
+      ALLOWED_CONTENT_TYPES
     ];
     /**
      * HTTP status codes without successful responses.
+     * See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status for more details.
      */
-    const codes = [
+    const CODES = [
       100, 101, 102, 103, 300, 301, 302, 303, 304, 305, 306, 307, 308, 400, 401,
       402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416,
       417, 418, 421, 422, 423, 424, 425, 426, 428, 429, 431, 451, 500, 501, 502,
       503, 504, 505, 506, 507, 508, 510, 511
     ];
+    /**
+     * Default value for the processed response content type
+     */
+    const DEFAULT_ALLOWED_CONTENT_TYPES = ["text/html"];
     /**
      * Parses a string into a HTML template element.
      * @param str - The string to parse.
@@ -124,11 +154,6 @@
      * @returns The parsed template wrapper.
      */
     const getResponseElements = (response) => {
-      const typeResponse = typeof response;
-      if (typeResponse !== "string")
-        createError(
-          `${RESPONSE_ERROR}: Expected type string, but received type ${typeResponse}`
-        );
       const elWrapper = getTemplateWrapper(response);
       const elContent = elWrapper["content"];
       const scripts = elContent.querySelectorAll("script");
@@ -137,6 +162,24 @@
         elContent.removeChild(currentScript);
       }
       return elWrapper;
+    };
+    /**
+     * Checks if the provided content type is not allowed.
+     * @param contentType - The content type to check (e.g., "text/html" or "application/json").
+     * @param allowedContentTypes - An array of allowed content type substrings.
+     * @returns `true` if the content type is not allowed, `false` otherwise.
+     */
+    const getIsNotAllowedContentType = (contentType, allowedContentTypes) => {
+      if (!contentType) return true;
+      let isContain = false;
+      for (let i = 0; i < allowedContentTypes.length; i++) {
+        const allowedContentType = allowedContentTypes[i];
+        if (contentType.includes(allowedContentType)) {
+          isContain = true;
+          break;
+        }
+      }
+      return !isContain;
     };
     /**
      * Makes an HTTP request and handles the response.
@@ -150,6 +193,7 @@
      * @param isMemo - Indicates if memoization is enabled.
      * @param options - The request initialization options.
      * @param templateObject - The template instance.
+     * @param allowedContentTypes - Allowed Content-Types for response processing.
      * @param reqObject - The request object.
      * @param indicators - Parsed indicators for the request.
      */
@@ -164,6 +208,7 @@
       isMemo,
       options = {},
       templateObject,
+      allowedContentTypes,
       reqObject,
       indicators
     ) => {
@@ -230,11 +275,7 @@
             const value = headers[key];
             const valueType = typeof value;
             if (valueType === "string") {
-              try {
-                newHeaders.set(key, value);
-              } catch (e) {
-                throw e;
-              }
+              newHeaders.set(key, value);
             } else {
               createError(
                 `${REQUEST_INIT_ERROR}: Expected type string, but received type ${valueType}`
@@ -326,12 +367,12 @@
           callGetResponse(reqResponse);
         }
       };
-      let isOverlap = false;
       let isNotHTMLResponse = false;
       /**
        * Replaces nodes with a comment node.
        */
       const setComment = () => {
+        // todo: isRejected Request and isRequest
         if (isRequest) {
           templateObject.response = undefined;
           get?.("response", undefined);
@@ -400,7 +441,6 @@
           } else {
             const content = indicators[`${status}`];
             if (status > 399) {
-              isOverlap = true;
               if (content !== undefined) {
                 updateNodes(content);
               } else {
@@ -477,11 +517,26 @@
       };
       let requestStatus = 200;
       updateStatusDepenencies("pending");
+      let isRejectedError = true;
       // Perform the fetch request
       fetch(source, initRequest)
         .then((response) => {
+          isRejectedError = false;
           requestStatus = response.status;
           updateStatusDepenencies(requestStatus);
+          if (
+            Array.isArray(allowedContentTypes) &&
+            allowedContentTypes.length !== 0
+          ) {
+            const contentType = response.headers.get("Content-Type");
+            if (getIsNotAllowedContentType(contentType, allowedContentTypes)) {
+              createError(
+                `${RESPONSE_ERROR}: Expected ${allowedContentTypes
+                  .map((type) => `"${type}"`)
+                  .join(", ")}, but received "${contentType}"`
+              );
+            }
+          }
           if (!response.ok) {
             createError(
               `${RESPONSE_ERROR}: Response with status code ${requestStatus}`
@@ -538,7 +593,8 @@
           }
         })
         .catch((error) => {
-          if (!isOverlap) {
+          // Errors like CORS, timeout and others.
+          if (isRejectedError) {
             updateStatusDepenencies("rejected");
             if (!indicators) {
               setComment();
@@ -573,6 +629,7 @@
      * @param isMemoUndefined - Indicates if memoization is undefined.
      * @param isAutoBodyUndefined - Indicates if autoBody is undefined.
      * @param isRequest - Indicates if it's a single request.
+     * @param isAllowedContentTypesUndefined - Indicates if allowedContentTypes is undefined.
      * @returns The rendered template function.
      */
     const renderTemplate = (
@@ -582,6 +639,7 @@
       compileOptions,
       isMemoUndefined,
       isAutoBodyUndefined,
+      isAllowedContentTypesUndefined,
       isRequest = false
     ) => {
       const renderRequest = (req, mainEl) => {
@@ -597,11 +655,6 @@
             if (after && isRequest)
               createError(`${RENDER_ERROR}: EventTarget is undefined`);
             const isModeUndefined = !req.hasOwnProperty(MODE);
-            if (!isModeUndefined && typeof req.repeat !== "boolean") {
-              createError(
-                `${REQUEST_OBJECT_ERROR}: The "${MODE}" property has only boolean value`
-              );
-            }
             const oldMode = isModeUndefined ? true : req.repeat;
             const modeAttr = oldMode ? "all" : "one";
             const isAll = modeAttr === "all";
@@ -643,7 +696,7 @@
             if (!isReqAutoBodyUndefined) {
               if (after) {
                 let reqAutoBody = req[AUTO_BODY];
-                validAutoBody(reqAutoBody);
+                validateAutoBody(reqAutoBody);
                 if (autoBody === true) {
                   autoBody = DEFAULT_AUTO_BODY;
                 }
@@ -675,6 +728,17 @@
                 autoBody = false;
               }
             }
+            const isReqAllowedContentTypesUndefined = !req.hasOwnProperty(
+              ALLOWED_CONTENT_TYPES
+            );
+            let allowedContentTypes = isAllowedContentTypesUndefined
+              ? DEFAULT_ALLOWED_CONTENT_TYPES
+              : compileOptions.allowedContentTypes;
+            if (!isReqAllowedContentTypesUndefined) {
+              const currentAllowedContentTypes = req[ALLOWED_CONTENT_TYPES];
+              validateAllowedContentTypes(currentAllowedContentTypes);
+              allowedContentTypes = currentAllowedContentTypes;
+            }
             const initId = req.initId;
             const nodeId = req.nodeId;
             let indicators = req.indicators;
@@ -690,7 +754,7 @@
                     `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
                   );
                 if (
-                  codes.indexOf(trigger) === -1 &&
+                  CODES.indexOf(trigger) === -1 &&
                   trigger !== "pending" &&
                   trigger !== "rejected" &&
                   trigger !== "error"
@@ -856,6 +920,7 @@
                 isMemo,
                 requestInit,
                 templateObject,
+                allowedContentTypes,
                 reqObject,
                 indicators
               );
@@ -1053,7 +1118,7 @@
      * Validates the options provided for a request.
      * @param currentOptions - The options to validate.
      */
-    const validOptions = (currentOptions) => {
+    const validateOptions = (currentOptions) => {
       const isObject = checkObject(currentOptions);
       if (
         !isObject &&
@@ -1072,14 +1137,43 @@
       }
     };
     /**
-     * Validates the autoBody options.
-     * @param autoBody - The autoBody option to validate.
+     * Validates the allowed content types for a request or response.
+     * Ensures the value is either "*" (indicating all types are allowed) or an array of strings.
+     * @param allowedContentTypes - The content types to validate, expected to be "*" or an array of strings.
+     * @param isCompile - A flag indicating whether the validation is for compile-time options (default: `false`).
+     * @throws An error if the input is not a "*" or a string array.
      */
-    const validAutoBody = (autoBody) => {
+    const validateAllowedContentTypes = (
+      allowedContentTypes,
+      isCompile = false
+    ) => {
+      const currentError = isCompile
+        ? COMPILE_OPTIONS_ERROR
+        : REQUEST_OBJECT_ERROR;
+      if (
+        allowedContentTypes !== "*" &&
+        !checkIsStringArray(allowedContentTypes, currentError)
+      ) {
+        createError(
+          `${currentError}: Expected "*" or string array, but got neither`
+        );
+      }
+    };
+    /**
+     * Validates the `autoBody` option for a request or compile-time configuration.
+     * Ensures the value is either a boolean or an object with specific properties.
+     * @param autoBody - The `autoBody` option to validate, expected to be a boolean or an object.
+     * @param isCompile - A flag indicating whether the validation is for compile-time options (default: `false`).
+     * @throws An error if the input is not a boolean, not a HMPLAutoBodyOptions type object, or contains unexpected properties.
+     */
+    const validateAutoBody = (autoBody, isCompile = false) => {
       const isObject = checkObject(autoBody);
+      const currentError = isCompile
+        ? COMPILE_OPTIONS_ERROR
+        : REQUEST_OBJECT_ERROR;
       if (typeof autoBody !== "boolean" && !isObject)
         createError(
-          `${REQUEST_OBJECT_ERROR}: Expected a boolean or object, but got neither`
+          `${currentError}: Expected a boolean or object, but got neither`
         );
       if (isObject) {
         for (const key in autoBody) {
@@ -1087,13 +1181,11 @@
             case FORM_DATA:
               if (typeof autoBody[FORM_DATA] !== "boolean")
                 createError(
-                  `${REQUEST_OBJECT_ERROR}: The "${FORM_DATA}" property should be a boolean`
+                  `${currentError}: The "${FORM_DATA}" property should be a boolean`
                 );
               break;
             default:
-              createError(
-                `${REQUEST_OBJECT_ERROR}: Unexpected property "${key}"`
-              );
+              createError(`${currentError}: Unexpected property "${key}"`);
               break;
           }
         }
@@ -1123,7 +1215,7 @@
      * Validates an array of HMPLIdentificationRequestInit objects.
      * @param currentOptions - The array of identification options to validate.
      */
-    const validIdentificationOptionsArray = (currentOptions) => {
+    const validateIdentificationOptionsArray = (currentOptions) => {
       const ids = [];
       for (let i = 0; i < currentOptions.length; i++) {
         const idOptions = currentOptions[i];
@@ -1169,14 +1261,19 @@
       if (!template)
         createError(`${COMPILE_ERROR}: Template must not be a falsey value`);
       if (!checkObject(options))
-        createError(`${COMPILE_ERROR}: Options must be an object`);
+        createError(`${COMPILE_OPTIONS_ERROR}: Options must be an object`);
       const isMemoUndefined = !options.hasOwnProperty(MEMO);
       if (!isMemoUndefined && typeof options[MEMO] !== "boolean")
         createError(
-          `${REQUEST_OBJECT_ERROR}: The value of the property ${MEMO} must be a boolean value`
+          `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
         );
       const isAutoBodyUndefined = !options.hasOwnProperty(AUTO_BODY);
-      if (!isAutoBodyUndefined) validAutoBody(options[AUTO_BODY]);
+      if (!isAutoBodyUndefined) validateAutoBody(options[AUTO_BODY], true);
+      const isAllowedContentTypesUndefined = !options.hasOwnProperty(
+        ALLOWED_CONTENT_TYPES
+      );
+      if (!isAllowedContentTypesUndefined)
+        validateAllowedContentTypes(options[ALLOWED_CONTENT_TYPES], true);
       const requests = [];
       const templateArr = template.split(MAIN_REGEX).filter(Boolean);
       const requestsIndexes = [];
@@ -1194,7 +1291,7 @@
         const parsedData = JSON5.parse(text);
         for (const key in parsedData) {
           const value = parsedData[key];
-          if (!requestOptions.includes(key))
+          if (!REQUEST_OPTIONS.includes(key))
             createError(
               `${REQUEST_OBJECT_ERROR}: Property "${key}" is not processed`
             );
@@ -1222,7 +1319,10 @@
               }
               break;
             case AUTO_BODY:
-              validAutoBody(value);
+              validateAutoBody(value);
+              break;
+            case ALLOWED_CONTENT_TYPES:
+              validateAllowedContentTypes(value);
               break;
             default:
               if (typeof value !== "string") {
@@ -1438,10 +1538,10 @@
             getRequests(el);
           }
           if (checkObject(options) || checkFunction(options)) {
-            validOptions(options);
+            validateOptions(options);
             requestFunction(undefined, options, templateObject, data, el);
           } else if (Array.isArray(options)) {
-            validIdentificationOptionsArray(options);
+            validateIdentificationOptionsArray(options);
             requestFunction(undefined, options, templateObject, data, el, true);
           }
           return templateObject;
@@ -1455,6 +1555,7 @@
         options,
         isMemoUndefined,
         isAutoBodyUndefined,
+        isAllowedContentTypesUndefined,
         isRequest
       );
     };

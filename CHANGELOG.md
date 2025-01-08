@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.2 (2025-01-07)
+## 2.2.2 (2025-01-08)
 
 - Adding the `allowedContentTypes` property
 - Fixing `rejected` status

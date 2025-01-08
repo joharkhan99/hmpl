@@ -86,6 +86,7 @@ interface HMPLRequestInfo {
   after?: string;
   repeat?: boolean;
   memo?: boolean;
+  allowedContentTypes?: HMPLContentTypes;
   autoBody?: boolean | HMPLAutoBodyOptions;
   indicators?: HMPLIndicator[];
 }
@@ -110,6 +111,7 @@ Sets options for the `compile` function.
 interface HMPLCompileOptions {
   memo?: boolean;
   autoBody?: boolean | HMPLAutoBodyOptions;
+  allowedContentTypes?: HMPLContentTypes;
 }
 ```
 
@@ -224,6 +226,15 @@ type HMPLRequestStatus =
   | 207
   | 208
   | 226;
+```
+
+## HMPLContentTypes
+
+Represents the allowed content types for a request or response.
+Can be either an array of strings specifying content type substrings (e.g., ["text/html", "application/json"]) or a wildcard "*" indicating that all content types are allowed.
+
+```typescript
+type HMPLContentTypes = string[] | "*";
 ```
 
 ## HMPLIndicator

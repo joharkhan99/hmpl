@@ -569,6 +569,7 @@ const makeRequest = (
   let requestStatus: HMPLRequestStatus = 200;
   updateStatusDepenencies("pending");
   let isRejectedError = true;
+  // let isError = true;
 
   // Perform the fetch request
   fetch(source, initRequest)
@@ -590,6 +591,7 @@ const makeRequest = (
         }
       }
       if (!response.ok) {
+        // isError = false;
         createError(
           `${RESPONSE_ERROR}: Response with status code ${requestStatus}`
         );
@@ -598,51 +600,47 @@ const makeRequest = (
     })
     .then((data) => {
       if (!isNotHTMLResponse) {
-        if (!getIsNotFullfilledStatus(requestStatus)) {
-          if (isRequestMemo) {
-            const { response } = dataObj.memo!;
-            if (response === null) {
-              dataObj.memo!.response = data;
-            } else {
-              if (response === data) {
-                takeNodesFromCache();
-                return;
-              } else {
-                dataObj.memo!.response = data;
-                delete dataObj.memo!.nodes;
-              }
-            }
-          }
-          const templateWrapper = getResponseElements(data);
-          if (isRequest) {
-            (templateObject.response as any) = templateWrapper;
-            get?.("response", templateWrapper);
+        if (isRequestMemo) {
+          const { response } = dataObj.memo!;
+          if (response === null) {
+            dataObj.memo!.response = data;
           } else {
-            const reqResponse: ChildNode[] = [];
-            const nodes = [
-              ...(templateWrapper as HTMLTemplateElement).content.childNodes
-            ];
-            if (dataObj) {
-              updateNodes(templateWrapper as HTMLTemplateElement, false, true);
+            if (response === data) {
+              takeNodesFromCache();
+              return;
             } else {
-              const parentNode = el!.parentNode as ParentNode;
-              for (let i = 0; i < nodes.length; i++) {
-                const node = nodes[i];
-                const reqNode = parentNode.insertBefore(node, el!);
-                if (isRequests) {
-                  reqResponse.push(reqNode);
-                }
-              }
-              parentNode.removeChild(el!);
-              if (isRequests) {
-                reqObject!.response = reqResponse;
-                get?.("response", reqResponse, reqObject);
-              }
-              get?.("response", mainEl);
+              dataObj.memo!.response = data;
+              delete dataObj.memo!.nodes;
             }
           }
+        }
+        const templateWrapper = getResponseElements(data);
+        if (isRequest) {
+          (templateObject.response as any) = templateWrapper;
+          get?.("response", templateWrapper);
         } else {
-          setComment();
+          const reqResponse: ChildNode[] = [];
+          const nodes = [
+            ...(templateWrapper as HTMLTemplateElement).content.childNodes
+          ];
+          if (dataObj) {
+            updateNodes(templateWrapper as HTMLTemplateElement, false, true);
+          } else {
+            const parentNode = el!.parentNode as ParentNode;
+            for (let i = 0; i < nodes.length; i++) {
+              const node = nodes[i];
+              const reqNode = parentNode.insertBefore(node, el!);
+              if (isRequests) {
+                reqResponse.push(reqNode);
+              }
+            }
+            parentNode.removeChild(el!);
+            if (isRequests) {
+              reqObject!.response = reqResponse;
+              get?.("response", reqResponse, reqObject);
+            }
+            get?.("response", mainEl);
+          }
         }
       }
     })
@@ -654,6 +652,11 @@ const makeRequest = (
           setComment();
         }
       }
+      // else {
+      //   if (isError) {
+      //     // setComment();
+      //   }
+      // }
       throw error;
     });
 };

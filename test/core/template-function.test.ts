@@ -355,6 +355,54 @@ describe("template function", () => {
     }
   );
   aeq(
+    createTestObj2(`{{ src: "${BASE_URL}/api/test" }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "status":
+          if (value === "rejected") {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      isRejected: true
+    }
+  );
+  aeq(
+    createTestObj2(`{${aeq7}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "status":
+          if (value === "rejected") {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      isRejected: true
+    }
+  );
+  aeq(
+    createTestObj2(`{{ src: "${BASE_URL}/api/test", indicators:[] }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "status":
+          if (value === 100) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      code: 100
+    }
+  );
+  aeq(
     createTestObj2(`{${aeq6}}`),
     (res, prop, value) => {
       switch (prop) {

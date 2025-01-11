@@ -424,7 +424,7 @@ const makeRequest = (
       templateObject.response = undefined;
       get?.("response", undefined);
     } else {
-      if (dataObj!.nodes) {
+      if (dataObj?.nodes) {
         const parentNode = dataObj!.parentNode! as ParentNode;
         if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
         const nodesLength = dataObj!.nodes.length;
@@ -569,7 +569,7 @@ const makeRequest = (
   let requestStatus: HMPLRequestStatus = 200;
   updateStatusDepenencies("pending");
   let isRejectedError = true;
-  // let isError = true;
+  let isError = true;
 
   // Perform the fetch request
   fetch(source, initRequest)
@@ -577,6 +577,12 @@ const makeRequest = (
       isRejectedError = false;
       requestStatus = response.status as HMPLRequestStatus;
       updateStatusDepenencies(requestStatus);
+      if (!response.ok) {
+        if (indicators) isError = false;
+        createError(
+          `${RESPONSE_ERROR}: Response with status code ${requestStatus}`
+        );
+      }
       if (
         Array.isArray(allowedContentTypes) &&
         allowedContentTypes.length !== 0
@@ -589,12 +595,6 @@ const makeRequest = (
               .join(", ")}, but received "${contentType}"`
           );
         }
-      }
-      if (!response.ok) {
-        // isError = false;
-        createError(
-          `${RESPONSE_ERROR}: Response with status code ${requestStatus}`
-        );
       }
       return response.text();
     })
@@ -651,12 +651,11 @@ const makeRequest = (
         if (!indicators) {
           setComment();
         }
+      } else {
+        if (isError) {
+          setComment();
+        }
       }
-      // else {
-      //   if (isError) {
-      //     // setComment();
-      //   }
-      // }
       throw error;
     });
 };

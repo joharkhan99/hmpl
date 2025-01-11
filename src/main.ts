@@ -419,7 +419,6 @@ const makeRequest = (
    * Replaces nodes with a comment node.
    */
   const setComment = () => {
-    // todo: isRejected Request and isRequest
     if (isRequest) {
       templateObject.response = undefined;
       get?.("response", undefined);

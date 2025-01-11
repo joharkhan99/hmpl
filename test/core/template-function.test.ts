@@ -613,6 +613,22 @@ describe("template function", () => {
   );
 
   aeq(
+    createTestObj2(
+      `{{ "src":"${BASE_URL}/api/test" }}{{ "src":"${BASE_URL}/api/test" }}`
+    ),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div><div>123</div></div>`) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {}
+  );
+
+  aeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     (res, prop, value) => {
       switch (prop) {
@@ -973,6 +989,40 @@ describe("template function", () => {
     {},
     {},
     2
+  );
+  // status templateObject check
+  aeqe(
+    createTestObj3(`{${aeq1}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><!--hmpl0--></div>`
+          ) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {
+      memo: true
+    },
+    {},
+    {
+      isAfter: true,
+      afterCode: 200,
+      afterHeaders: {
+        "Content-Type": contentType1
+      },
+      times: 1
+    },
+    2,
+    undefined,
+    undefined,
+    {
+      timeout: 300
+    }
   );
   aeqe(
     createTestObj3(`{${aeq2}}`),

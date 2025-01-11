@@ -9,6 +9,7 @@ interface ScopeOptions {
   method?: string;
   afterTemplate?: string;
   headers?: Record<string, string>;
+  afterHeaders?: Record<string, string>;
 }
 
 interface EventOptions {

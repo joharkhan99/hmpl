@@ -15,6 +15,9 @@ const createScope = ({
   afterTemplate = "",
   headers = {
     "Content-Type": "text/html"
+  },
+  afterHeaders = {
+    "Content-Type": "text/html"
   }
 }: ScopeOptions) => {
   let callCount = 0;
@@ -32,7 +35,7 @@ const createScope = ({
         if (callCount <= times) {
           return [code, template, headers];
         } else {
-          return [afterCode, afterTemplate, headers];
+          return [afterCode, afterTemplate, afterHeaders];
         }
       } else {
         return [code, template, headers];

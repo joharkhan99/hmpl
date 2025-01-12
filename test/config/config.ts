@@ -9,6 +9,7 @@ const AUTO_BODY = `autoBody`;
 const COMMENT = `hmpl`;
 const FORM_DATA = `formData`;
 const ALLOWED_CONTENT_TYPES = "allowedContentTypes";
+const REQUEST_INIT_GET = `get`;
 const RESPONSE_ERROR = `BadResponseError`;
 const REQUEST_INIT_ERROR = `RequestInitError`;
 const RENDER_ERROR = `RenderError`;
@@ -31,6 +32,7 @@ export {
   COMMENT,
   FORM_DATA,
   ALLOWED_CONTENT_TYPES,
+  REQUEST_INIT_GET,
   RESPONSE_ERROR,
   REQUEST_INIT_ERROR,
   RENDER_ERROR,

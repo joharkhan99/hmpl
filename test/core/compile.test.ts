@@ -51,6 +51,12 @@ describe("compile function", () => {
 
   e(
     "",
+    () => compile(createTestObj2(`{{ "repeat":true }}`)),
+    `${REQUEST_OBJECT_ERROR}: The "${SOURCE}" property are not found or empty`
+  );
+
+  e(
+    "",
     () => compile(createTestObj1({ a: "" })),
     `${REQUEST_OBJECT_ERROR}: Property "a" is not processed`
   );
@@ -157,12 +163,32 @@ describe("compile function", () => {
   e(
     "",
     () => compile(`${createTestObj2(`{{ "src":"/api/test" }}`)}<div></div>`),
-    `${RENDER_ERROR}: Template include only one node with type Element or Comment`
+    `${RENDER_ERROR}: Template includes only one node of the Element type or one response object`
   );
   e(
     "",
     () => compile(createTestObj2(`{{ "src":"/api/test", "autoBody": true }}`)),
     `${REQUEST_OBJECT_ERROR}: The "${AUTO_BODY}" property does not work without the "${AFTER}" property`
+  );
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(
+          `<form id="form"></form>{{ "src":"/api/test", "after":"submit" }}`
+        )
+      ),
+    `${REQUEST_OBJECT_ERROR}: The "${AFTER}" property doesn't work without EventTargets`
+  );
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(
+          `<form id="form"></form>{{ "src":"/api/test", "repeat":true }}`
+        )
+      ),
+    `${REQUEST_OBJECT_ERROR}: The "${MODE}" property doesn't work without "${AFTER}" property`
   );
   eq(
     "",

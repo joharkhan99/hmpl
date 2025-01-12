@@ -113,6 +113,7 @@ const AUTO_BODY = `autoBody`;
 const COMMENT = `hmpl`;
 const FORM_DATA = `formData`;
 const ALLOWED_CONTENT_TYPES = "allowedContentTypes";
+const REQUEST_INIT_GET = `get`;
 const RESPONSE_ERROR = `BadResponseError`;
 const REQUEST_INIT_ERROR = `RequestInitError`;
 const RENDER_ERROR = `RenderError`;
@@ -375,7 +376,6 @@ const makeRequest = (
       const nodes = [...(newContent as HTMLTemplateElement).content.childNodes];
       if (dataObj!.nodes) {
         const parentNode = dataObj!.parentNode! as ParentNode;
-        if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
         const newNodes: ChildNode[] = [];
         const nodesLength = dataObj!.nodes.length;
         for (let i = 0; i < nodesLength; i++) {
@@ -425,7 +425,6 @@ const makeRequest = (
     } else {
       if (dataObj?.nodes) {
         const parentNode = dataObj!.parentNode! as ParentNode;
-        if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
         const nodesLength = dataObj!.nodes.length;
         for (let i = 0; i < nodesLength; i++) {
           const node = dataObj!.nodes[i];
@@ -541,7 +540,6 @@ const makeRequest = (
   const takeNodesFromCache = () => {
     if (dataObj!.memo!.isPending) {
       const parentNode = dataObj!.parentNode! as ParentNode;
-      if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
       const memoNodes = dataObj!.memo!.nodes!;
       const currentNodes = dataObj!.nodes!;
       const nodesLength = currentNodes!.length;
@@ -915,11 +913,6 @@ const renderTemplate = (
                     break;
                   }
                 }
-                if (!currentEl) {
-                  createError(
-                    `${RENDER_ERROR}: The specified DOM element is not valid or cannot be found`
-                  );
-                }
                 reqEl = currentEl!;
               }
             }
@@ -927,10 +920,6 @@ const renderTemplate = (
           let dataObj: HMPLNodeObj;
           if (!isRequest) {
             if (isDataObj || indicators) {
-              if (!currentHMPLElement)
-                createError(
-                  `${RENDER_ERROR}: The specified DOM element is not valid or cannot be found`
-                );
               dataObj = currentHMPLElement!.objNode!;
               if (!dataObj!) {
                 dataObj = {
@@ -1102,7 +1091,7 @@ const renderTemplate = (
       }
     } else {
       createError(
-        `${REQUEST_OBJECT_ERROR}: The "source" property are not found or empty`
+        `${REQUEST_OBJECT_ERROR}: The "${SOURCE}" property are not found or empty`
       );
     }
   };
@@ -1158,9 +1147,6 @@ const renderTemplate = (
         for (let i = 0; i < els.length; i++) {
           const hmplElement = els[i];
           const currentReqEl = hmplElement.el;
-          if (currentReqEl.parentNode === null) {
-            createError(`${RENDER_ERROR}: ParentNode is null`);
-          }
           const currentReqFn = algorithm[i];
           const currentReq: HMPLRequest = {
             response: undefined
@@ -1182,9 +1168,6 @@ const renderTemplate = (
       };
     } else {
       const currentRequest = requests[0];
-      if (currentRequest.el!.parentNode === null) {
-        createError(`${RENDER_ERROR}: ParentNode is null`);
-      }
       reqFn = renderRequest(currentRequest, currentEl as Element);
     }
   }
@@ -1207,10 +1190,13 @@ const validateOptions = (
     createError(
       `${REQUEST_INIT_ERROR}: Expected an object with initialization options`
     );
-  if (isObject && (currentOptions as HMPLRequestInit).get) {
-    if (!checkFunction((currentOptions as HMPLRequestInit).get)) {
+  if (
+    isObject &&
+    (currentOptions as HMPLRequestInit).hasOwnProperty(`${REQUEST_INIT_GET}`)
+  ) {
+    if (!checkFunction((currentOptions as HMPLRequestInit)[REQUEST_INIT_GET])) {
       createError(
-        `${REQUEST_INIT_ERROR}: The "get" property has a function value`
+        `${REQUEST_INIT_ERROR}: The "${REQUEST_INIT_GET}" property has a function value`
       );
     }
   }
@@ -1531,9 +1517,6 @@ export const compile: HMPLCompile = (
       stringIndex += text.length;
     }
   }
-  if (requests.length === 0) {
-    createError(`${PARSE_ERROR}: Request not found`);
-  }
   for (let i = 0; i < requests.length; i++) {
     const request = requests[i];
     const { arrId } = request;
@@ -1553,13 +1536,13 @@ export const compile: HMPLCompile = (
         elWrapper.content.childNodes[0].nodeType !== 8)
     ) {
       createError(
-        `${RENDER_ERROR}: Template include only one node with type Element or Comment`
+        `${RENDER_ERROR}: Template includes only one node of the Element type or one response object`
       );
     }
     const prepareNode = (node: ChildNode) => {
       switch (node.nodeType) {
         case Node.ELEMENT_NODE:
-          if ((node as Element).tagName === "pre") return;
+          if ((node as Element).tagName === "PRE") return;
           break;
         case Node.TEXT_NODE:
           if (!/\S/.test(node.textContent!)) {
@@ -1579,10 +1562,8 @@ export const compile: HMPLCompile = (
       const comment = elWrapper.content.firstChild;
       const isComment = comment?.nodeType === 8;
       if (isComment) {
-        isRequest = isComment;
+        isRequest = true;
         currentEl = comment as Comment;
-      } else {
-        createError(`${RENDER_ERROR}: Element is undefined`);
       }
     }
     return currentEl;

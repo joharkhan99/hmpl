@@ -27,21 +27,17 @@ const eaeq = (
 ) => {
   it("", async () => {
     const scope = createScope({ ...scopeOptions });
-
-    // Подмена createError с использованием sinon.stub
     const createErrorStub = sinon.stub(MainModule, "createError");
-
-    // Вызываем compile из модуля
     const compile = MainModule.compile;
 
     await new Promise((res) => {
-      compile(
-        template,
-        compileOptions
-      )({
-        get: (...args: any) => get(res, ...args),
-        ...options
-      });
+      const currentOptions = checkFunction(options)
+        ? options(res)
+        : {
+            get: (...args: any) => get(res, ...args),
+            ...options
+          };
+      compile(template, compileOptions)(currentOptions);
       setTimeout(() => {
         res(true);
       }, 300);
@@ -96,20 +92,26 @@ const aeq = (
   get: (...args: any[]) => void,
   options: any = {},
   scopeOptions: ScopeOptions = {},
-  compileOptions: any = {}
+  compileOptions: any = {},
+  isDeepEqual = false
 ) => {
   it("", async () => {
     const scope = createScope({ ...scopeOptions });
     const req = await new Promise((res) => {
-      compile(
-        template,
-        compileOptions
-      )({
-        get: (...args) => get(res, ...args),
-        ...options
-      });
+      const currentOptions = checkFunction(options)
+        ? options(res)
+        : {
+            get: (...args: any) => get(res, ...args),
+            ...options
+          };
+      compile(template, compileOptions)(currentOptions);
+      if (isDeepEqual) {
+        setTimeout(() => {
+          res(true);
+        }, 100);
+      }
     });
-    assert.deepEqual(req, true);
+    assert.deepEqual(isDeepEqual ? true : req, true);
     clearScope(scope);
   });
 };

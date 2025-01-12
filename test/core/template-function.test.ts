@@ -6,7 +6,8 @@ import {
   BASE_URL,
   RESPONSE_ERROR,
   DEFAULT_ALLOWED_CONTENT_TYPES,
-  REQUEST_INIT_ERROR
+  REQUEST_INIT_ERROR,
+  REQUEST_INIT_GET
 } from "../config/config";
 import { compile, stringify } from "../../src/main";
 import {
@@ -65,6 +66,11 @@ const eq3 = stringify({
       trigger: 100 as any
     } as any
   ]
+});
+
+const eaeq1 = stringify({
+  src: `${BASE_URL}/api/test`,
+  initId: "1"
 });
 
 const aeq0 = stringify({
@@ -139,6 +145,12 @@ const aeq7 = stringify({
   ]
 });
 
+const aeq8 = stringify({
+  src: `${BASE_URL}/api/test`,
+  after: "click:#click",
+  repeat: false
+});
+
 const aeqe0 = stringify({
   src: `${BASE_URL}/api/test`,
   after: "click:#click",
@@ -167,6 +179,11 @@ describe("template function", () => {
     "",
     () => compile(`{{ "src":"/api/test", "memo": true }}`)(),
     `${REQUEST_OBJECT_ERROR}: Memoization works in the enabled repetition mode`
+  );
+  e(
+    "",
+    () => compile(createTestObj2(`{{ "src":"123" }}`))({ get: "" as any }),
+    `${REQUEST_INIT_ERROR}: The "${REQUEST_INIT_GET}" property has a function value`
   );
   e(
     "",
@@ -314,12 +331,72 @@ describe("template function", () => {
   );
   eaeq(
     createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    `${REQUEST_INIT_ERROR}: Expected an object with initialization options`,
+    () => ({}) as any,
+    () => () => 1 as any,
+    {}
+  );
+  eaeq(
+    createTestObj2(
+      `{{ "src":"${BASE_URL}/api/test" }}{{ "src":"${BASE_URL}/api/test" }}`
+    ),
+    `${REQUEST_INIT_ERROR}: Expected an object with initialization options`,
+    () => ({}) as any,
+    () => () => 1 as any,
+    {}
+  );
+  eaeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
     `${REQUEST_INIT_ERROR}: The "headers" property must contain a value object`,
     () => ({}) as any,
     {
       headers: []
     },
     {}
+  );
+  eaeq(
+    createTestObj2(`{${eaeq1}}`),
+    `${REQUEST_OBJECT_ERROR}: ID referenced by request not found`,
+    () => ({}) as any,
+    (res: any) => [
+      {
+        id: "2",
+        value: {}
+      }
+    ],
+    {}
+  );
+  eaeq(
+    createTestObj2(`{${eaeq1}}`),
+    `${REQUEST_OBJECT_ERROR}: ID referenced by request not found`,
+    () => ({}) as any,
+    (res: any) => [
+      {
+        id: "2",
+        value: {}
+      }
+    ],
+    {}
+  );
+  eaeq(
+    createTestObj2(`{${eaeq1}}`),
+    `${REQUEST_OBJECT_ERROR}: ID referenced by request not found`,
+    () => ({}) as any,
+    (res: any) => ({}),
+    {}
+  );
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test", initId:"" }}`),
+    () => ({}),
+    (res: any) => [
+      {
+        id: "2",
+        value: {}
+      }
+    ],
+    undefined,
+    undefined,
+    true
   );
   aeq(
     `{{ "src":"${BASE_URL}/api/test" }}`,
@@ -438,25 +515,6 @@ describe("template function", () => {
       code: 100
     }
   );
-  // aeq(
-  //   createTestObj2(`{${aeq6}}`),
-  //   (res, prop, value) => {
-  //     switch (prop) {
-  //       case "response":
-  //         console.log(value?.outerHTML);
-  //         if (value?.outerHTML === `<div><!--hmpl0--></div>`) {
-  //           res(true);
-  //         } else {
-  //           res(false);
-  //         }
-  //         break;
-  //     }
-  //   },
-  //   {},
-  //   {
-  //     code: 100
-  //   }
-  // );
   waeq(
     `{{ "src":"${BASE_URL}/api/test" }}`,
     `${REQUEST_INIT_ERROR}: The "signal" property overwrote the AbortSignal from "timeout"`,
@@ -784,20 +842,23 @@ describe("template function", () => {
       }
     }
   );
-  aeqe(createTestObj3(`{${aeq1}}`), (res, prop, value) => {
-    switch (prop) {
-      case "response":
-        if (
-          value?.outerHTML ===
-          `<div><button id="click">click</button><div>123</div></div>`
-        ) {
-          res(true);
-        } else {
-          res(false);
-        }
-        break;
+  aeqe(
+    `<pre><button id="click">click</button>{${aeq1}}</pre>`,
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<pre><button id="click">click</button><div>123</div></pre>`
+          ) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
     }
-  });
+  );
   aeqe(
     createTestObj3(`{${aeq1}}`),
     () => ({}),
@@ -884,6 +945,48 @@ describe("template function", () => {
     {},
     {},
     2
+  );
+
+  aeqe(
+    createTestObj3(`{${aeq8}}{${aeq8}}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><div>123</div><div>123</div></div>`
+          ) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {},
+    1
+  );
+
+  aeqe(
+    createTestObj3(`<pre>{${aeq8}}</pre>`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (
+            value?.outerHTML ===
+            `<div><button id="click">click</button><pre><pre>123</pre></pre></div>`
+          ) {
+            res(true);
+          }
+          break;
+      }
+    },
+    {},
+    {},
+    {
+      template: "<pre>123</pre>"
+    },
+    1
   );
 
   let memoItem1: Element | undefined = undefined;

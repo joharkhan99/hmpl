@@ -900,21 +900,17 @@ const renderTemplate = (
             if (!reqEl) reqEl = mainEl!;
           } else {
             if (!reqEl) {
-              if (currentHMPLElement) {
-                reqEl = currentHMPLElement.el;
-              } else {
-                let currentEl: Element | undefined;
-                const { els } = data;
-                for (let i = 0; i < els.length; i++) {
-                  const e = els[i];
-                  if (e.id === nodeId) {
-                    currentHMPLElement = e;
-                    currentEl = e.el;
-                    break;
-                  }
+              let currentEl: Element | undefined;
+              const { els } = data;
+              for (let i = 0; i < els.length; i++) {
+                const e = els[i];
+                if (e.id === nodeId) {
+                  currentHMPLElement = e;
+                  currentEl = e.el;
+                  break;
                 }
-                reqEl = currentEl!;
               }
+              reqEl = currentEl!;
             }
           }
           let dataObj: HMPLNodeObj;
@@ -1111,7 +1107,9 @@ const renderTemplate = (
           const currentIndex = Number(value);
           const currentRequest = requests[currentIndex];
           if (Number.isNaN(currentIndex) || currentRequest === undefined) {
-            createError(`${RENDER_ERROR}: Request object not found`);
+            createError(
+              `${PARSE_ERROR}: Request object with id "${currentIndex}" not found`
+            );
           }
           currentRequest.el = currrentElement as Comment;
           currentRequest.nodeId = id;
@@ -1125,12 +1123,12 @@ const renderTemplate = (
       }
     };
     getRequests(currentEl);
-    const algorithm: HMPLRequestFunction[] = [];
-    for (let i = 0; i < requests.length; i++) {
-      const currentRequest = requests[i];
-      algorithm.push(renderRequest(currentRequest, currentEl as Element)!);
-    }
     if (requests.length > 1) {
+      const algorithm: HMPLRequestFunction[] = [];
+      for (let i = 0; i < requests.length; i++) {
+        const currentRequest = requests[i];
+        algorithm.push(renderRequest(currentRequest, currentEl as Element)!);
+      }
       reqFn = (
         reqEl: Element,
         options: HMPLRequestInit | HMPLIdentificationRequestInit[],
@@ -1182,14 +1180,6 @@ const validateOptions = (
   currentOptions: HMPLRequestInit | HMPLRequestInitFunction
 ) => {
   const isObject = checkObject(currentOptions);
-  if (
-    !isObject &&
-    !checkFunction(currentOptions) &&
-    currentOptions !== undefined
-  )
-    createError(
-      `${REQUEST_INIT_ERROR}: Expected an object with initialization options`
-    );
   if (
     isObject &&
     (currentOptions as HMPLRequestInit).hasOwnProperty(`${REQUEST_INIT_GET}`)
@@ -1262,18 +1252,12 @@ const validateAutoBody = (
  * Validates the HMPLIdentificationRequestInit object.
  * @param currentOptions - The identification options to validate.
  */
-const validIdOptions = (currentOptions: HMPLIdentificationRequestInit) => {
-  if (checkObject(currentOptions)) {
-    if (
-      !currentOptions.hasOwnProperty("id") ||
-      !currentOptions.hasOwnProperty("value")
-    ) {
-      createError(`${REQUEST_OBJECT_ERROR}: Missing "id" or "value" property`);
-    }
-  } else {
-    createError(
-      `${REQUEST_OBJECT_ERROR}: IdentificationRequestInit must be of type object`
-    );
+const validateIdOptions = (currentOptions: HMPLIdentificationRequestInit) => {
+  if (
+    !currentOptions.hasOwnProperty("id") ||
+    !currentOptions.hasOwnProperty("value")
+  ) {
+    createError(`${REQUEST_INIT_ERROR}: Missing "id" or "value" property`);
   }
 };
 
@@ -1288,14 +1272,17 @@ const validateIdentificationOptionsArray = (
   for (let i = 0; i < currentOptions.length; i++) {
     const idOptions = currentOptions[i];
     if (!checkObject(idOptions))
-      createError(`${REQUEST_OBJECT_ERROR}: Options is of type object`);
-    validIdOptions(idOptions);
+      createError(
+        `${REQUEST_INIT_ERROR}: IdentificationRequestInit is of type object`
+      );
+    validateIdOptions(idOptions);
     const { id } = idOptions;
-    if (typeof idOptions.id !== "string" && typeof idOptions.id !== "number")
-      createError(`${REQUEST_OBJECT_ERROR}: ID must be a string or a number`);
+    const isIdString = typeof idOptions.id === "string";
+    if (!isIdString && typeof idOptions.id !== "number")
+      createError(`${REQUEST_INIT_ERROR}: ID must be a string or a number`);
     if (ids.indexOf(id) > -1) {
       createError(
-        `${REQUEST_OBJECT_ERROR}: ID with value "${id}" already exists`
+        `${REQUEST_INIT_ERROR}: ID with value ${isIdString ? `"${id}"` : id} already exists`
       );
     } else {
       ids.push(id);
@@ -1349,7 +1336,7 @@ export const compile: HMPLCompile = (
     requestsIndexes.push(match.index);
   }
   if (requestsIndexes.length === 0)
-    createError(`${PARSE_ERROR}: Request not found`);
+    createError(`${PARSE_ERROR}: Request object not found`);
   const prepareText = (text: string) => {
     text = text.trim();
     text = text.replace(/\r?\n|\r/g, "");
@@ -1429,11 +1416,6 @@ export const compile: HMPLCompile = (
           }
           currentBracketId++;
         } else if (isClose) {
-          if (currentBracketId === -1) {
-            createError(
-              `${PARSE_ERROR}: Handling curly braces in the Request Object`
-            );
-          }
           if (currentBracketId === 1) {
             isFinal = true;
           }
@@ -1460,11 +1442,6 @@ export const compile: HMPLCompile = (
       if (currentBracketId !== -1) {
         const nextId = i + 1;
         const nextText = templateArr[nextId];
-        if (nextText === undefined) {
-          createError(
-            `${PARSE_ERROR}: Handling curly braces in the Request Object`
-          );
-        }
         const nextArr = nextText.split(BRACKET_REGEX).filter(Boolean);
         let newNextText = "";
         for (let j = 0; j < nextArr.length; j++) {
@@ -1472,11 +1449,6 @@ export const compile: HMPLCompile = (
           const isOpen = currentNextText === "{";
           const isClose = currentNextText === "}";
           if (isClose) {
-            if (currentBracketId === -1) {
-              createError(
-                `${PARSE_ERROR}: Handling curly braces in the Request Object`
-              );
-            }
             if (currentBracketId === 1) {
               isFinal = true;
             }
@@ -1507,11 +1479,6 @@ export const compile: HMPLCompile = (
             }
           }
         }
-      }
-      if (currentBracketId !== -1) {
-        createError(
-          `${PARSE_ERROR}: Handling curly braces in the Request Object`
-        );
       }
     } else {
       stringIndex += text.length;
@@ -1630,6 +1597,10 @@ export const compile: HMPLCompile = (
           data,
           el,
           true
+        );
+      } else {
+        createError(
+          `${REQUEST_INIT_ERROR}: The type of the value being passed does not match the supported types for RequestInit`
         );
       }
       return templateObject;

@@ -47,7 +47,17 @@ describe("compile function", () => {
     `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
   );
 
-  e("", () => compile("<div></div>"), `${PARSE_ERROR}: Request not found`);
+  e(
+    "",
+    () => compile("<div></div>"),
+    `${PARSE_ERROR}: Request object not found`
+  );
+
+  e(
+    "",
+    () => compile(`<div>{{src:"123"}}<!--hmpl1--></div>`),
+    `${PARSE_ERROR}: Request object with id "1" not found`
+  );
 
   e(
     "",
@@ -156,6 +166,72 @@ describe("compile function", () => {
     () =>
       compile(
         createTestObj2(`{{ "src":"/api/test", "indicators":{"property":{}}}`)
+      ),
+    `${PARSE_ERROR}: There is no empty space between the curly brackets`
+  );
+
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(`<div>
+  <form onsubmit="function prevent(e){e.preventDefault();};return prevent(event);" id="form">
+    <div class="form-example">
+      <label for="login">Login: </label>
+      <input type="login" name="login" id="login" required />
+    </div>
+    <div class="form-example">
+      <input type="submit" value="Register!" />
+    </div>
+  </form>
+  <p>
+    {{src:"", c:{a:{d:{}}}, indicators:[{ a:{}, b:{} }] }}
+  </p>
+</div>`)
+      ),
+    `${REQUEST_OBJECT_ERROR}: Property "c" is not processed`
+  );
+
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(`<div>
+  <form onsubmit="function prevent(e){e.preventDefault();};return prevent(event);" id="form">
+    <div class="form-example">
+      <label for="login">Login: </label>
+      <input type="login" name="login" id="login" required />
+    </div>
+    <div class="form-example">
+      <input type="submit" value="Register!" />
+    </div>
+  </form>
+  <p>
+    {{src:"", indicators:{a:{d:{}}}, indicators:[{ a:{}, b:{} }] }}
+  </p>
+</div>`)
+      ),
+    `${REQUEST_OBJECT_ERROR}: The "${SOURCE}" property are not found or empty`
+  );
+
+  e(
+    "",
+    () =>
+      compile(
+        createTestObj2(`<div>
+  <form onsubmit="function prevent(e){e.preventDefault();};return prevent(event);" id="form">
+    <div class="form-example">
+      <label for="login">Login: </label>
+      <input type="login" name="login" id="login" required />
+    </div>
+    <div class="form-example">
+      <input type="submit" value="Register!" />
+    </div>
+  </form>
+  <p>
+    { {src:"", c:{a:{d:{}}}, indicators:[{ a:{}, b:{} }] } test }
+  </p>
+</div>`)
       ),
     `${PARSE_ERROR}: There is no empty space between the curly brackets`
   );

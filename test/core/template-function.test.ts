@@ -188,6 +188,57 @@ describe("template function", () => {
   e(
     "",
     () =>
+      compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))(123 as any),
+    `${REQUEST_INIT_ERROR}: The type of the value being passed does not match the supported types for RequestInit`
+  );
+  e(
+    "",
+    () =>
+      compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
+        { id: "1", value: {} },
+        { id: "1", value: {} }
+      ]),
+    `${REQUEST_INIT_ERROR}: ID with value "1" already exists`
+  );
+  e(
+    "",
+    () =>
+      compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
+        { id: 1, value: {} },
+        { id: 1, value: {} }
+      ]),
+    `${REQUEST_INIT_ERROR}: ID with value 1 already exists`
+  );
+  e(
+    "",
+    () =>
+      compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
+        { id: [] as any, value: {} },
+        { id: 1, value: {} }
+      ]),
+    `${REQUEST_INIT_ERROR}: ID must be a string or a number`
+  );
+  e(
+    "",
+    () =>
+      compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
+        "123" as any,
+        { id: 1, value: {} }
+      ]),
+    `${REQUEST_INIT_ERROR}: IdentificationRequestInit is of type object`
+  );
+  e(
+    "",
+    () =>
+      compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
+        {} as any,
+        { id: 1, value: {} }
+      ]),
+    `${REQUEST_INIT_ERROR}: Missing "id" or "value" property`
+  );
+  e(
+    "",
+    () =>
       compile(
         createTestObj2(
           `<button>Click</button>{{ "src":"/api/test", "after": "click:#increment", "memo": true, "repeat": false }}`
@@ -522,6 +573,15 @@ describe("template function", () => {
     {
       timeout: 1000,
       signal: new AbortController().signal
+    },
+    {}
+  );
+  waeq(
+    `{{ "src":"${BASE_URL}/api/test" }}`,
+    `${REQUEST_INIT_ERROR}: The "keepalive" property is not yet supported`,
+    () => ({}) as any,
+    {
+      keepalive: true
     },
     {}
   );
@@ -1171,9 +1231,7 @@ describe("template function", () => {
     {
       autoBody: true
     },
-    {
-      keepalive: true
-    },
+    {},
     {
       route: "/api/getFormComponent",
       method: "post"

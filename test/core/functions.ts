@@ -40,7 +40,7 @@ const eaeq = (
       compile(template, compileOptions)(currentOptions);
       setTimeout(() => {
         res(true);
-      }, 300);
+      }, 200);
     });
     sinon.assert.calledWith(createErrorStub, message);
     createErrorStub.restore();

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.3 (2025-01-16)
+
+- Major rework of error handling in the code
+- Bug fixes
+- Returning a comment when a request fails
+
 ## 2.2.2 (2025-01-08)
 
 - Adding the `allowedContentTypes` property

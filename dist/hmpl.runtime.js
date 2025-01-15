@@ -71,6 +71,7 @@ var AUTO_BODY = `autoBody`;
 var COMMENT = `hmpl`;
 var FORM_DATA = `formData`;
 var ALLOWED_CONTENT_TYPES = "allowedContentTypes";
+var REQUEST_INIT_GET = `get`;
 var RESPONSE_ERROR = `BadResponseError`;
 var REQUEST_INIT_ERROR = `RequestInitError`;
 var RENDER_ERROR = `RenderError`;
@@ -287,7 +288,6 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
       const nodes = [...newContent.content.childNodes];
       if (dataObj.nodes) {
         const parentNode = dataObj.parentNode;
-        if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
         const newNodes = [];
         const nodesLength = dataObj.nodes.length;
         for (let i = 0; i < nodesLength; i++) {
@@ -330,9 +330,8 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
       templateObject.response = void 0;
       get?.("response", void 0);
     } else {
-      if (dataObj.nodes) {
+      if (dataObj?.nodes) {
         const parentNode = dataObj.parentNode;
-        if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
         const nodesLength = dataObj.nodes.length;
         for (let i = 0; i < nodesLength; i++) {
           const node = dataObj.nodes[i];
@@ -430,7 +429,6 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
   const takeNodesFromCache = () => {
     if (dataObj.memo.isPending) {
       const parentNode = dataObj.parentNode;
-      if (!parentNode) createError(`${RENDER_ERROR}: ParentNode is null`);
       const memoNodes = dataObj.memo.nodes;
       const currentNodes = dataObj.nodes;
       const nodesLength = currentNodes.length;
@@ -456,10 +454,17 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
   let requestStatus = 200;
   updateStatusDepenencies("pending");
   let isRejectedError = true;
+  let isError = true;
   fetch(source, initRequest).then((response) => {
     isRejectedError = false;
     requestStatus = response.status;
     updateStatusDepenencies(requestStatus);
+    if (!response.ok) {
+      if (indicators) isError = false;
+      createError(
+        `${RESPONSE_ERROR}: Response with status code ${requestStatus}`
+      );
+    }
     if (Array.isArray(allowedContentTypes) && allowedContentTypes.length !== 0) {
       const contentType = response.headers.get("Content-Type");
       if (getIsNotAllowedContentType(contentType, allowedContentTypes)) {
@@ -468,65 +473,60 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
         );
       }
     }
-    if (!response.ok) {
-      createError(
-        `${RESPONSE_ERROR}: Response with status code ${requestStatus}`
-      );
-    }
     return response.text();
   }).then((data) => {
     if (!isNotHTMLResponse) {
-      if (!getIsNotFullfilledStatus(requestStatus)) {
-        if (isRequestMemo) {
-          const { response } = dataObj.memo;
-          if (response === null) {
-            dataObj.memo.response = data;
-          } else {
-            if (response === data) {
-              takeNodesFromCache();
-              return;
-            } else {
-              dataObj.memo.response = data;
-              delete dataObj.memo.nodes;
-            }
-          }
-        }
-        const templateWrapper = getResponseElements(data);
-        if (isRequest) {
-          templateObject.response = templateWrapper;
-          get?.("response", templateWrapper);
+      if (isRequestMemo) {
+        const { response } = dataObj.memo;
+        if (response === null) {
+          dataObj.memo.response = data;
         } else {
-          const reqResponse = [];
-          const nodes = [
-            ...templateWrapper.content.childNodes
-          ];
-          if (dataObj) {
-            updateNodes(templateWrapper, false, true);
+          if (response === data) {
+            takeNodesFromCache();
+            return;
           } else {
-            const parentNode = el.parentNode;
-            for (let i = 0; i < nodes.length; i++) {
-              const node = nodes[i];
-              const reqNode = parentNode.insertBefore(node, el);
-              if (isRequests) {
-                reqResponse.push(reqNode);
-              }
-            }
-            parentNode.removeChild(el);
-            if (isRequests) {
-              reqObject.response = reqResponse;
-              get?.("response", reqResponse, reqObject);
-            }
-            get?.("response", mainEl);
+            dataObj.memo.response = data;
+            delete dataObj.memo.nodes;
           }
         }
+      }
+      const templateWrapper = getResponseElements(data);
+      if (isRequest) {
+        templateObject.response = templateWrapper;
+        get?.("response", templateWrapper);
       } else {
-        setComment();
+        const reqResponse = [];
+        const nodes = [
+          ...templateWrapper.content.childNodes
+        ];
+        if (dataObj) {
+          updateNodes(templateWrapper, false, true);
+        } else {
+          const parentNode = el.parentNode;
+          for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
+            const reqNode = parentNode.insertBefore(node, el);
+            if (isRequests) {
+              reqResponse.push(reqNode);
+            }
+          }
+          parentNode.removeChild(el);
+          if (isRequests) {
+            reqObject.response = reqResponse;
+            get?.("response", reqResponse, reqObject);
+          }
+          get?.("response", mainEl);
+        }
       }
     }
   }).catch((error) => {
     if (isRejectedError) {
       updateStatusDepenencies("rejected");
       if (!indicators) {
+        setComment();
+      }
+    } else {
+      if (isError) {
         setComment();
       }
     }
@@ -714,35 +714,22 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
             if (!reqEl) reqEl = mainEl;
           } else {
             if (!reqEl) {
-              if (currentHMPLElement) {
-                reqEl = currentHMPLElement.el;
-              } else {
-                let currentEl2;
-                const { els } = data;
-                for (let i = 0; i < els.length; i++) {
-                  const e = els[i];
-                  if (e.id === nodeId) {
-                    currentHMPLElement = e;
-                    currentEl2 = e.el;
-                    break;
-                  }
+              let currentEl2;
+              const { els } = data;
+              for (let i = 0; i < els.length; i++) {
+                const e = els[i];
+                if (e.id === nodeId) {
+                  currentHMPLElement = e;
+                  currentEl2 = e.el;
+                  break;
                 }
-                if (!currentEl2) {
-                  createError(
-                    `${RENDER_ERROR}: The specified DOM element is not valid or cannot be found`
-                  );
-                }
-                reqEl = currentEl2;
               }
+              reqEl = currentEl2;
             }
           }
           let dataObj;
           if (!isRequest) {
             if (isDataObj || indicators) {
-              if (!currentHMPLElement)
-                createError(
-                  `${RENDER_ERROR}: The specified DOM element is not valid or cannot be found`
-                );
               dataObj = currentHMPLElement.objNode;
               if (!dataObj) {
                 dataObj = {
@@ -880,7 +867,7 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
       }
     } else {
       createError(
-        `${REQUEST_OBJECT_ERROR}: The "source" property are not found or empty`
+        `${REQUEST_OBJECT_ERROR}: The "${SOURCE}" property are not found or empty`
       );
     }
   };
@@ -899,7 +886,9 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
           const currentIndex = Number(value);
           const currentRequest = requests[currentIndex];
           if (Number.isNaN(currentIndex) || currentRequest === void 0) {
-            createError(`${RENDER_ERROR}: Request object not found`);
+            createError(
+              `${PARSE_ERROR}: Request object with id "${currentIndex}" not found`
+            );
           }
           currentRequest.el = currrentElement;
           currentRequest.nodeId = id;
@@ -913,12 +902,12 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
       }
     };
     getRequests(currentEl);
-    const algorithm = [];
-    for (let i = 0; i < requests.length; i++) {
-      const currentRequest = requests[i];
-      algorithm.push(renderRequest(currentRequest, currentEl));
-    }
     if (requests.length > 1) {
+      const algorithm = [];
+      for (let i = 0; i < requests.length; i++) {
+        const currentRequest = requests[i];
+        algorithm.push(renderRequest(currentRequest, currentEl));
+      }
       reqFn = (reqEl, options, templateObject, data, mainEl, isArray = false) => {
         if (!reqEl) {
           reqEl = mainEl;
@@ -928,9 +917,6 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
         for (let i = 0; i < els.length; i++) {
           const hmplElement = els[i];
           const currentReqEl = hmplElement.el;
-          if (currentReqEl.parentNode === null) {
-            createError(`${RENDER_ERROR}: ParentNode is null`);
-          }
           const currentReqFn = algorithm[i];
           const currentReq = {
             response: void 0
@@ -952,9 +938,6 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
       };
     } else {
       const currentRequest = requests[0];
-      if (currentRequest.el.parentNode === null) {
-        createError(`${RENDER_ERROR}: ParentNode is null`);
-      }
       reqFn = renderRequest(currentRequest, currentEl);
     }
   }
@@ -962,14 +945,10 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
 };
 var validateOptions = (currentOptions) => {
   const isObject = checkObject(currentOptions);
-  if (!isObject && !checkFunction(currentOptions) && currentOptions !== void 0)
-    createError(
-      `${REQUEST_INIT_ERROR}: Expected an object with initialization options`
-    );
-  if (isObject && currentOptions.get) {
-    if (!checkFunction(currentOptions.get)) {
+  if (isObject && currentOptions.hasOwnProperty(`${REQUEST_INIT_GET}`)) {
+    if (!checkFunction(currentOptions[REQUEST_INIT_GET])) {
       createError(
-        `${REQUEST_INIT_ERROR}: The "get" property has a function value`
+        `${REQUEST_INIT_ERROR}: The "${REQUEST_INIT_GET}" property has a function value`
       );
     }
   }
@@ -1005,15 +984,9 @@ var validateAutoBody = (autoBody, isCompile = false) => {
     }
   }
 };
-var validIdOptions = (currentOptions) => {
-  if (checkObject(currentOptions)) {
-    if (!currentOptions.hasOwnProperty("id") || !currentOptions.hasOwnProperty("value")) {
-      createError(`${REQUEST_OBJECT_ERROR}: Missing "id" or "value" property`);
-    }
-  } else {
-    createError(
-      `${REQUEST_OBJECT_ERROR}: IdentificationRequestInit must be of type object`
-    );
+var validateIdOptions = (currentOptions) => {
+  if (!currentOptions.hasOwnProperty("id") || !currentOptions.hasOwnProperty("value")) {
+    createError(`${REQUEST_INIT_ERROR}: Missing "id" or "value" property`);
   }
 };
 var validateIdentificationOptionsArray = (currentOptions) => {
@@ -1021,14 +994,17 @@ var validateIdentificationOptionsArray = (currentOptions) => {
   for (let i = 0; i < currentOptions.length; i++) {
     const idOptions = currentOptions[i];
     if (!checkObject(idOptions))
-      createError(`${REQUEST_OBJECT_ERROR}: Options is of type object`);
-    validIdOptions(idOptions);
+      createError(
+        `${REQUEST_INIT_ERROR}: IdentificationRequestInit is of type object`
+      );
+    validateIdOptions(idOptions);
     const { id } = idOptions;
-    if (typeof idOptions.id !== "string" && typeof idOptions.id !== "number")
-      createError(`${REQUEST_OBJECT_ERROR}: ID must be a string or a number`);
+    const isIdString = typeof idOptions.id === "string";
+    if (!isIdString && typeof idOptions.id !== "number")
+      createError(`${REQUEST_INIT_ERROR}: ID must be a string or a number`);
     if (ids.indexOf(id) > -1) {
       createError(
-        `${REQUEST_OBJECT_ERROR}: ID with value "${id}" already exists`
+        `${REQUEST_INIT_ERROR}: ID with value ${isIdString ? `"${id}"` : id} already exists`
       );
     } else {
       ids.push(id);
@@ -1066,7 +1042,7 @@ var compile = (template, options = {}) => {
     requestsIndexes.push(match.index);
   }
   if (requestsIndexes.length === 0)
-    createError(`${PARSE_ERROR}: Request not found`);
+    createError(`${PARSE_ERROR}: Request object not found`);
   const prepareText = (text) => {
     text = text.trim();
     text = text.replace(/\r?\n|\r/g, "");
@@ -1146,11 +1122,6 @@ var compile = (template, options = {}) => {
           }
           currentBracketId++;
         } else if (isClose) {
-          if (currentBracketId === -1) {
-            createError(
-              `${PARSE_ERROR}: Handling curly braces in the Request Object`
-            );
-          }
           if (currentBracketId === 1) {
             isFinal = true;
           }
@@ -1177,11 +1148,6 @@ var compile = (template, options = {}) => {
       if (currentBracketId !== -1) {
         const nextId = i + 1;
         const nextText = templateArr[nextId];
-        if (nextText === void 0) {
-          createError(
-            `${PARSE_ERROR}: Handling curly braces in the Request Object`
-          );
-        }
         const nextArr = nextText.split(BRACKET_REGEX).filter(Boolean);
         let newNextText = "";
         for (let j = 0; j < nextArr.length; j++) {
@@ -1189,11 +1155,6 @@ var compile = (template, options = {}) => {
           const isOpen = currentNextText === "{";
           const isClose = currentNextText === "}";
           if (isClose) {
-            if (currentBracketId === -1) {
-              createError(
-                `${PARSE_ERROR}: Handling curly braces in the Request Object`
-              );
-            }
             if (currentBracketId === 1) {
               isFinal = true;
             }
@@ -1225,17 +1186,9 @@ var compile = (template, options = {}) => {
           }
         }
       }
-      if (currentBracketId !== -1) {
-        createError(
-          `${PARSE_ERROR}: Handling curly braces in the Request Object`
-        );
-      }
     } else {
       stringIndex += text.length;
     }
-  }
-  if (requests.length === 0) {
-    createError(`${PARSE_ERROR}: Request not found`);
   }
   for (let i = 0; i < requests.length; i++) {
     const request = requests[i];
@@ -1252,13 +1205,13 @@ var compile = (template, options = {}) => {
     );
     if (elWrapper.content.childNodes.length > 1 || elWrapper.content.children.length !== 1 && elWrapper.content.childNodes[0].nodeType !== 8) {
       createError(
-        `${RENDER_ERROR}: Template include only one node with type Element or Comment`
+        `${RENDER_ERROR}: Template includes only one node of the Element type or one response object`
       );
     }
     const prepareNode = (node) => {
       switch (node.nodeType) {
         case Node.ELEMENT_NODE:
-          if (node.tagName === "pre") return;
+          if (node.tagName === "PRE") return;
           break;
         case Node.TEXT_NODE:
           if (!/\S/.test(node.textContent)) {
@@ -1277,10 +1230,8 @@ var compile = (template, options = {}) => {
       const comment = elWrapper.content.firstChild;
       const isComment = comment?.nodeType === 8;
       if (isComment) {
-        isRequest = isComment;
+        isRequest = true;
         currentEl = comment;
-      } else {
-        createError(`${RENDER_ERROR}: Element is undefined`);
       }
     }
     return currentEl;
@@ -1340,6 +1291,10 @@ var compile = (template, options = {}) => {
           data,
           el,
           true
+        );
+      } else {
+        createError(
+          `${REQUEST_INIT_ERROR}: The type of the value being passed does not match the supported types for RequestInit`
         );
       }
       return templateObject;

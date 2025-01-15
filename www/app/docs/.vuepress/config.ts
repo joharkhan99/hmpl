@@ -49,7 +49,7 @@ export default defineUserConfig({
       },
       {
         text: "Why hmpl?",
-        link: "#why-hmpl"
+        link: "why-hmpl.md"
       }
     ],
 

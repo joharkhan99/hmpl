@@ -161,7 +161,7 @@ const contentType1 = "application/octet-stream";
 
 describe("template function", () => {
   e(
-    "",
+    `only accepts the '${METHOD}' property in the REQUEST OBJECT as GET, POST, PUT, PATCH or DELETE`,
     () =>
       compile(
         createTestObj2(
@@ -171,28 +171,28 @@ describe("template function", () => {
     `${REQUEST_OBJECT_ERROR}: The "${METHOD}" property has only GET, POST, PUT, PATCH or DELETE values`
   );
   e(
-    "",
+    "throws an error if the EVENT TARGET doesn't exist",
     () => compile(`{{ "src":"/api/test", "after": "click:#increment" }}`)(),
     `${RENDER_ERROR}: EventTarget is undefined`
   );
   e(
-    "",
+    "throws an error if Memoization enabled without the Repetition mode enabled",
     () => compile(`{{ "src":"/api/test", "memo": true }}`)(),
     `${REQUEST_OBJECT_ERROR}: Memoization works in the enabled repetition mode`
   );
   e(
-    "",
+    `throws an error if the '${REQUEST_INIT_GET}' property in the RequestInit object is a function`,
     () => compile(createTestObj2(`{{ "src":"123" }}`))({ get: "" as any }),
     `${REQUEST_INIT_ERROR}: The "${REQUEST_INIT_GET}" property has a function value`
   );
   e(
-    "",
+    "throws an error if the value being passed is a number for RequestInit",
     () =>
       compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))(123 as any),
     `${REQUEST_INIT_ERROR}: The type of the value being passed does not match the supported types for RequestInit`
   );
   e(
-    "",
+    "throws an error if passed duplicate IDs for the RequestInit objects",
     () =>
       compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
         { id: "1", value: {} },
@@ -210,7 +210,7 @@ describe("template function", () => {
     `${REQUEST_INIT_ERROR}: ID with value 1 already exists`
   );
   e(
-    "",
+    "throws an error if the ID is not a string or a number",
     () =>
       compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
         { id: [] as any, value: {} },
@@ -219,7 +219,7 @@ describe("template function", () => {
     `${REQUEST_INIT_ERROR}: ID must be a string or a number`
   );
   e(
-    "",
+    "throws an error if the value is not an object for RequestInit object",
     () =>
       compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
         "123" as any,
@@ -228,7 +228,7 @@ describe("template function", () => {
     `${REQUEST_INIT_ERROR}: IdentificationRequestInit is of type object`
   );
   e(
-    "",
+    "throws an error if the ID or value is not present for RequestInit object",
     () =>
       compile(createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`))([
         {} as any,
@@ -237,7 +237,7 @@ describe("template function", () => {
     `${REQUEST_INIT_ERROR}: Missing "id" or "value" property`
   );
   e(
-    "",
+    "throws an error if Memoization enabled without the Repetition mode enabled",
     () =>
       compile(
         createTestObj2(
@@ -247,7 +247,7 @@ describe("template function", () => {
     `${REQUEST_OBJECT_ERROR}: Memoization works in the enabled repetition mode`
   );
   e(
-    "",
+    "throws an error if the selector nodes are not found",
     () =>
       compile(
         createTestObj2(
@@ -277,22 +277,22 @@ describe("template function", () => {
     '<div><button id="increment">Click</button><!--hmpl0--></div>'
   );
   e(
-    "",
+    "throws an error if passed duplicate indicator triggers",
     () => compile(createTestObj2(`{${eq0}}`))(),
     `${REQUEST_OBJECT_ERROR}: Indicator trigger must be unique`
   );
   e(
-    "",
+    "throws an error if provided an invalid indicator trigger",
     () => compile(createTestObj2(`{${eq1}}`))(),
     `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
   );
   e(
-    "",
+    "throws an error if trigger is not provided to the indicators",
     () => compile(createTestObj2(`{${eq2}}`))(),
     `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
   );
   e(
-    "",
+    "throws an error if trigger is a number and the value is not provided to the indicators",
     () => compile(createTestObj2(`{${eq3}}`))(),
     `${REQUEST_OBJECT_ERROR}: Failed to activate or detect the indicator`
   );

@@ -25,30 +25,30 @@ import { e, eq, createTestObj1, createTestObj2 } from "./functions";
 
 describe("compile function", () => {
   e(
-    "",
+    "throws an error if the TEMPLATE is not a stringthrows an error if the TEMPLATE is not a string",
     () => compile(123 as any),
     `${COMPILE_ERROR}: Template was not found or the type of the passed value is not string`
   );
 
   e(
-    "",
+    "throws an error if the TEMPLATE is an empty string",
     () => compile(""),
     `${COMPILE_ERROR}: Template must not be a falsey value`
   );
 
   e(
-    "",
+    "only accepts COMPILES OPTIONS as an object",
     () => compile("some template", "some text" as any),
     `${COMPILE_OPTIONS_ERROR}: Options must be an object`
   );
   e(
-    "",
+    `only accepts the '${MEMO}' property in the COMPILE OPTIONS as a boolean`,
     () => compile("some template", { memo: 123 as unknown as boolean }),
     `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
   );
 
   e(
-    "",
+    "throws an error if the TEMPLATE string doesn't contain a request object",
     () => compile("<div></div>"),
     `${PARSE_ERROR}: Request object not found`
   );
@@ -60,73 +60,73 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    `throws an error if the REQUEST OBJECT doesn't contain the '${SOURCE}' property`,
     () => compile(createTestObj2(`{{ "repeat":true }}`)),
     `${REQUEST_OBJECT_ERROR}: The "${SOURCE}" property are not found or empty`
   );
 
   e(
-    "",
+    "throws an error if the REQUEST OBJECT contains invalid properties",
     () => compile(createTestObj1({ a: "" })),
     `${REQUEST_OBJECT_ERROR}: Property "a" is not processed`
   );
 
   e(
-    "",
+    `only accepts the '${INDICATORS}' property in the REQUEST OBJECT as an array`,
     () => compile(createTestObj1({ [INDICATORS]: "" })),
     `${REQUEST_OBJECT_ERROR}: The value of the property "${INDICATORS}" must be an array`
   );
 
   e(
-    "",
+    `only accepts the '${ID}' property in the REQUEST OBJECT as a string`,
     () => compile(createTestObj1({ [ID]: [] })),
     `${REQUEST_OBJECT_ERROR}: The value of the property "${ID}" must be a string`
   );
 
   e(
-    "",
+    `only accepts the '${MEMO}' property in the REQUEST OBJECT as a boolean`,
     () => compile(createTestObj1({ [MEMO]: [] })),
     `${REQUEST_OBJECT_ERROR}: The value of the property "${MEMO}" must be a boolean value`
   );
 
   e(
-    "",
+    `only accepts the '${MODE}' property in the REQUEST OBJECT as a boolean`,
     () => compile(createTestObj1({ [MODE]: [] })),
     `${REQUEST_OBJECT_ERROR}: The value of the property "${MODE}" must be a boolean value`
   );
 
   e(
-    "",
+    `only accepts the '${AUTO_BODY}' property in the REQUEST OBJECT as a boolean or an object`,
     () => compile(createTestObj1({ [AUTO_BODY]: [] })),
     `${REQUEST_OBJECT_ERROR}: Expected a boolean or object, but got neither`
   );
 
   e(
-    "",
+    `throws an error if the '${AUTO_BODY}' property in the REQUEST OBJECT contains invalid properties`,
     () => compile(createTestObj1({ [AUTO_BODY]: { a: "" } })),
     `${REQUEST_OBJECT_ERROR}: Unexpected property "a"`
   );
 
   e(
-    "",
+    `only accepts the '${AUTO_BODY}.${FORM_DATA}' property in the REQUEST OBJECT as a boolean`,
     () => compile(createTestObj1({ [AUTO_BODY]: { [FORM_DATA]: "" } })),
     `${REQUEST_OBJECT_ERROR}: The "${FORM_DATA}" property should be a boolean`
   );
 
   e(
-    "",
+    `only accepts the '${ALLOWED_CONTENT_TYPES}' property in the REQUEST OBJECT as a "*" or an array of strings`,
     () => compile(createTestObj1({ [ALLOWED_CONTENT_TYPES]: {} })),
     `${REQUEST_OBJECT_ERROR}: Expected "*" or string array, but got neither`
   );
 
   e(
-    "",
+    `throws an error if the '${ALLOWED_CONTENT_TYPES}' property in the REQUEST OBJECT contains non-string element at index 0 of the array`,
     () => compile(createTestObj1({ [ALLOWED_CONTENT_TYPES]: [1] })),
     `${REQUEST_OBJECT_ERROR}: In the array, the element with index 0 is not a string`
   );
 
   e(
-    "",
+    "only accepts the 'allowedContentTypes' property in the COMPILE OPTIONS as a '*' or an array of strings",
     () =>
       compile(createTestObj2(`{{ "src":"/api/test" }}`), {
         allowedContentTypes: {} as any
@@ -135,7 +135,7 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    "throws an error if the 'allowedContentTypes' property in the COMPILE OPTIONS contains non-string element at index 0 of the array",
     () =>
       compile(createTestObj2(`{{ "src":"/api/test" }}`), {
         allowedContentTypes: [1] as any
@@ -144,7 +144,7 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    `throws an error if the '${SOURCE}' property in the REQUEST OBJECT is an array instead of a string`,
     () => compile(createTestObj1({ [SOURCE]: [] })),
     `${REQUEST_OBJECT_ERROR}: The value of the property "${SOURCE}" must be a string`
   );
@@ -156,7 +156,7 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    "throws an error if the REQUEST OBJECT doesn't has proper spacing between the curly brackets",
     () => compile(createTestObj2(`{{ "src":"/api/test" }e}}`)),
     `${PARSE_ERROR}: There is no empty space between the curly brackets`
   );
@@ -171,7 +171,7 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    "throws an error if the REQUEST OBJECT contains invalid property",
     () =>
       compile(
         createTestObj2(`<div>
@@ -193,7 +193,7 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    `throws an error if the REQUEST OBJECT doesn't have the ${SOURCE} property is an empty string`,
     () =>
       compile(
         createTestObj2(`<div>
@@ -215,7 +215,7 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    "throws an error if the REQUEST OBJECT doesn't have proper spacing between the curly brackets",
     () =>
       compile(
         createTestObj2(`<div>
@@ -237,17 +237,17 @@ describe("compile function", () => {
   );
 
   e(
-    "",
+    "throw an error if the TEMPLATE includes more than one top-level node",
     () => compile(`${createTestObj2(`{{ "src":"/api/test" }}`)}<div></div>`),
     `${RENDER_ERROR}: Template includes only one node of the Element type or one response object`
   );
   e(
-    "",
+    `throws an error if the '${AUTO_BODY}' property in the REQUEST OBJECT is true without the '${AFTER}' property`,
     () => compile(createTestObj2(`{{ "src":"/api/test", "autoBody": true }}`)),
     `${REQUEST_OBJECT_ERROR}: The "${AUTO_BODY}" property does not work without the "${AFTER}" property`
   );
   e(
-    "",
+    `throws an error if the event target is not provided for '${AFTER}' property in the REQUEST OBJECT`,
     () =>
       compile(
         createTestObj2(
@@ -257,7 +257,7 @@ describe("compile function", () => {
     `${REQUEST_OBJECT_ERROR}: The "${AFTER}" property doesn't work without EventTargets`
   );
   e(
-    "",
+    `throws an error if the '${MODE}' property in the REQUEST OBJECT is true without the '${AFTER}' property`,
     () =>
       compile(
         createTestObj2(
@@ -267,7 +267,7 @@ describe("compile function", () => {
     `${REQUEST_OBJECT_ERROR}: The "${MODE}" property doesn't work without "${AFTER}" property`
   );
   eq(
-    "",
+    `returns a template function when provided a TEMPLATE with just ${SOURCE} property`,
     checkFunction(compile(createTestObj2(`{{ "src":"/api/test" }}`))),
     true
   );

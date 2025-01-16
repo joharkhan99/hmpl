@@ -3,7 +3,7 @@ import sinon from "sinon";
 import { createWarning } from "../../src/main";
 
 describe("createWarning", () => {
-  it("", () => {
+  it("should log a warning to the console", () => {
     const consoleWarnSpy = sinon.spy(console, "warn");
     const warningText = "This is a test warning";
     createWarning(warningText);

@@ -7,7 +7,7 @@ import { stringify } from "../../src/main";
 
 describe("stringify function", () => {
   eq(
-    "",
+    "should return a JSON string",
     stringify({ src: "/api/test", method: "GET" }),
     "{src:'/api/test',method:'GET'}"
   );

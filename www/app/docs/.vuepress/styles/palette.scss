@@ -56,3 +56,44 @@ a::before {
 .edit-link svg {
   display: none !important;
 }
+
+.vp-brand {
+  display: flex;
+}
+
+.vp-nav-logo {
+  max-height: 30px !important;
+}
+
+.star {
+  width: 20px;
+  height: 20px;
+}
+
+.github-stars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  padding: 6px 2px;
+  gap: 4px;
+  margin: 0 !important;
+}
+
+.number-of-stars {
+  color: #3c3c43c7;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.github-stars:hover {
+  .number-of-stars {
+    color: var(--vp-c-accent) !important;
+  }
+  .star path {
+    fill: var(--vp-c-accent) !important;
+  }
+}

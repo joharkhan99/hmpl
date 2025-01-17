@@ -22,9 +22,9 @@ export default defineUserConfig({
       center: ["Links"],
       end: [
         "Language",
-        "GitHubStars",
         "SocialLink",
         "Repo",
+        "GitHubStars",
         "Outlook",
         "Search"
       ]

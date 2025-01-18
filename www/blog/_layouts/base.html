@@ -1,21 +1,55 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<html lang="{{ page.lang | default: site.lang | default: " en" }}">
 
-  {%- include head.html -%}
-  <link rel="stylesheet" href="/css/style.css" />
-  <body>
+{%- include head.html -%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+<link rel="stylesheet" href="/css/style.css" />
 
-    {%- include header.html -%}
+<body>
 
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        {% include breadcrumbs.html %}
-        {{ content }}
-      </div>
-    </main>
+  {%- include header.html -%}
 
-    {%- include footer.html -%}
+  <main class="page-content" aria-label="Content">
+    <div class="wrapper">
+      {% include breadcrumbs.html %}
+      {{ content }}
+    </div>
+  </main>
 
-  </body>
+  {%- include footer.html -%}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const codeBlocks = document.querySelectorAll('pre code');
+
+      codeBlocks.forEach((codeBlock) => {
+        const container = codeBlock.parentNode;
+
+        const button = document.createElement('button');
+        button.classList.add('copy-btn');
+
+        // const lang = container.closest('[class^="language-"]').classList[0].split('-')[1];
+        // button.textContent = lang;
+
+        container.style.position = 'relative';
+        container.appendChild(button);
+
+        new ClipboardJS(button, {
+          target: function () {
+            return codeBlock;
+          }
+        });
+
+        button.addEventListener('click', function () {
+          button.classList.add('copied');
+          setTimeout(() => {
+            button.classList.remove('copied')
+          }, 1500);
+          window.getSelection().removeAllRanges();
+        });
+      });
+    });
+  </script>
+
+</body>
 
 </html>

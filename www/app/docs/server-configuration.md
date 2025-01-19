@@ -12,7 +12,7 @@ const path = require("path");
 const customController = (req, res) => {
   res.type("text/html");
   // or res.set("Content-Type", "text/html");
-  res.sendFile(path.join(__dirname, "../ccustom.html"));
+  res.sendFile(path.join(__dirname, "../custom.html"));
 };
 
 expressRouter.use("/getCustomHTML", customController);

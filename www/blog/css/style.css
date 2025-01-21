@@ -82,3 +82,20 @@ pre {
 pre:hover .copy-btn {
   opacity: 1;
 }
+
+.post-navigation .button {
+  width: fit-content;
+}
+
+.post-navigation .button:hover {
+  text-decoration: none;
+}
+
+.post-navigation .button span:first-child {
+  font-size: .8rem;
+  color: #a2a2a4;
+}
+
+.post-navigation__next {
+  text-align: right;
+}

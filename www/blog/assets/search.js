@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           resultsList.style.display = "block";
           const results = data.filter((post) => {
-            const title = post.title ? post.title.toLowerCase() : '';
+            const title = post.title ? post.title.toLowerCase() : "";
             return title.includes(query);
           });
 

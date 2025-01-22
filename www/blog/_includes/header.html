@@ -4,7 +4,7 @@
     {%- assign page_paths = site.header_pages | default: default_paths -%}
     {%- assign titles_size = site.pages | map: 'title' | join: '' | size -%}
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
-    
+
       <nav class="site-nav">
         <input type="checkbox" id="nav-trigger" class="nav-trigger" />
         <label for="nav-trigger">
@@ -14,10 +14,12 @@
             </svg>
           </span>
         </label>
-
         <div class="trigger">
           <a class="page-link" href="https://hmpl-lang.dev">hmpl-lang.dev</a>
         </div>
+        <label for="search-box"><input type="text" id="search-box" placeholder="Search...">
+        <ul id="results"></ul>
+        </label>
       </nav>
   </div>
 </header>

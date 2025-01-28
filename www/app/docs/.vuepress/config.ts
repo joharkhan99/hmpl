@@ -186,7 +186,15 @@ export default defineUserConfig({
       }
     ],
     plugins: {
-      search: true,
+      // search: true,
+
+      // Algolia
+      docsearch: {
+        apiKey: "1e7fa1bed6efc9725261bdc9991fab11",
+        appId: "WBEF1LVBSZ",
+        indexName: "hmpl-lang"
+      },
+
       sitemap: {
         hostname: "hmpl-lang.dev"
       } as any,

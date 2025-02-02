@@ -6,5 +6,5 @@ export default defineClientConfig({
   enhance: ({ app }) => {
     app.component("SocialLink", SocialLink);
     app.component("GitHubStars", GitHubStars);
-  },
+  }
 });

@@ -326,7 +326,9 @@
         <div class="text_block_1_items-grid">
           <div class="text_block_1_item">
             <div class="item-header">
-              <h3 class="item-title">Flexibility</h3>
+              <h3 class="item-title">
+                <i class="fas item-svg fa-sync-alt"></i> Flexibility
+              </h3>
             </div>
             <p class="item-description">
               Get all the benefits of SSR without robots, regardless of the
@@ -335,7 +337,9 @@
           </div>
           <div class="text_block_1_item">
             <div class="item-header">
-              <h3 class="item-title">Easy to use</h3>
+              <h3 class="item-title">
+                <i class="fas item-svg fa-link"></i> Easy to use
+              </h3>
             </div>
             <p class="item-description">
               Get ready HTML from the server by describing only a couple of
@@ -344,16 +348,24 @@
           </div>
           <div class="text_block_1_item">
             <div class="item-header">
-              <h3 class="item-title">Full control</h3>
+              <h3 class="item-title">
+                <i class="fas item-svg fa-check-circle"></i> Fully tested
+              </h3>
             </div>
             <p class="item-description">
-              Change component states depending on request status changes, DOM
-              element updates, and more
+              The module test coverage is
+              <a
+                class="item-link"
+                href="https://app.codecov.io/github/hmpl-language/hmpl"
+                >100%</a
+              >, which minimizes the risk of unexpected errors
             </p>
           </div>
           <div class="text_block_1_item">
             <div class="item-header">
-              <h3 class="item-title">Small size</h3>
+              <h3 class="item-title">
+                <i class="fas item-svg fa-file"></i> Small size
+              </h3>
             </div>
             <p class="item-description">
               Get extensive server functionality <br class="item-br" />
@@ -967,10 +979,6 @@ a {
   line-height: 125%;
 }
 
-.vp-navbar {
-  position: absolute !important;
-}
-
 @media (max-width: 600px) {
   .star_us {
     bottom: 2rem;
@@ -987,6 +995,10 @@ a {
 
 .star_us_text_1 {
   font-size: 20px;
+}
+
+.item-svg {
+  margin-right: 5px;
 }
 
 .star_us_text_2 {

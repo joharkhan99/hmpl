@@ -236,12 +236,12 @@
           fetch and processed into ready-made HTML.
         </p>
         <div class="buttons">
-          <a href="/getting-started.html" class="hidden-button hover_effect"
+          <a href="/getting-started.html" class="fade-in-effect hover_effect"
             >Get Started</a
           >
           <a
             href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg"
-            class="hidden-button hover_effect"
+            class="fade-in-effect hover_effect"
             rel="nooferer noopener"
             target="_blank"
             >Demo Sandbox</a
@@ -455,7 +455,7 @@
           <a
             href="https://blog.hmpl-lang.dev/blog/2024/08/10/differences-between-hmpl-and-htmx.html"
             rel="nooferer noopener"
-            class="article_preview_link hidden-button"
+            class="article_preview_link fade-in-effect"
             target="_blank"
             ><img
               src="/images/preview_1.png"
@@ -478,7 +478,7 @@
           </p>
           <a
             href="https://blog.hmpl-lang.dev/blog/2024/08/10/differences-between-hmpl-and-htmx.html"
-            class="main-button article-button hover_effect hidden-button"
+            class="main-button article-button hover_effect fade-in-effect"
             rel="nooferer noopener"
             target="_blank"
             >Read more</a
@@ -488,7 +488,7 @@
           <a
             href="https://blog.hmpl-lang.dev/blog/2024/12/18/creating-a-gallery-app-in-javascript-with-hmpl.html"
             rel="nooferer noopener"
-            class="article_preview_link hidden-button"
+            class="article_preview_link fade-in-effect"
             target="_blank"
             ><img
               src="/images/preview_2.png"
@@ -512,7 +512,7 @@
           </p>
           <a
             href="https://blog.hmpl-lang.dev/blog/2024/12/18/creating-a-gallery-app-in-javascript-with-hmpl.html"
-            class="main-button article-button hover_effect hidden-button"
+            class="main-button article-button hover_effect fade-in-effect"
             rel="nooferer noopener"
             target="_blank"
             >Read more</a
@@ -526,7 +526,7 @@
         <div class="contributors-grid"></div>
         <a
           href="https://github.com/hmpl-language/hmpl/issues"
-          class="contributor-button hover_effect hidden-button"
+          class="contributor-button hover_effect fade-in-effect"
           >Become a contributor</a
         >
       </div>
@@ -547,11 +547,11 @@
           <div class="sample_buttons">
             <a
               href="/getting-started.html"
-              class="sample_button sample_button_primary hover_effect hidden-button"
+              class="sample_button sample_button_primary hover_effect fade-in-effect"
               >Get Started</a
             >
             <div
-              class="sample_button sample_button_secondary hover_effect hidden-button"
+              class="sample_button sample_button_secondary hover_effect fade-in-effect"
               @click="copyText('npm i hmpl-js')"
             >
               npm i hmpl-js
@@ -737,6 +737,33 @@
         </div>
       </div>
     </div>
+    <a
+      href="https://github.com/hmpl-language/hmpl"
+      target="_blank"
+      class="star_us"
+    >
+      <div class="star_us_content">
+        <div class="star_us_block star_us_block_1">
+          <span class="star_us_text star_us_text_1">Star Us</span>
+          <span class="star_us_star">★</span>
+        </div>
+        <div class="star_us_block star_us_block_2 hidden">
+          <span class="star_us_text star_us_text_2">On GitHub</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="star_us_github"
+            viewBox="0 0 1024 1024"
+            aria-label="github icon"
+            fill="#09090b"
+            name="github"
+          >
+            <path
+              d="M511.957 21.333C241.024 21.333 21.333 240.981 21.333 512c0 216.832 140.544 400.725 335.574 465.664 24.49 4.395 32.256-10.07 32.256-23.083 0-11.69.256-44.245 0-85.205-136.448 29.61-164.736-64.64-164.736-64.64-22.315-56.704-54.4-71.765-54.4-71.765-44.587-30.464 3.285-29.824 3.285-29.824 49.195 3.413 75.179 50.517 75.179 50.517 43.776 75.008 114.816 53.333 142.762 40.79 4.523-31.66 17.152-53.377 31.19-65.537-108.971-12.458-223.488-54.485-223.488-242.602 0-53.547 19.114-97.323 50.517-131.67-5.035-12.33-21.93-62.293 4.779-129.834 0 0 41.258-13.184 134.912 50.346a469.803 469.803 0 0 1 122.88-16.554c41.642.213 83.626 5.632 122.88 16.554 93.653-63.488 134.784-50.346 134.784-50.346 26.752 67.541 9.898 117.504 4.864 129.834 31.402 34.347 50.474 78.123 50.474 131.67 0 188.586-114.73 230.016-224.042 242.09 17.578 15.232 33.578 44.672 33.578 90.454v135.85c0 13.142 7.936 27.606 32.854 22.87C862.25 912.597 1002.667 728.747 1002.667 512c0-271.019-219.648-490.667-490.71-490.667z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </a>
   </footer>
 </template>
 
@@ -793,6 +820,23 @@ export default {
     }
   },
   mounted() {
+    let isBlock1Visible = true;
+
+    setInterval(() => {
+      const block1 = document.querySelector(".star_us_block_1");
+      const block2 = document.querySelector(".star_us_block_2");
+
+      if (isBlock1Visible) {
+        block1.classList.add("hidden");
+        block2.classList.remove("hidden");
+      } else {
+        block1.classList.remove("hidden");
+        block2.classList.add("hidden");
+      }
+
+      isBlock1Visible = !isBlock1Visible;
+    }, 10000);
+
     const chart = document.getElementById("comparisonChart");
     const progressBars = chart.querySelectorAll(".progress-bar");
 
@@ -862,7 +906,7 @@ export default {
         console.error("Error fetching data:", error);
       });
 
-    const buttons = document.querySelectorAll(".hidden-button");
+    const buttons = document.querySelectorAll(".fade-in-effect");
 
     const observer1 = new IntersectionObserver(
       (entries, observer) => {
@@ -885,7 +929,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 * {
   margin: 0;
   padding: 0;
@@ -900,6 +944,89 @@ a {
   text-decoration: none;
   color: #fff;
 }
+
+.star_us {
+  position: fixed;
+  left: 10px;
+  bottom: 4rem;
+  inset-inline-start: 1rem;
+  width: 140px;
+  height: 48px;
+  border-radius: 30px;
+  background-color: #fff;
+  border: #e4e4e7 1px solid;
+  box-shadow:
+    0 0 #0000,
+    0 0 #0000,
+    0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  line-height: 125%;
+}
+
+.vp-navbar {
+  position: absolute !important;
+}
+
+@media (max-width: 600px) {
+  .star_us {
+    bottom: 2rem;
+  }
+}
+
+.star_us:hover {
+  background-color: #fcfcfc;
+}
+
+.star_us_star {
+  font-size: 20px;
+}
+
+.star_us_text_1 {
+  font-size: 20px;
+}
+
+.star_us_text_2 {
+  font-size: 18px;
+}
+
+.star_us_content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.star_us_block {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  gap: 6px;
+  color: #09090b;
+  font-weight: 500;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+}
+
+.star_us_github {
+  width: 24px;
+}
+
+.star_us_block {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.star_us_block.hidden {
+  opacity: 0;
+}
+
 .container {
   width: 80%;
   margin: auto;
@@ -934,7 +1061,7 @@ a {
 
 .article_preview {
   border-radius: 20px;
-  height: 100%;
+  aspect-ratio: 472 / 207;
   width: 100%;
   transition: transform 0.3s ease-in-out;
   -webkit-border-radius: 20px;
@@ -961,14 +1088,14 @@ a {
   color: transparent;
 }
 
-.hidden-button {
+.fade-in-effect {
   opacity: 0;
   transform: scale(0.8);
   transition: all 0.5s ease !important;
   transform: translateY(0);
 }
 
-.hidden-button.visible {
+.fade-in-effect.visible {
   opacity: 1;
   transform: scale(1);
   transition: all 0.5s ease !important;
@@ -1249,7 +1376,7 @@ section {
 
 .article_preview_link {
   margin-bottom: 30px;
-  height: 207px;
+  height: fit-content;
 }
 
 .article_preview:hover {
@@ -1520,111 +1647,6 @@ section {
   text-decoration: none;
 }
 
-/* Contributors */
-
-.contributors {
-  margin-top: 100px;
-  padding: 40px 20px;
-  text-align: center;
-}
-@media (max-width: 600px) {
-  .contributors {
-    padding: 0;
-    width: 90vw;
-    margin: 60px auto 0;
-  }
-}
-.contributors-title {
-  color: #0066ff;
-  font-size: 2.5rem;
-  margin-bottom: 80px;
-}
-
-@media (max-width: 600px) {
-  .contributors-title {
-    margin-bottom: 60px;
-  }
-}
-
-.contributors-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 30px;
-  margin-bottom: 40px;
-  max-width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-@media (max-width: 600px) {
-  .contributors-grid {
-    max-width: unset;
-    gap: 20px;
-  }
-}
-
-.contributor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.contributor-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background-color: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.contributor-avatar img {
-  width: 24px;
-  height: 24px;
-  opacity: 0.3;
-}
-
-.contributor-avatar {
-  background-color: #0066ff;
-  box-shadow: 0 0 0 8px rgba(0, 102, 255, 0.1);
-  cursor: pointer;
-  margin-bottom: 20px;
-}
-
-.contributor-avatar img {
-  opacity: 1;
-  filter: brightness(0) invert(1);
-}
-
-.contributon-block {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.contributon-block:hover .contributor-name {
-  color: #0066ff;
-}
-
-.contributor-name {
-  font-size: 0.875rem;
-  color: #666;
-  text-align: center;
-}
-
-.contributor-button {
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: 24px;
-  background: linear-gradient(90deg, #0183ff 0%, #7e71ba 100%);
-  color: white;
-  text-decoration: none;
-}
-
 /* Sample Text */
 
 .sample_text {
@@ -1806,7 +1828,7 @@ footer {
 
 .footer_sections {
   display: flex;
-  flex: 2 1 600px;
+  flex: 2 1 300px;
   justify-content: space-around;
 }
 
@@ -1874,7 +1896,7 @@ footer {
   }
 }
 
-.hidden-button.animated {
+.fade-in-effect.animated {
   animation: slideIn 0.6s ease-out forwards;
 }
 
@@ -1919,6 +1941,121 @@ footer {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+@media (max-width: 600px) {
+  .items-grid {
+    grid-template-columns: 1fr;
+  }
+  .banner_info_h1 {
+    font-size: 50px;
+  }
+}
+</style>
+
+<style>
+.contributors {
+  margin-top: 100px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .contributors {
+    padding: 0;
+    width: 90vw;
+    margin: 60px auto 0;
+  }
+}
+
+.contributors-title {
+  color: #0066ff;
+  font-size: 2.5rem;
+  margin-bottom: 80px;
+}
+
+@media (max-width: 600px) {
+  .contributors-title {
+    margin-bottom: 60px;
+  }
+}
+
+.contributors-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 30px;
+  margin-bottom: 40px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .contributors-grid {
+    max-width: unset;
+    gap: 20px;
+  }
+}
+
+.contributor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.contributor-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contributor-avatar img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.3;
+}
+
+.contributor-avatar {
+  background-color: #0066ff;
+  box-shadow: 0 0 0 8px rgba(0, 102, 255, 0.1);
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.contributor-avatar img {
+  opacity: 1;
+  filter: brightness(0) invert(1);
+}
+
+.contributon-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.contributon-block:hover .contributor-name {
+  color: #0066ff;
+}
+
+.contributor-name {
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+}
+
+.contributor-button {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 24px;
+  background: linear-gradient(90deg, #0183ff 0%, #7e71ba 100%);
+  color: white;
+  text-decoration: none;
+}
 
 @media (max-width: 1024px) {
   .contributors-grid {
@@ -1931,17 +2068,9 @@ footer {
     grid-template-columns: repeat(4, 1fr);
   }
 }
-
 @media (max-width: 600px) {
   .contributors-grid {
     grid-template-columns: repeat(3, 1fr);
-  }
-
-  .items-grid {
-    grid-template-columns: 1fr;
-  }
-  .banner_info_h1 {
-    font-size: 50px;
   }
 }
 </style>

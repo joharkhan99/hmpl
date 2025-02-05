@@ -32,6 +32,12 @@ a::before {
   display: none;
 }
 
+.vp-back-to-top-button {
+  @media (max-width: 600px) {
+    bottom: 2rem;
+  }
+}
+
 .vp-project-home div,
 .vp-project-home h1,
 .vp-project-home p,
@@ -70,6 +76,12 @@ a::before {
   max-height: 30px !important;
 }
 
+.vp-nav-logo {
+  @media (max-width: 600px) {
+    max-height: 24px !important;
+  }
+}
+
 .star {
   width: 20px;
   height: 20px;
@@ -82,7 +94,11 @@ a::before {
   height: 32px;
   padding: 6px 2px;
   gap: 4px;
-  margin: 0 !important;
+  margin: 0 10px 0 4px !important;
+
+  @media (max-width: 768px) {
+    margin: 0 0 0 2px !important;
+  }
 }
 
 .number-of-stars {

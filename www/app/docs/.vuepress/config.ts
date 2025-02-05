@@ -50,10 +50,6 @@ export default defineUserConfig({
         {
           text: "Blog",
           link: "https://blog.hmpl-lang.dev"
-        },
-        {
-          text: "Why hmpl?",
-          link: "why-hmpl.md"
         }
       ],
 

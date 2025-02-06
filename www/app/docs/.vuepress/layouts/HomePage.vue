@@ -327,7 +327,7 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-sync-alt"></i> Flexibility
+                <i class="fas item-svg fa-sync-alt" aria-hidden="true"></i> Flexibility
               </h3>
             </div>
             <p class="item-description">
@@ -338,7 +338,7 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-link"></i> Easy to use
+                <i class="fas item-svg fa-link" aria-hidden="true"></i> Easy to use
               </h3>
             </div>
             <p class="item-description">
@@ -349,7 +349,7 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-check-circle"></i> Fully tested
+                <i class="fas item-svg fa-check-circle" aria-hidden="true"></i> Fully tested
               </h3>
             </div>
             <p class="item-description">
@@ -364,7 +364,7 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-file"></i> Small size
+                <i class="fas item-svg fa-file" aria-hidden="true"></i> Small size
               </h3>
             </div>
             <p class="item-description">
@@ -832,14 +832,6 @@ export default {
     }
   },
   mounted() {
-
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/@fortawesome/fontawesome-free@5.15.4/css/all.min.css';
-    link.integrity = 'sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm';
-    link.crossOrigin = 'anonymous';
-    document.head.appendChild(link);
-    
     let isBlock1Visible = true;
 
     setInterval(() => {

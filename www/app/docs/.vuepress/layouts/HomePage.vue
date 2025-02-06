@@ -832,6 +832,13 @@ export default {
     }
   },
   mounted() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/@fortawesome/fontawesome-free@5.15.4/css/all.min.css';
+    link.integrity = 'sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+
     let isBlock1Visible = true;
 
     setInterval(() => {

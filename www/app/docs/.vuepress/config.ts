@@ -225,16 +225,6 @@ export default defineUserConfig({
   },
   head: [
     ["link", { rel: "icon", href: "/images/favicon.ico" }],
-    [
-      "link",
-      {
-        rel: "stylesheet",
-        href: "https://unpkg.com/@fortawesome/fontawesome-free@5.15.4/css/all.min.css",
-        integrity:
-          "sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm",
-        crossorigin: "anonymous"
-      }
-    ]
   ],
   bundler: viteBundler()
 });

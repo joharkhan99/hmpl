@@ -53,8 +53,6 @@ export default defineUserConfig({
         }
       ],
 
-      iconAssets: [""],
-
       sidebar: [
         {
           text: "Introduction",

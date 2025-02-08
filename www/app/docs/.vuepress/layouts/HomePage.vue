@@ -327,7 +327,8 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-sync-alt" aria-hidden="true"></i> Flexibility
+                <i class="fas item-svg fa-sync-alt" aria-hidden="true"></i>
+                Flexibility
               </h3>
             </div>
             <p class="item-description">
@@ -338,7 +339,8 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-link" aria-hidden="true"></i> Easy to use
+                <i class="fas item-svg fa-link" aria-hidden="true"></i> Easy to
+                use
               </h3>
             </div>
             <p class="item-description">
@@ -349,7 +351,8 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-check-circle" aria-hidden="true"></i> Fully tested
+                <i class="fas item-svg fa-check-circle" aria-hidden="true"></i>
+                Fully tested
               </h3>
             </div>
             <p class="item-description">
@@ -364,7 +367,8 @@
           <div class="text_block_1_item">
             <div class="item-header">
               <h3 class="item-title">
-                <i class="fas item-svg fa-file" aria-hidden="true"></i> Small size
+                <i class="fas item-svg fa-file" aria-hidden="true"></i> Small
+                size
               </h3>
             </div>
             <p class="item-description">
@@ -832,11 +836,13 @@ export default {
     }
   },
   mounted() {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/@fortawesome/fontawesome-free@5.15.4/css/all.min.css';
-    link.integrity = 'sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm';
-    link.crossOrigin = 'anonymous';
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://unpkg.com/@fortawesome/fontawesome-free@5.15.4/css/all.min.css";
+    link.integrity =
+      "sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm";
+    link.crossOrigin = "anonymous";
     document.head.appendChild(link);
 
     let isBlock1Visible = true;
@@ -909,6 +915,18 @@ export default {
       </a>`;
           contributorsGrid.appendChild(contributorDiv);
         });
+
+        const oldContributors = document.createElement("div");
+        oldContributors.className = "contributor";
+        oldContributors.innerHTML = `
+        <a class="contributon-block" href="https://github.com/hmpl-language/hmpl/discussions/2" target="_blank">
+      <img
+        class="contributor-avatar"
+        src="./images/old-contributors.png"
+        alt="Your avatar"
+      />
+      <span class="contributor-name">Old contributors</span></a>`;
+        contributorsGrid.appendChild(oldContributors);
 
         const additionalContributor = document.createElement("div");
         additionalContributor.className = "contributor";

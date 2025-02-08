@@ -1294,7 +1294,7 @@ section {
     background: linear-gradient(
       0deg,
       rgba(1, 131, 255, 0.5214460784313726) -20%,
-      rgba(255, 255, 255, 1) 60%
+      rgba(255, 255, 255, 1) 31%
     );
   }
 }

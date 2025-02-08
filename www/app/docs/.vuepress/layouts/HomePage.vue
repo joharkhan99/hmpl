@@ -1096,6 +1096,15 @@ a {
   margin-top: 20px;
 }
 
+@media (max-width: 600px) {
+  .article-button {
+    padding: 12px 24px;
+    min-width: 202px;
+    min-height: unset;
+    margin: 20px auto 0;
+  }
+}
+
 .article_preview {
   border-radius: 20px;
   aspect-ratio: 472 / 207;
@@ -1313,9 +1322,6 @@ section {
   .metrics-wrapper {
     display: none;
   }
-  .articles_wrapper {
-    display: none;
-  }
 }
 
 .wave-background {
@@ -1416,6 +1422,12 @@ section {
   height: fit-content;
 }
 
+@media (max-width: 600px) {
+  .article_preview_link {
+    margin-bottom: 20px;
+  }
+}
+
 .article_preview:hover {
   transform: scale(1.02);
   -webkit-transform: scale(1.02);
@@ -1427,6 +1439,7 @@ section {
 @media (max-width: 600px) {
   .article_block {
     flex-direction: column;
+    gap: 40px;
   }
 }
 
@@ -1437,11 +1450,25 @@ section {
   display: flex;
   flex-direction: column;
 }
+
 .left_article p,
 .right_article p {
   margin-top: 20px;
   color: #646464;
 }
+
+@media (max-width: 600px) {
+  .left_article,
+  .right_article {
+    max-width: unset;
+    font-size: 15px;
+  }
+  .left_article p,
+  .right_article p {
+    margin-top: 10px;
+  }
+}
+
 /* Progess Bar */
 
 .metrics-wrapper {

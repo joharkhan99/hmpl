@@ -1701,12 +1701,6 @@ section {
 
 /* Text block 1 */
 
-.text_block_wrapper {
-  margin-top: -30%;
-  z-index: 3;
-  position: relative;
-}
-
 .text_block_1 {
   width: 100%;
   display: flex;
@@ -1717,6 +1711,12 @@ section {
 @media (max-width: 600px) {
   .text_block_1 {
     flex-direction: column-reverse;
+  }
+
+  .text_block_wrapper {
+    margin-top: -30%;
+    z-index: 3;
+    position: relative;
   }
 }
 

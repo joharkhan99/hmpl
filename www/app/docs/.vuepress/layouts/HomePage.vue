@@ -259,6 +259,11 @@
         alt="Wave Bottom"
         class="wave-overlay"
       />
+      <img
+        src="/images/wave-bottom-mobile.png"
+        alt="Wave Bottom"
+        class="wave-overlay-mobile"
+      />
       <div class="cards">
         <div class="card">
           <div class="card_name">
@@ -304,8 +309,8 @@
       <div class="container">
         <div class="text_block_1">
           <div class="text-content">
-            <h2 class="text_block_1_subtitle">We offer</h2>
-            <h1 class="text_block_1_title">Gold Standard</h1>
+            <p class="text_block_1_subtitle">We offer</p>
+            <h2 class="text_block_1_title">Gold Standard</h2>
             <p class="text_block_1_description">
               This means that the process of interaction with the template
               language occurs in a combined format, when, unlike almost
@@ -389,7 +394,7 @@
     <div class="metrics-wrapper" id="comparisonChart">
       <div class="wrapper">
         <div class="metrics-content">
-          <div class="flex-container">
+          <div class="metrics-container flex-container">
             <div class="metrics-column">
               <div class="metric-large">
                 ~1.7x
@@ -407,7 +412,6 @@
               <div class="progress-label">Angular</div>
               <div class="progress-label">Vanilla</div>
             </div>
-
             <div class="progress-column">
               <div class="progress-bar-wrapper">
                 <div
@@ -996,7 +1000,7 @@ a {
     0 0 #0000,
     0 0 #0000,
     0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  z-index: 9999;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1294,7 +1298,7 @@ section {
     background: linear-gradient(
       0deg,
       rgba(1, 131, 255, 0.5214460784313726) -20%,
-      rgba(255, 255, 255, 1) 28%
+      rgba(255, 255, 255, 1) 14%
     );
   }
 }
@@ -1312,18 +1316,6 @@ section {
   align-items: center;
 }
 
-@media (max-width: 600px) {
-  .wave_info {
-    display: none;
-  }
-  .text_block_wrapper {
-    display: none;
-  }
-  .metrics-wrapper {
-    display: none;
-  }
-}
-
 .wave-background {
   position: absolute;
   top: 0;
@@ -1334,7 +1326,9 @@ section {
   background-size: cover;
   z-index: 1;
 }
-.wave-overlay {
+
+.wave-overlay,
+.wave-overlay-mobile {
   position: absolute;
   top: 50%;
   left: 0;
@@ -1342,6 +1336,27 @@ section {
   z-index: 2;
   pointer-events: none;
 }
+
+@media (min-width: 601px) {
+  .wave-overlay-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .wave-background {
+    background: url(../images/wave-mobile.png) no-repeat;
+    top: -174px;
+  }
+  .wave-overlay {
+    display: none;
+  }
+  .wave-overlay-mobile {
+    top: auto;
+    bottom: -9px;
+  }
+}
+
 .cards {
   position: absolute;
   top: auto;
@@ -1365,6 +1380,7 @@ section {
   .cards {
     display: flex;
     flex-direction: column;
+    margin-top: -64px !important;
   }
 }
 .card {
@@ -1382,6 +1398,14 @@ section {
   font-size: 20px;
   font-weight: bold;
 }
+
+@media (max-width: 600px) {
+  .card {
+    width: 225px;
+    height: 107.5px;
+  }
+}
+
 .card_link:hover {
   text-decoration: none;
 }
@@ -1396,6 +1420,7 @@ section {
   font-size: 25px;
   margin-left: 10px;
 }
+
 .card p {
   max-width: 83%;
   margin-top: 10px;
@@ -1403,6 +1428,26 @@ section {
   font-weight: 400;
   color: #4e4e4e;
 }
+
+@media (max-width: 600px) {
+  .card .card_name {
+    align-items: center;
+    gap: 4px;
+  }
+  .card .card_name img {
+    width: 25px;
+    height: 25px;
+  }
+  .card .card_name h2 {
+    font-size: 18px;
+    margin-left: 0px;
+  }
+  .card p {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+}
+
 .card a {
   color: #0183ff;
   text-decoration: underline;
@@ -1477,10 +1522,12 @@ section {
   color: white;
   margin-top: 100px;
 }
+
 .metrics-content {
   width: 80%;
   margin: 0 auto;
 }
+
 .flex-container {
   display: flex;
   justify-content: space-between;
@@ -1492,6 +1539,18 @@ section {
 .metrics-column {
   flex: 0 0 auto;
 }
+
+@media (max-width: 600px) {
+  .metrics-column {
+    display: flex;
+    flex: auto;
+    flex-direction: row;
+    align-items: self-end;
+    gap: 40px;
+    margin-bottom: 20px;
+  }
+}
+
 .metric-large {
   font-size: 4rem;
   font-weight: bold;
@@ -1503,11 +1562,32 @@ section {
   line-height: 1.2;
   margin-top: 40px;
 }
+
+@media (max-width: 600px) {
+  .metric-medium {
+    font-size: 36px;
+    margin-top: 0;
+  }
+  .metric-large {
+    font-size: 50px;
+  }
+}
+
 .metric-subtitle {
   display: block;
   font-size: 1.4rem;
   font-weight: normal;
   opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+  .metric-subtitle {
+    font-size: 18px;
+    max-width: 110px;
+  }
+  .metric-medium .metric-subtitle {
+    font-size: 16px;
+  }
 }
 .labels-column {
   flex: 0 0 auto;
@@ -1525,12 +1605,43 @@ section {
   font-size: 35px;
   font-weight: bold;
 }
+
+@media (max-width: 600px) {
+  .metrics-container {
+    flex-flow: wrap;
+    flex-direction: inherit !important;
+    margin-bottom: 38px;
+  }
+  .metrics-wrapper {
+    padding: 0;
+  }
+  .metrics-content {
+    width: 90vw;
+    padding: 40px 0;
+  }
+  .labels-column {
+    margin-top: -5px;
+    padding: 0 4px 0 0;
+  }
+  .progress-label {
+    font-size: 20px;
+    padding: 0;
+  }
+  .progress-label:first-child {
+    font-size: 25px;
+  }
+}
 .progress-column {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 32px;
+}
+@media (max-width: 600px) {
+  .progress-column {
+    width: 100%;
+  }
 }
 .progress-bar-wrapper {
   overflow: hidden;
@@ -1590,6 +1701,12 @@ section {
 
 /* Text block 1 */
 
+.text_block_wrapper {
+  margin-top: -30%;
+  z-index: 3;
+  position: relative;
+}
+
 .text_block_1 {
   width: 100%;
   display: flex;
@@ -1597,8 +1714,20 @@ section {
   align-items: center;
 }
 
+@media (max-width: 600px) {
+  .text_block_1 {
+    flex-direction: column-reverse;
+  }
+}
+
 .text-content {
   width: 50%;
+}
+
+@media (max-width: 600px) {
+  .text-content {
+    width: 100%;
+  }
 }
 
 .code-image {
@@ -1609,14 +1738,27 @@ section {
   width: 50%;
 }
 
+@media (max-width: 600px) {
+  .code-wrapper {
+    width: 100%;
+  }
+}
+
 .text_block_1_subtitle {
   font-size: 1.5rem;
   color: #9ca3af;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .text_block_1_subtitle {
+    font-size: 1rem;
+  }
 }
 
 .text_block_1_title {
   font-size: 3.5rem;
-  font-weight: bold;
+  font-weight: 600;
   background: linear-gradient(90deg, #0183ff 0%, #9747ff 100%);
 
   -webkit-background-clip: text;
@@ -1625,12 +1767,26 @@ section {
   margin-bottom: 2rem;
 }
 
+@media (max-width: 600px) {
+  .text_block_1_title {
+    font-size: 1.65rem;
+    margin-bottom: 10px;
+  }
+}
+
 .text_block_1_description {
   font-size: 1.25rem;
   color: #aeaeae;
   max-width: 600px;
   margin-bottom: 4rem;
   line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .text_block_1_description {
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
 }
 
 .text_block_1_highlight {
@@ -1654,6 +1810,8 @@ section {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 0;
+    gap: 20px;
   }
 }
 
@@ -1664,12 +1822,6 @@ section {
 }
 
 @media (max-width: 600px) {
-  .item-description {
-    text-align: center;
-  }
-  .item-header {
-    justify-content: center;
-  }
   .item-br {
     display: none;
   }
@@ -1700,6 +1852,12 @@ section {
   color: #9ca3af;
   font-size: 0.875rem;
   line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .item-description {
+    font-size: 15px;
+  }
 }
 
 .item-link {
@@ -1990,13 +2148,13 @@ footer {
 @media (max-width: 768px) {
   .flex-container {
     flex-direction: column;
-    gap: 1rem;
+    gap: 18px;
   }
   .labels-column {
-    gap: 1rem;
+    gap: 18px;
   }
   .progress-column {
-    gap: 1rem;
+    gap: 18px;
   }
 }
 

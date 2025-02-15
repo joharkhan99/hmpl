@@ -4,7 +4,7 @@ This guide will help you quickly set up and start using HMPL to dynamically rend
 
 You can follow along in StackBlitz or set up a project locally.
 
-- [StackBlitz](https://stackblitz.com/~/github.com/toyaAoi/hello-hmpl-starter)
+- [StackBlitz](https://stackblitz.com/edit/stackblitz-starters-kelupxnr?file=src%2Fmain.js&theme=light)
 - [Local Setup](#local-setup)
 - [Rendering Your First Component](#rendering-your-first-component)
 - [Rendering Dynamic Components](#rendering-dynamic-components)
@@ -56,7 +56,7 @@ Then, create a file named `HelloWorld.hmpl` inside the `hmpl` folder and add the
 - `indicators`: Defines UI elements for different request states:
   - `"pending"` →  Shows the **Loading** component while waiting for a response.
   - `"rejected"`: → Show the **Error** component if the request fails.
-  
+
 ### 3. Load the component into DOM
 Open `main.js` inside the `src` folder and import the component:
 

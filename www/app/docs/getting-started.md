@@ -40,11 +40,11 @@ Then, create a file named `HelloWorld.hmpl` inside the `hmpl` folder and add the
       indicators: [
         {
           trigger: "pending",
-          content: "&lt;p&gt;Loading...&lt;/p&gt;"
+          content: "<p>Loading...</p>;"
         },
         {
           trigger: "rejected",
-          content: "&lt;p&gt;Error!!&lt;/p&gt;"
+          content: "<p>Error!</p>;"
         }
       ]
     }}
@@ -69,7 +69,7 @@ We import `HelloWorld` as a [HMPL template function](/types.md#hmpltemplatefunct
 
 Saving the files will render the component received from the server.
 
-- 💡 The responses are served by a mock server located in the mock/ directory. You can modify these mock API responses to test different scenarios.
+> The responses are served by a mock server located in the mock/ directory. You can modify these mock API responses to test different scenarios.
 
 ## Rendering Dynamic Components
 
@@ -92,7 +92,7 @@ Create a new file `Form.hmpl` inside the `hmpl` directory and add the following 
     indicators: [
       {
         trigger: "pending",
-        content: "&lt;p&gt;Loading...&lt;/p&gt;"
+        content: "<p>Loading...</p>;"
       }
     ]
   }}
@@ -127,4 +127,4 @@ Now that you’ve set up your first components, here’s what you can explore ne
 - 📖 [Learn more about HMPL](/hmpl.md) – Understand how HMPL works under the hood.
 - 🛠️ [Explore other examples](/examples.md) – See other use cases and patterns.
 - 📰 [Read our blog](https://blog.hmpl-lang.dev/) – Stay updated with the latest HMPL features and best practices.
-- 🤝 [Contribute to HMPL](https://github.com/hmpl-language/hmpl) – Help improve HMPL by reporting issues, suggesting features, or contributing code!
+- 🌱 [Contribute to HMPL](https://github.com/hmpl-language/hmpl) – Help improve HMPL by reporting issues, suggesting features, or contributing code!

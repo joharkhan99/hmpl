@@ -12,8 +12,8 @@ You can follow along in StackBlitz or set up a project locally.
 ## Local Setup
 To setup a local HMPL project, run the following commands:
 ```sh
-npx degit toyaAoi/hello-hmpl-starter hello-hmpl-starter
-cd hello-hmpl-starter
+npx degit hmpl-language/hello-hmpl-starter hello-hmpl
+cd hello-hmpl
 npm install
 npm run dev
 ```
@@ -29,8 +29,7 @@ Now let's create our first component.
 
 ### 1. Create an HMPL template
 
-Inside the `src` directory, create a new folder named `hmpl`.
-Then, create a file named `HelloWorld.hmpl` inside the `hmpl` folder and add the following code:
+Create a file named `HelloWorld.hmpl` inside `src/hmpl/` and add the following code:
 
 ```hmpl
 <div>

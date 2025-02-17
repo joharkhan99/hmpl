@@ -9,12 +9,14 @@ This guide will help you quickly set up and start using HMPL to dynamically rend
 ## Local Setup
 
 To setup a local HMPL project, run the following commands:
+
 ```sh
 npx degit hmpl-language/hello-hmpl-starter hello-hmpl
 cd hello-hmpl
 npm install
 npm run dev
 ```
+
 This will:
 - Download a starter template for HMPL.
 - Install the necessary dependencies.
@@ -32,19 +34,21 @@ Create a file named `HelloWorld.hmpl` inside `/src/hmpl` and add the following c
 ```hmpl
 <div>
   <div>
-    {{
-      src: "/api/hello",
-      indicators: [
-        {
-          trigger: "pending",
-          content: "<p>Loading...</p>;"
-        },
-        {
-          trigger: "rejected",
-          content: "<p>Error!</p>;"
-        }
-      ]
-    }}
+    {
+      {
+        src: "/api/hello",
+        indicators: [
+          {
+            trigger: "pending",
+            content: "<p>Loading...</p>;"
+          },
+          {
+            trigger: "rejected",
+            content: "<p>Error!</p>;"
+          }
+        ]
+      }
+    }
   </div>
 </div>
 ```
@@ -65,6 +69,7 @@ const { response } = helloWorld();
 
 document.body.appendChild(response);
 ```
+
 We import `HelloWorld` as a [HMPL template function](/types.md#hmpltemplatefunction). To make the request to server we invoke this template function. It returns a [HMPL instance object](/types.md#hmplinstance) and the `response` property holds the components received from server and the request state indicator components.
 
 Saving the files will render the component received from the server.
@@ -84,20 +89,23 @@ Create a new file `Form.hmpl` inside the `hmpl` directory and add the following 
     <input type="submit" value="Submit" />
   </form>
 
-  {{
-    src: "/api/hello",
-    method: "POST",
-    after: "submit:#form",
-    autoBody: true,
-    indicators: [
-      {
-        trigger: "pending",
-        content: "<p>Loading...</p>;"
-      }
-    ]
-  }}
+  {
+    {
+      src: "/api/hello",
+      method: "POST",
+      after: "submit:#form",
+      autoBody: true,
+      indicators: [
+        {
+          trigger: "pending",
+          content: "<p>Loading...</p>;"
+        }
+      ]
+    }
+  }
 </div>
 ```
+
 - `method`: → Sets the request method (POST).
 - `after: "submit:#form"` → Schedules requests on the form submit event.
 - `autoBody: true` → Automatically converts form data into JSON before sending.

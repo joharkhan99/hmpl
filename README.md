@@ -128,6 +128,10 @@ We have a [Contributing Guide](https://github.com/hmpl-language/hmpl/blob/main/C
 
 Thank you to all the people who have already contributed to HMPL, or related projects!
 
+## Roadmap
+
+The project has a [Roadmap](https://github.com/orgs/hmpl-language/projects/5) where you can see the plans for future development.
+
 ## Fossa status
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhmpl-language%2Fhmpl.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhmpl-language%2Fhmpl?ref=badge_large&issueType=license)

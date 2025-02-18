@@ -130,7 +130,7 @@ Thank you to all the people who have already contributed to HMPL, or related pro
 
 ## Roadmap
 
-The project has a [Roadmap](https://github.com/orgs/hmpl-language/projects/5) where you can see the plans for future development.
+The project has a [roadmap](https://github.com/orgs/hmpl-language/projects/5) where you can see the plans for future development.
 
 ## Fossa status
 

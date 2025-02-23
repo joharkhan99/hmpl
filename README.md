@@ -48,10 +48,11 @@ document.querySelector("#app").append(clicker);
 
 Using HMPL, you can multiply reduce the size of the application bundle. Full customization of the request based on the modern `fetch` standard, as well as support for all the functionality necessary for modern work in applications (request indicator, sending by event, automatic generation of `body` for the `form`, caching) and the syntax of the object in the markup, which requires a minimum number of characters, will help to build interaction with the server and client as efficiently as possible.
 
+Also, the template language can serve as an excellent alternative to such popular libraries as HTMX and Alpine.js.
 ## Features
 
 - **Customizable**: Send a custom request to the server when receiving the UI
-- **Memory Preserving**: Reduce file sizes on the client by several times
+- **Memory Preserving**: Reduce file sizes on the client by [several times](https://github.com/hmpl-language/app-size-comparison)
 - **Based on Fetch API**: Use a modern standard instead of `XMLHTTPRequest`
 - **Server-oriented**: Work with the server directly through markup and with a little js
 - **Generate thousands of DOM nodes from a single template**: Work with large components not only on the server but also on the client

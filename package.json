@@ -1,7 +1,7 @@
 {
   "name": "hmpl-js",
-  "version": "2.2.3",
-  "description": "Server-oriented customizable templating for JavaScript",
+  "version": "2.2.4",
+  "description": "🐜 Server-oriented customizable templating for JavaScript. Apply SSR, SSG, ISG without robot indexing on any sites without Next.js, Remix, Nuxt.js!",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -25,13 +25,27 @@
   "homepage": "https://hmpl-lang.dev",
   "license": "MIT",
   "keywords": [
+    "fetch",
     "html",
-    "api",
+    "template-engine",
+    "rest",
+    "ssr",
     "server",
-    "template",
+    "templates",
+    "templating",
+    "template-language",
+    "server-side-rendering",
+    "static-site-generation",
+    "template-engines",
+    "fetch-api",
+    "server-side",
     "language",
+    "ssg",
+    "template",
+    "isg",
     "hmpl",
-    "fetch"
+    "incremental-static-generation",
+    "server"
   ],
   "author": "Anton Maklakov",
   "repository": {

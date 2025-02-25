@@ -8,7 +8,8 @@ const __dirname = getDirname(import.meta.url);
 export default defineUserConfig({
   lang: "en-US",
   title: "HMPL.js",
-  description: "Server-oriented customizable templating for JavaScript",
+  description:
+    "Server-oriented customizable templating for JavaScript. Apply SSR, SSG, ISG without robot indexing on any sites without Next.js, Remix, Nuxt.js! Also, HMPL can be a great alternative to popular tools such as HTMX and Alpine.js.",
   port: 3000,
 
   theme: hopeTheme(
@@ -194,7 +195,6 @@ export default defineUserConfig({
           appId: "WBEF1LVBSZ",
           indexName: "hmpl-lang"
         },
-
         sitemap: {
           hostname: "hmpl-lang.dev"
         } as any,
@@ -225,6 +225,29 @@ export default defineUserConfig({
   },
   head: [
     ["link", { rel: "icon", href: "/images/favicon.ico" }],
+    [
+      "meta",
+      {
+        property: "og:description",
+        content:
+          "Server-oriented customizable templating for JavaScript. Apply SSR, SSG, ISG without robot indexing on any sites without Next.js, Remix, Nuxt.js! Also, HMPL can be a great alternative to popular tools such as HTMX and Alpine.js."
+      }
+    ],
+    [
+      "meta",
+      {
+        property: "og:image",
+        content: "/images/og-image.png"
+      }
+    ],
+    [
+      "meta",
+      {
+        name: "keywords",
+        content:
+          "javascript, fetch, html, template-engine, rest, ssr, templates, templating, template-language, server-side-rendering, static-site-generation, template-engines, fetch-api, server-side, typescipt, ssg, template-engine-html, isg, hmpl, incremental-static-generation, language, template"
+      }
+    ]
   ],
   bundler: viteBundler()
 });

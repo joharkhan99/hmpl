@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.4 (2025-02-25)
+
+- Updating README.md
+- Updating package.json
+
 ## 2.2.3 (2025-01-16)
 
 - Major rework of error handling in the code

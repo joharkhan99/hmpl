@@ -143,6 +143,21 @@ interface HMPLIndicator {
 type HMPLContentTypes = string[] | "*";
 
 /**
+ * Valid tags to remove from response.
+ */
+type HMPLDisallowedTag = "script" | "style" | "iframe";
+
+/**
+ * Tags to remove from response.
+ */
+type HMPLDisallowedTags = HMPLDisallowedTag[];
+
+/**
+ * Enabling sanitize method from DOMPurify.
+ */
+type HMPLSanitize = boolean;
+
+/**
  * An object that defines the properties of a request.
  */
 interface HMPLRequestInfo {
@@ -154,6 +169,8 @@ interface HMPLRequestInfo {
   memo?: boolean; // Indicates if this request should be memoized.
   allowedContentTypes?: HMPLContentTypes; // Allowed Content-Types for response processing.
   indicators?: HMPLIndicator[]; // Array of indicators related to this request.
+  sanitize?: HMPLSanitize; // Sanitize the response content, ensuring it is safe to render.
+  disallowedTags?: HMPLDisallowedTags; // Tags to remove from response.
   autoBody?: boolean | HMPLAutoBodyOptions; // Automatic generation of body for request.
 }
 
@@ -171,6 +188,8 @@ interface HMPLCompileOptions {
   memo?: boolean; // Indicates if memoization should be applied during compilation.
   autoBody?: boolean | HMPLAutoBodyOptions; // Automatic generation of body for request.
   allowedContentTypes?: HMPLContentTypes; // Allowed Content-Types for response processing.
+  sanitize?: HMPLSanitize; // Sanitize the response content, ensuring it is safe to render.
+  disallowedTags?: HMPLDisallowedTags; // Tags to remove from response.
 }
 
 interface HMPLParsedIndicators {
@@ -316,5 +335,8 @@ export {
   HMPLRenderFunction,
   HMPLCompile,
   HMPLTemplateFunction,
-  HMPLAutoBodyOptions
+  HMPLAutoBodyOptions,
+  HMPLDisallowedTag,
+  HMPLDisallowedTags,
+  HMPLSanitize
 };

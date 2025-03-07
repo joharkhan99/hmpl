@@ -85,12 +85,14 @@
     const METHOD = `method`;
     const ID = `initId`;
     const AFTER = `after`;
-    const MODE = `repeat`;
+    const REPEAT = `repeat`;
     const MEMO = `memo`;
     const INDICATORS = `indicators`;
     const AUTO_BODY = `autoBody`;
     const COMMENT = `hmpl`;
     const FORM_DATA = `formData`;
+    const DISALLOWED_TAGS = `disallowedTags`;
+    const SANITIZE = `sanitize`;
     const ALLOWED_CONTENT_TYPES = "allowedContentTypes";
     const REQUEST_INIT_GET = `get`;
     const RESPONSE_ERROR = `BadResponseError`;
@@ -116,11 +118,13 @@
       METHOD,
       ID,
       AFTER,
-      MODE,
+      REPEAT,
       INDICATORS,
       MEMO,
       AUTO_BODY,
-      ALLOWED_CONTENT_TYPES
+      ALLOWED_CONTENT_TYPES,
+      DISALLOWED_TAGS,
+      SANITIZE
     ];
     /**
      * HTTP status codes without successful responses.
@@ -133,17 +137,33 @@
       503, 504, 505, 506, 507, 508, 510, 511
     ];
     /**
+     * Tags available for deletion from response
+     */
+    const DISALLOWED_TAGS_VALUES = ["script", "style", "iframe"];
+    /**
+     * Default value for sanitize response settings. Plans to add config for DOMPurify
+     */
+    const DEFAULT_SANITIZE = false;
+    /**
      * Default value for the processed response content type
      */
     const DEFAULT_ALLOWED_CONTENT_TYPES = ["text/html"];
+    /**
+     * Default value for tags to remove from response
+     */
+    const DEFAULT_DISALLOWED_TAGS = [];
     /**
      * Parses a string into a HTML template element.
      * @param str - The string to parse.
      * @returns The first child node of the parsed template.
      */
-    const getTemplateWrapper = (str) => {
+    const getTemplateWrapper = (str, sanitize = false) => {
+      let sanitizedStr = str;
+      if (sanitize) {
+        sanitizedStr = DOMPurify.sanitize(str);
+      }
       const elementDocument = new DOMParser().parseFromString(
-        `<template>${str}</template>`,
+        `<template>${sanitizedStr}</template>`,
         "text/html"
       );
       const elWrapper = elementDocument.childNodes[0].childNodes[0].firstChild;
@@ -152,15 +172,19 @@
     /**
      * Parses the response string into DOM elements, excluding scripts.
      * @param response - The response string to parse.
+     * @param disallowedTags - A list of HTML tags that should be removed from the response.
+     * @param sanitize - Sanitize the response content, ensuring it is safe to render.
      * @returns The parsed template wrapper.
      */
-    const getResponseElements = (response) => {
-      const elWrapper = getTemplateWrapper(response);
+    const getResponseElements = (response, disallowedTags = [], sanitize) => {
+      const elWrapper = getTemplateWrapper(response, sanitize);
       const elContent = elWrapper["content"];
-      const scripts = elContent.querySelectorAll("script");
-      for (let i = 0; i < scripts.length; i++) {
-        const currentScript = scripts[i];
-        elContent.removeChild(currentScript);
+      for (let i = 0; i < disallowedTags.length; i++) {
+        const tag = disallowedTags[i];
+        const elements = elContent.querySelectorAll(tag);
+        for (let j = 0; j < elements.length; j++) {
+          elContent.removeChild(elements[j]);
+        }
       }
       return elWrapper;
     };
@@ -195,6 +219,8 @@
      * @param options - The request initialization options.
      * @param templateObject - The template instance.
      * @param allowedContentTypes - Allowed Content-Types for response processing.
+     * @param disallowedTags - A list of HTML tags that should be removed from the response.
+     * @param sanitize - A function or method used to sanitize the response content, ensuring it is safe to render.
      * @param reqObject - The request object.
      * @param indicators - Parsed indicators for the request.
      */
@@ -210,6 +236,8 @@
       options = {},
       templateObject,
       allowedContentTypes,
+      disallowedTags,
+      sanitize,
       reqObject,
       indicators
     ) => {
@@ -559,7 +587,11 @@
                 }
               }
             }
-            const templateWrapper = getResponseElements(data);
+            const templateWrapper = getResponseElements(
+              data,
+              disallowedTags,
+              sanitize
+            );
             if (isRequest) {
               templateObject.response = templateWrapper;
               get?.("response", templateWrapper);
@@ -629,6 +661,8 @@
      * @param isAutoBodyUndefined - Indicates if autoBody is undefined.
      * @param isRequest - Indicates if it's a single request.
      * @param isAllowedContentTypesUndefined - Indicates if allowedContentTypes is undefined.
+     * @param isDisallowedTagsUndefined - A flag indicating whether the disallowedTags property is undefined.
+     * @param isSanitizeUndefined - A flag indicating whether the sanitize property is undefined.
      * @returns The rendered template function.
      */
     const renderTemplate = (
@@ -639,29 +673,31 @@
       isMemoUndefined,
       isAutoBodyUndefined,
       isAllowedContentTypesUndefined,
+      isDisallowedTagsUndefined,
+      isSanitizeUndefined,
       isRequest = false
     ) => {
       const renderRequest = (req, mainEl) => {
-        const source = req.src;
+        const source = req[SOURCE];
         if (source) {
-          const method = (req.method || "GET").toLowerCase();
+          const method = (req[METHOD] || "GET").toLowerCase();
           if (getIsMethodValid(method)) {
             createError(
               `${REQUEST_OBJECT_ERROR}: The "${METHOD}" property has only GET, POST, PUT, PATCH or DELETE values`
             );
           } else {
-            const after = req.after;
+            const after = req[AFTER];
             if (after && isRequest)
               createError(`${RENDER_ERROR}: EventTarget is undefined`);
-            const isModeUndefined = !req.hasOwnProperty(MODE);
-            const oldMode = isModeUndefined ? true : req.repeat;
+            const isModeUndefined = !req.hasOwnProperty(REPEAT);
+            const oldMode = isModeUndefined ? true : req[REPEAT];
             const modeAttr = oldMode ? "all" : "one";
             const isAll = modeAttr === "all";
             const isReqMemoUndefined = !req.hasOwnProperty(MEMO);
-            let isMemo = isMemoUndefined ? false : compileOptions.memo;
+            let isMemo = isMemoUndefined ? false : compileOptions[MEMO];
             if (!isReqMemoUndefined) {
               if (after) {
-                if (req.memo) {
+                if (req[MEMO]) {
                   if (!isAll) {
                     createError(
                       `${REQUEST_OBJECT_ERROR}: Memoization works in the enabled repetition mode`
@@ -691,7 +727,7 @@
             const isReqAutoBodyUndefined = !req.hasOwnProperty(AUTO_BODY);
             let autoBody = isAutoBodyUndefined
               ? false
-              : compileOptions.autoBody;
+              : compileOptions[AUTO_BODY];
             if (!isReqAutoBodyUndefined) {
               if (after) {
                 let reqAutoBody = req[AUTO_BODY];
@@ -732,11 +768,30 @@
             );
             let allowedContentTypes = isAllowedContentTypesUndefined
               ? DEFAULT_ALLOWED_CONTENT_TYPES
-              : compileOptions.allowedContentTypes;
+              : compileOptions[ALLOWED_CONTENT_TYPES];
             if (!isReqAllowedContentTypesUndefined) {
               const currentAllowedContentTypes = req[ALLOWED_CONTENT_TYPES];
               validateAllowedContentTypes(currentAllowedContentTypes);
               allowedContentTypes = currentAllowedContentTypes;
+            }
+            const isReqDisallowedTagsUndefined =
+              !req.hasOwnProperty(DISALLOWED_TAGS);
+            let disallowedTags = isDisallowedTagsUndefined
+              ? DEFAULT_DISALLOWED_TAGS
+              : compileOptions[DISALLOWED_TAGS];
+            if (!isReqDisallowedTagsUndefined) {
+              const currentDisallowedTags = req[DISALLOWED_TAGS];
+              validateDisallowedTags(currentDisallowedTags);
+              disallowedTags = currentDisallowedTags;
+            }
+            const isReqSanitizeUndefined = !req.hasOwnProperty(SANITIZE);
+            let sanitize = isSanitizeUndefined
+              ? DEFAULT_SANITIZE
+              : compileOptions[SANITIZE];
+            if (!isReqSanitizeUndefined) {
+              const currentSanitize = req[SANITIZE];
+              validateSanitize(currentSanitize);
+              sanitize = currentSanitize;
             }
             const initId = req.initId;
             const nodeId = req.nodeId;
@@ -907,6 +962,8 @@
                 requestInit,
                 templateObject,
                 allowedContentTypes,
+                disallowedTags,
+                sanitize,
                 reqObject,
                 indicators
               );
@@ -1005,7 +1062,7 @@
             } else {
               if (!isModeUndefined) {
                 createError(
-                  `${REQUEST_OBJECT_ERROR}: The "${MODE}" property doesn't work without "${AFTER}" property`
+                  `${REQUEST_OBJECT_ERROR}: The "${REPEAT}" property doesn't work without "${AFTER}" property`
                 );
               }
             }
@@ -1166,6 +1223,48 @@
       }
     };
     /**
+     * Validates the `disallowedTags` option for a request or compile-time configuration.
+     * Ensures the value is an array and contains only allowed disallowed tag values.
+     * @param disallowedTags - The `disallowedTags` option to validate, expected to be an array.
+     * @param isCompile - A flag indicating whether the validation is for compile-time options (default: `false`).
+     * @throws An error if the input is not an array or contains unexpected disallowed tag values.
+     */
+    const validateDisallowedTags = (disallowedTags, isCompile = false) => {
+      const currentError = isCompile
+        ? COMPILE_OPTIONS_ERROR
+        : REQUEST_OBJECT_ERROR;
+      const isArray = Array.isArray(disallowedTags);
+      if (!isArray)
+        createError(
+          `${currentError}: The value of the property "${DISALLOWED_TAGS}" must be an array`
+        );
+      for (let i = 0; i < disallowedTags.length; i++) {
+        const disallowedTag = disallowedTags[i];
+        if (!DISALLOWED_TAGS_VALUES.includes(disallowedTag)) {
+          createError(
+            `${currentError}: The value "${disallowedTag}" is not processed`
+          );
+        }
+      }
+    };
+    /**
+     * Validates the `sanitize` option for a request or compile-time configuration.
+     * Ensures the value is a boolean.
+     * @param sanitize - The `sanitize` option to validate, expected to be a boolean.
+     * @param isCompile - A flag indicating whether the validation is for compile-time options (default: `false`).
+     * @throws An error if the input is not a boolean.
+     */
+    const validateSanitize = (sanitize, isCompile = false) => {
+      const currentError = isCompile
+        ? COMPILE_OPTIONS_ERROR
+        : REQUEST_OBJECT_ERROR;
+      if (typeof sanitize !== "boolean") {
+        createError(
+          `${currentError}: The value of the property "${SANITIZE}" must be a boolean`
+        );
+      }
+    };
+    /**
      * Validates the HMPLIdentificationRequestInit object.
      * @param currentOptions - The identification options to validate.
      */
@@ -1229,7 +1328,7 @@
       const isMemoUndefined = !options.hasOwnProperty(MEMO);
       if (!isMemoUndefined && typeof options[MEMO] !== "boolean")
         createError(
-          `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
+          `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean`
         );
       const isAutoBodyUndefined = !options.hasOwnProperty(AUTO_BODY);
       if (!isAutoBodyUndefined) validateAutoBody(options[AUTO_BODY], true);
@@ -1238,6 +1337,12 @@
       );
       if (!isAllowedContentTypesUndefined)
         validateAllowedContentTypes(options[ALLOWED_CONTENT_TYPES], true);
+      const isDisallowedTagsUndefined =
+        !options.hasOwnProperty(DISALLOWED_TAGS);
+      if (!isDisallowedTagsUndefined)
+        validateDisallowedTags(options[DISALLOWED_TAGS], true);
+      const isSanitizeUndefined = !options.hasOwnProperty(SANITIZE);
+      if (!isSanitizeUndefined) validateSanitize(options[SANITIZE], true);
       const requests = [];
       const templateArr = template.split(MAIN_REGEX).filter(Boolean);
       const requestsIndexes = [];
@@ -1275,7 +1380,7 @@
               }
               break;
             case MEMO:
-            case MODE:
+            case REPEAT:
               if (typeof value !== "boolean") {
                 createError(
                   `${REQUEST_OBJECT_ERROR}: The value of the property "${key}" must be a boolean value`
@@ -1287,6 +1392,12 @@
               break;
             case ALLOWED_CONTENT_TYPES:
               validateAllowedContentTypes(value);
+              break;
+            case DISALLOWED_TAGS:
+              validateDisallowedTags(value);
+              break;
+            case SANITIZE:
+              validateSanitize(value);
               break;
             default:
               if (typeof value !== "string") {
@@ -1499,10 +1610,11 @@
         isMemoUndefined,
         isAutoBodyUndefined,
         isAllowedContentTypesUndefined,
+        isDisallowedTagsUndefined,
+        isSanitizeUndefined,
         isRequest
       );
     };
-
     const hmpl = {
       compile,
       stringify

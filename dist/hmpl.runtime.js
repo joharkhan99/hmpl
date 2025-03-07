@@ -23,6 +23,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
+// src/main.ts
 var main_exports = {};
 __export(main_exports, {
   compile: () => compile,
@@ -30,6 +31,7 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 var import_json5 = __toESM(require("json5"));
+var import_dompurify = __toESM(require("dompurify"));
 var checkObject = (val) => {
   return typeof val === "object" && !Array.isArray(val) && val !== null;
 };
@@ -64,12 +66,14 @@ var SOURCE = `src`;
 var METHOD = `method`;
 var ID = `initId`;
 var AFTER = `after`;
-var MODE = `repeat`;
+var REPEAT = `repeat`;
 var MEMO = `memo`;
 var INDICATORS = `indicators`;
 var AUTO_BODY = `autoBody`;
 var COMMENT = `hmpl`;
 var FORM_DATA = `formData`;
+var DISALLOWED_TAGS = `disallowedTags`;
+var SANITIZE = `sanitize`;
 var ALLOWED_CONTENT_TYPES = "allowedContentTypes";
 var REQUEST_INIT_GET = `get`;
 var RESPONSE_ERROR = `BadResponseError`;
@@ -92,11 +96,13 @@ var REQUEST_OPTIONS = [
   METHOD,
   ID,
   AFTER,
-  MODE,
+  REPEAT,
   INDICATORS,
   MEMO,
   AUTO_BODY,
-  ALLOWED_CONTENT_TYPES
+  ALLOWED_CONTENT_TYPES,
+  DISALLOWED_TAGS,
+  SANITIZE
 ];
 var CODES = [
   100,
@@ -153,22 +159,31 @@ var CODES = [
   510,
   511
 ];
+var DISALLOWED_TAGS_VALUES = ["script", "style", "iframe"];
+var DEFAULT_SANITIZE = false;
 var DEFAULT_ALLOWED_CONTENT_TYPES = ["text/html"];
-var getTemplateWrapper = (str) => {
+var DEFAULT_DISALLOWED_TAGS = [];
+var getTemplateWrapper = (str, sanitize = false) => {
+  let sanitizedStr = str;
+  if (sanitize) {
+    sanitizedStr = import_dompurify.default.sanitize(str);
+  }
   const elementDocument = new DOMParser().parseFromString(
-    `<template>${str}</template>`,
+    `<template>${sanitizedStr}</template>`,
     "text/html"
   );
   const elWrapper = elementDocument.childNodes[0].childNodes[0].firstChild;
   return elWrapper;
 };
-var getResponseElements = (response) => {
-  const elWrapper = getTemplateWrapper(response);
+var getResponseElements = (response, disallowedTags = [], sanitize) => {
+  const elWrapper = getTemplateWrapper(response, sanitize);
   const elContent = elWrapper["content"];
-  const scripts = elContent.querySelectorAll("script");
-  for (let i = 0; i < scripts.length; i++) {
-    const currentScript = scripts[i];
-    elContent.removeChild(currentScript);
+  for (let i = 0; i < disallowedTags.length; i++) {
+    const tag = disallowedTags[i];
+    const elements = elContent.querySelectorAll(tag);
+    for (let j = 0; j < elements.length; j++) {
+      elContent.removeChild(elements[j]);
+    }
   }
   return elWrapper;
 };
@@ -184,7 +199,7 @@ var getIsNotAllowedContentType = (contentType, allowedContentTypes) => {
   }
   return !isContain;
 };
-var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, isMemo, options = {}, templateObject, allowedContentTypes, reqObject, indicators) => {
+var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, isMemo, options = {}, templateObject, allowedContentTypes, disallowedTags, sanitize, reqObject, indicators) => {
   const {
     mode,
     cache,
@@ -490,7 +505,11 @@ var makeRequest = (el, mainEl, dataObj, method, source, isRequest, isRequests, i
           }
         }
       }
-      const templateWrapper = getResponseElements(data);
+      const templateWrapper = getResponseElements(
+        data,
+        disallowedTags,
+        sanitize
+      );
       if (isRequest) {
         templateObject.response = templateWrapper;
         get?.("response", templateWrapper);
@@ -544,28 +563,28 @@ var getRequestInitFromFn = (fn, event) => {
   const result = fn(context);
   return result;
 };
-var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, isAutoBodyUndefined, isAllowedContentTypesUndefined, isRequest = false) => {
+var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, isAutoBodyUndefined, isAllowedContentTypesUndefined, isDisallowedTagsUndefined, isSanitizeUndefined, isRequest = false) => {
   const renderRequest = (req, mainEl) => {
-    const source = req.src;
+    const source = req[SOURCE];
     if (source) {
-      const method = (req.method || "GET").toLowerCase();
+      const method = (req[METHOD] || "GET").toLowerCase();
       if (getIsMethodValid(method)) {
         createError(
           `${REQUEST_OBJECT_ERROR}: The "${METHOD}" property has only GET, POST, PUT, PATCH or DELETE values`
         );
       } else {
-        const after = req.after;
+        const after = req[AFTER];
         if (after && isRequest)
           createError(`${RENDER_ERROR}: EventTarget is undefined`);
-        const isModeUndefined = !req.hasOwnProperty(MODE);
-        const oldMode = isModeUndefined ? true : req.repeat;
+        const isModeUndefined = !req.hasOwnProperty(REPEAT);
+        const oldMode = isModeUndefined ? true : req[REPEAT];
         const modeAttr = oldMode ? "all" : "one";
         const isAll = modeAttr === "all";
         const isReqMemoUndefined = !req.hasOwnProperty(MEMO);
-        let isMemo = isMemoUndefined ? false : compileOptions.memo;
+        let isMemo = isMemoUndefined ? false : compileOptions[MEMO];
         if (!isReqMemoUndefined) {
           if (after) {
-            if (req.memo) {
+            if (req[MEMO]) {
               if (!isAll) {
                 createError(
                   `${REQUEST_OBJECT_ERROR}: Memoization works in the enabled repetition mode`
@@ -593,7 +612,7 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
           }
         }
         const isReqAutoBodyUndefined = !req.hasOwnProperty(AUTO_BODY);
-        let autoBody = isAutoBodyUndefined ? false : compileOptions.autoBody;
+        let autoBody = isAutoBodyUndefined ? false : compileOptions[AUTO_BODY];
         if (!isReqAutoBodyUndefined) {
           if (after) {
             let reqAutoBody = req[AUTO_BODY];
@@ -630,11 +649,25 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
         const isReqAllowedContentTypesUndefined = !req.hasOwnProperty(
           ALLOWED_CONTENT_TYPES
         );
-        let allowedContentTypes = isAllowedContentTypesUndefined ? DEFAULT_ALLOWED_CONTENT_TYPES : compileOptions.allowedContentTypes;
+        let allowedContentTypes = isAllowedContentTypesUndefined ? DEFAULT_ALLOWED_CONTENT_TYPES : compileOptions[ALLOWED_CONTENT_TYPES];
         if (!isReqAllowedContentTypesUndefined) {
           const currentAllowedContentTypes = req[ALLOWED_CONTENT_TYPES];
           validateAllowedContentTypes(currentAllowedContentTypes);
           allowedContentTypes = currentAllowedContentTypes;
+        }
+        const isReqDisallowedTagsUndefined = !req.hasOwnProperty(DISALLOWED_TAGS);
+        let disallowedTags = isDisallowedTagsUndefined ? DEFAULT_DISALLOWED_TAGS : compileOptions[DISALLOWED_TAGS];
+        if (!isReqDisallowedTagsUndefined) {
+          const currentDisallowedTags = req[DISALLOWED_TAGS];
+          validateDisallowedTags(currentDisallowedTags);
+          disallowedTags = currentDisallowedTags;
+        }
+        const isReqSanitizeUndefined = !req.hasOwnProperty(SANITIZE);
+        let sanitize = isSanitizeUndefined ? DEFAULT_SANITIZE : compileOptions[SANITIZE];
+        if (!isReqSanitizeUndefined) {
+          const currentSanitize = req[SANITIZE];
+          validateSanitize(currentSanitize);
+          sanitize = currentSanitize;
         }
         const initId = req.initId;
         const nodeId = req.nodeId;
@@ -785,6 +818,8 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
             requestInit,
             templateObject,
             allowedContentTypes,
+            disallowedTags,
+            sanitize,
             reqObject,
             indicators
           );
@@ -859,7 +894,7 @@ var renderTemplate = (currentEl, fn, requests, compileOptions, isMemoUndefined, 
         } else {
           if (!isModeUndefined) {
             createError(
-              `${REQUEST_OBJECT_ERROR}: The "${MODE}" property doesn't work without "${AFTER}" property`
+              `${REQUEST_OBJECT_ERROR}: The "${REPEAT}" property doesn't work without "${AFTER}" property`
             );
           }
         }
@@ -984,6 +1019,30 @@ var validateAutoBody = (autoBody, isCompile = false) => {
     }
   }
 };
+var validateDisallowedTags = (disallowedTags, isCompile = false) => {
+  const currentError = isCompile ? COMPILE_OPTIONS_ERROR : REQUEST_OBJECT_ERROR;
+  const isArray = Array.isArray(disallowedTags);
+  if (!isArray)
+    createError(
+      `${currentError}: The value of the property "${DISALLOWED_TAGS}" must be an array`
+    );
+  for (let i = 0; i < disallowedTags.length; i++) {
+    const disallowedTag = disallowedTags[i];
+    if (!DISALLOWED_TAGS_VALUES.includes(disallowedTag)) {
+      createError(
+        `${currentError}: The value "${disallowedTag}" is not processed`
+      );
+    }
+  }
+};
+var validateSanitize = (sanitize, isCompile = false) => {
+  const currentError = isCompile ? COMPILE_OPTIONS_ERROR : REQUEST_OBJECT_ERROR;
+  if (typeof sanitize !== "boolean") {
+    createError(
+      `${currentError}: The value of the property "${SANITIZE}" must be a boolean`
+    );
+  }
+};
 var validateIdOptions = (currentOptions) => {
   if (!currentOptions.hasOwnProperty("id") || !currentOptions.hasOwnProperty("value")) {
     createError(`${REQUEST_INIT_ERROR}: Missing "id" or "value" property`);
@@ -1026,7 +1085,7 @@ var compile = (template, options = {}) => {
   const isMemoUndefined = !options.hasOwnProperty(MEMO);
   if (!isMemoUndefined && typeof options[MEMO] !== "boolean")
     createError(
-      `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
+      `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean`
     );
   const isAutoBodyUndefined = !options.hasOwnProperty(AUTO_BODY);
   if (!isAutoBodyUndefined) validateAutoBody(options[AUTO_BODY], true);
@@ -1035,6 +1094,11 @@ var compile = (template, options = {}) => {
   );
   if (!isAllowedContentTypesUndefined)
     validateAllowedContentTypes(options[ALLOWED_CONTENT_TYPES], true);
+  const isDisallowedTagsUndefined = !options.hasOwnProperty(DISALLOWED_TAGS);
+  if (!isDisallowedTagsUndefined)
+    validateDisallowedTags(options[DISALLOWED_TAGS], true);
+  const isSanitizeUndefined = !options.hasOwnProperty(SANITIZE);
+  if (!isSanitizeUndefined) validateSanitize(options[SANITIZE], true);
   const requests = [];
   const templateArr = template.split(MAIN_REGEX).filter(Boolean);
   const requestsIndexes = [];
@@ -1072,7 +1136,7 @@ var compile = (template, options = {}) => {
           }
           break;
         case MEMO:
-        case MODE:
+        case REPEAT:
           if (typeof value !== "boolean") {
             createError(
               `${REQUEST_OBJECT_ERROR}: The value of the property "${key}" must be a boolean value`
@@ -1084,6 +1148,12 @@ var compile = (template, options = {}) => {
           break;
         case ALLOWED_CONTENT_TYPES:
           validateAllowedContentTypes(value);
+          break;
+        case DISALLOWED_TAGS:
+          validateDisallowedTags(value);
+          break;
+        case SANITIZE:
+          validateSanitize(value);
           break;
         default:
           if (typeof value !== "string") {
@@ -1309,6 +1379,8 @@ var compile = (template, options = {}) => {
     isMemoUndefined,
     isAutoBodyUndefined,
     isAllowedContentTypesUndefined,
+    isDisallowedTagsUndefined,
+    isSanitizeUndefined,
     isRequest
   );
 };

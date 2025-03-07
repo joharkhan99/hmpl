@@ -18,7 +18,10 @@ import {
   HMPLIndicatorTrigger,
   HMPLRequestStatus,
   HMPLCompileOptions,
-  HMPLAutoBodyOptions
+  HMPLAutoBodyOptions,
+  HMPLDisallowedTag,
+  HMPLDisallowedTags,
+  HMPLSanitize
 } from "../build/types";
 
 const hmpl = {
@@ -48,5 +51,8 @@ export type {
   HMPLIndicatorTrigger,
   HMPLRequestStatus,
   HMPLCompileOptions,
-  HMPLAutoBodyOptions
+  HMPLAutoBodyOptions,
+  HMPLDisallowedTag,
+  HMPLDisallowedTags,
+  HMPLSanitize
 };

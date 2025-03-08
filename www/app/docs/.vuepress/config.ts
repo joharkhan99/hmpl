@@ -142,6 +142,14 @@ export default defineUserConfig({
             {
               text: "allowedContentTypes",
               link: "request.md#allowedcontenttypes"
+            },
+            {
+              text: "disallowedTags",
+              link: "request.md#disallowedtags"
+            },
+            {
+              text: "sanitize",
+              link: "request.md#sanitize"
             }
           ]
         },
@@ -170,6 +178,10 @@ export default defineUserConfig({
             {
               text: "Discussion and development of an open-source project",
               link: "discussion-and-development-of-an-open-source-project.md"
+            },
+            {
+              text: "Security",
+              link: "security.md"
             },
             {
               text: "GitHub repository with examples",

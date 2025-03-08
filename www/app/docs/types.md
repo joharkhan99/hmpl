@@ -81,14 +81,16 @@ An object that defines the properties of a request.
 ```typescript
 interface HMPLRequestInfo {
   src: string;
-  method: string;
+  method?: string;
   initId?: string | number;
   after?: string;
   repeat?: boolean;
   memo?: boolean;
   allowedContentTypes?: HMPLContentTypes;
-  autoBody?: boolean | HMPLAutoBodyOptions;
   indicators?: HMPLIndicator[];
+  sanitize?: HMPLSanitize;
+  disallowedTags?: HMPLDisallowedTags;
+  autoBody?: boolean | HMPLAutoBodyOptions;
 }
 ```
 
@@ -112,6 +114,8 @@ interface HMPLCompileOptions {
   memo?: boolean;
   autoBody?: boolean | HMPLAutoBodyOptions;
   allowedContentTypes?: HMPLContentTypes;
+  sanitize?: HMPLSanitize;
+  disallowedTags?: HMPLDisallowedTags;
 }
 ```
 
@@ -231,10 +235,34 @@ type HMPLRequestStatus =
 ## HMPLContentTypes
 
 Represents the allowed content types for a request or response.
-Can be either an array of strings specifying content type substrings (e.g., ["text/html", "application/json"]) or a wildcard "*" indicating that all content types are allowed.
+Can be either an array of strings specifying content type substrings (e.g., `["text/html", "application/json"]`) or a wildcard `"\*"` indicating that all content types are allowed.
 
 ```typescript
 type HMPLContentTypes = string[] | "*";
+```
+
+## HMPLDisallowedTag
+
+Valid tags to remove from response.
+
+```typescript
+type HMPLDisallowedTag = "script" | "style" | "iframe";
+```
+
+## HMPLDisallowedTags
+
+Tags to remove from response.
+
+```typescript
+type HMPLDisallowedTags = HMPLDisallowedTag[];
+```
+
+## HMPLSanitize
+
+Enabling sanitize method from DOMPurify.
+
+```typescript
+type HMPLSanitize = boolean;
 ```
 
 ## HMPLIndicator

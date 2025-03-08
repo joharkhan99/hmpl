@@ -357,16 +357,22 @@
             <div class="item-header">
               <h3 class="item-title">
                 <i class="fas item-svg fa-check-circle" aria-hidden="true"></i>
-                Fully tested
+                Reliability
               </h3>
             </div>
             <p class="item-description">
-              The module test coverage is
+              Code coverage is
               <a
                 class="item-link"
                 href="https://app.codecov.io/github/hmpl-language/hmpl"
                 >100%</a
-              >, which minimizes the risk of unexpected errors
+              >, which minimizes the risk of unexpected errors. Has
+              functionality against XSS vulnerabilities (<a
+                class="item-link"
+                href="https://npmjs.com/package/dompurify"
+                >DOMPurify</a
+              >
+              and more)
             </p>
           </div>
           <div class="text_block_1_item">
@@ -1418,7 +1424,7 @@ section {
 }
 .card .card_name h2 {
   font-size: 25px;
-  margin-left: 10px;
+  margin-left: 4px;
 }
 
 .card p {

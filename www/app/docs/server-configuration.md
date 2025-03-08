@@ -1,6 +1,6 @@
 # Server Configuration
 
-Since version 2.2.2, a very important feature has been added in working with the server, which will make working with the web application much safer. Now, for each route that outputs HTML, you need to specify the `Content-Type`, which has the value `text/html`.
+Since version `2.2.2`, a very important feature has been added in working with the server, which will make working with the web application much safer. Now, for each route that outputs HTML, you need to specify the `Content-Type`, which has the value `text/html`.
 
 Let's say if we set up the server using Express.js, then you can specify it as follows in the response:
 

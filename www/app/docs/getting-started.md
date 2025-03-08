@@ -18,6 +18,7 @@ npm run dev
 ```
 
 This will:
+
 - Download a starter template for HMPL.
 - Install the necessary dependencies.
 - Start the Vite dev server.
@@ -55,7 +56,7 @@ Create a file named `HelloWorld.hmpl` inside `/src/hmpl` and add the following c
 
 - `src`: Specifies the API endpoint (`/api/hello`), From where the component will be fetched.
 - `indicators`: Defines UI elements for different request states:
-  - `"pending"` →  Shows the **Loading** component while waiting for a response.
+  - `"pending"` → Shows the **Loading** component while waiting for a response.
   - `"rejected"`: → Show the **Error** component if the request fails.
 
 ### 2. Load the component into DOM
@@ -129,6 +130,22 @@ document.body.appendChild(formEl);
 
 - Fill your name and click **Submit**.
 - You should see the response greeting appear.
+
+## Common use
+
+If you already have a project, then after connecting HMPL you can use the `hmpl` object, which will be available in your script.
+
+```javascript
+const templateFn = hmpl.compile(
+  `<div>
+    {
+      {
+        src: "/hello-world"
+      }
+    }
+  </div>`
+);
+```
 
 ## Resources
 

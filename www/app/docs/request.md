@@ -256,3 +256,39 @@ Sets the list of allowed `Content-Types` in the `headers` in the response to a r
 ```
 
 The default value of the property is `["text/html"]`. On the [Server Configuration](/server-configuration.md) pages you can see information on how to configure the backend for convenient work with the module.
+
+## disallowedTags
+
+Sets tags to be removed from the server response. The value is an array of strings with tags such as `script`, `style`, `iframe`.
+
+```hmpl
+{
+  {
+     "disallowedTags":["script", "style", "iframe"]
+  }
+}
+```
+
+The default value is an empty array `[]`, which means that all tags are allowed in the response.
+
+## sanitize
+
+Sets whether HTML sanitization using DOMPurify from the server is enabled. Protects against XSS attacks, you can read more about it here.
+
+```hmpl
+{
+  {
+     "sanitize":true
+  }
+}
+```
+
+By default, the value is `false`.
+
+Also, sanitize itself looks like this:
+
+```javascript
+DOMPurify.sanitize(str);
+```
+
+In future versions, it is expected that settings for this function will be transferred.

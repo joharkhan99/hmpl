@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.5 (2025-03-08)
+
+- Integration with [DOMPurify](https://npmjs.com/package/dompurify), which will increase the security of using the module by preventing XSS attacks. To enable, the `sanitize` property was added
+- Adding the `disallowedTags` property
+- Correction of text errors
+
 ## 2.2.4 (2025-02-25)
 
 - Updating README.md
@@ -25,7 +31,7 @@
 
 ## 2.2.0 (2024-12-04)
 
-- Integration with [JSON5](https://www.npmjs.com/package/json5). Now, objects can be written in HTML just like in vanilla js
+- Integration with [JSON5](https://npmjs.com/package/json5). Now, objects can be written in HTML just like in vanilla js
 - A bug with additional nodes has been fixed when you do not specify the request object in the element
 - The `.runtime` file has been updated
 - Comments have been added to the file hmpl.js

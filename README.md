@@ -56,7 +56,7 @@ Also, HMPL can be a great alternative to popular tools such as HTMX and Alpine.j
 - **Server-oriented**: Work with the server directly through markup and with a little js
 - **Generate thousands of DOM nodes from a single template**: Work with large components not only on the server but also on the client
 - **Simple**: Get ready-made UI from the server by writing a couple of lines of familiar object syntax
-- **Protected from XSS attacks**: Sanitize incoming HTML from the server with [DOMPurify](https://www.npmjs.com/package/dompurify?activeTab=readme) and work with it safely
+- **Protected from XSS attacks**: Sanitize incoming HTML from the server with [DOMPurify](https://www.npmjs.com/package/dompurify) and work with it safely
 - **Flexible**: Can be used in almost any project due to not only working through a script, but also working in files with the `.hmpl` extension
 - **Integrated with JSON5**: Flexible writing of objects by [specs](https://spec.json5.org) as in vanilla js, as well as the reliability of the parser used by millions of people
 - **Small bundle size**: Lots of functionality in a couple of kilobytes

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.6 (2025-03-09)
+
+- Updating README.md
+
 ## 2.2.5 (2025-03-08)
 
 - Integration with [DOMPurify](https://npmjs.com/package/dompurify), which will increase the security of using the module by preventing XSS attacks. To enable, the `sanitize` property was added

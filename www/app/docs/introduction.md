@@ -8,7 +8,8 @@
 
 ```html
 <div id="wrapper"></div>
-<script src="https://unpkg.com/json5/dist/index.js"></script>
+<script src="https://unpkg.com/json5/dist/index.min.js"></script>
+<script src="https://unpkg.com/dompurify/dist/purify.min.js"></script>
 <script src="https://unpkg.com/hmpl-js/dist/hmpl.min.js"></script>
 <script>
   const templateFn = hmpl.compile(

@@ -19,7 +19,7 @@
 
 <a href="https://hmpl-lang.dev">Website</a> • <a href="https://hmpl-lang.dev/introduction.html">Documentation</a> • <a href="https://codesandbox.io/p/sandbox/basic-hmpl-example-dxlgfg">Demo Sandbox</a> • <a href="https://hmpl-lang.dev/examples.html">Examples</a>
 
-hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. The language is syntactically object-based and integrated with <a href="https://www.npmjs.com/package/json5">JSON5</a>. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework and apply Server-Side Rendering, Static Site Generation, Incremental Static Generation (SSR, SSG, ISG) without robot indexing on any sites without Next.js, Remix, Nuxt.js!
+hmpl is a small template language for displaying UI from server to client. It is based on <em>customizable</em> requests sent to the server via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> and processed into ready-made HTML. The language is syntactically object-based and integrated with <a href="https://www.npmjs.com/package/json5">JSON5</a> and <a href="https://www.npmjs.com/package/dompurify">DOMPurify</a>. Reduce the size of your javascript files and display the same UI as if it was written in a modern framework and apply Server-Side Rendering, Static Site Generation, Incremental Static Generation (SSR, SSG, ISG) without robot indexing on any sites without Next.js, Remix, Nuxt.js!
 
 ☆ If you find HMPL useful, please consider giving us a star on GitHub! Your support helps us continue to innovate and deliver exciting features.
 
@@ -56,8 +56,9 @@ Also, HMPL can be a great alternative to popular tools such as HTMX and Alpine.j
 - **Server-oriented**: Work with the server directly through markup and with a little js
 - **Generate thousands of DOM nodes from a single template**: Work with large components not only on the server but also on the client
 - **Simple**: Get ready-made UI from the server by writing a couple of lines of familiar object syntax
+- **Protected from XSS attacks**: Sanitize incoming HTML from the server with [DOMPurify](https://www.npmjs.com/package/dompurify?activeTab=readme) and work with it safely
 - **Flexible**: Can be used in almost any project due to not only working through a script, but also working in files with the `.hmpl` extension
-- **Integrated with JSON5**: Flexible writing of objects by [specs](https://spec.json5.org) as in vanilla js, as well as the reliability of the parser used by millions of people.
+- **Integrated with JSON5**: Flexible writing of objects by [specs](https://spec.json5.org) as in vanilla js, as well as the reliability of the parser used by millions of people
 - **Small bundle size**: Lots of functionality in a couple of kilobytes
 
 ## Installation

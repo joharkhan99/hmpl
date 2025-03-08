@@ -9,6 +9,8 @@ import {
   REQUEST_INIT_ERROR,
   REQUEST_INIT_GET
 } from "../config/config";
+import { JSDOM } from "jsdom";
+import createDOMPurify from "dompurify";
 import { compile, stringify } from "../../src/main";
 import {
   waeq,
@@ -586,7 +588,9 @@ describe("template function", () => {
     {}
   );
   aeq(
-    createTestObj2(`{{ "src":"${BASE_URL}/api/test" }}`),
+    createTestObj2(
+      `{{ "src":"${BASE_URL}/api/test", disallowedTags:["script"] }}`
+    ),
     (res, prop, value) => {
       switch (prop) {
         case "response":
@@ -601,6 +605,69 @@ describe("template function", () => {
     {},
     {
       template: "<div>123</div><script></script>"
+    }
+  );
+  aeq(
+    createTestObj2(
+      `{{ "src":"${BASE_URL}/api/test", disallowedTags:["script"] }}`
+    ),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: "<div>123</div><script></script>"
+    },
+    {
+      disallowedTags: ["style"]
+    }
+  );
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test", sanitize:true }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: "<div>123</div><script></script>"
+    },
+    {}
+  );
+  aeq(
+    createTestObj2(`{{ "src":"${BASE_URL}/api/test", sanitize:true }}`),
+    (res, prop, value) => {
+      switch (prop) {
+        case "response":
+          if (value?.outerHTML === `<div><div>123</div></div>`) {
+            res(true);
+          } else {
+            res(false);
+          }
+          break;
+      }
+    },
+    {},
+    {
+      template: "<div>123</div><script></script>"
+    },
+    {
+      sanitize: false
     }
   );
   aeq(

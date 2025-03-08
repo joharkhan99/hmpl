@@ -8,6 +8,8 @@ const INDICATORS = `indicators`;
 const AUTO_BODY = `autoBody`;
 const COMMENT = `hmpl`;
 const FORM_DATA = `formData`;
+const DISALLOWED_TAGS = `disallowedTags`;
+const SANITIZE = `sanitize`;
 const ALLOWED_CONTENT_TYPES = "allowedContentTypes";
 const REQUEST_INIT_GET = `get`;
 const RESPONSE_ERROR = `BadResponseError`;
@@ -31,6 +33,8 @@ export {
   AUTO_BODY,
   COMMENT,
   FORM_DATA,
+  DISALLOWED_TAGS,
+  SANITIZE,
   ALLOWED_CONTENT_TYPES,
   REQUEST_INIT_GET,
   RESPONSE_ERROR,

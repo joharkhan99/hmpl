@@ -12,7 +12,9 @@ import {
   REQUEST_OBJECT_ERROR,
   COMPILE_OPTIONS_ERROR,
   SOURCE,
-  AFTER
+  AFTER,
+  DISALLOWED_TAGS,
+  SANITIZE
 } from "../config/config";
 
 import { checkFunction } from "../shared/utils";
@@ -44,7 +46,7 @@ describe("compile function", () => {
   e(
     `only accepts the '${MEMO}' property in the COMPILE OPTIONS as a boolean`,
     () => compile("some template", { memo: 123 as unknown as boolean }),
-    `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean value`
+    `${COMPILE_OPTIONS_ERROR}: The value of the property ${MEMO} must be a boolean`
   );
 
   e(
@@ -142,7 +144,30 @@ describe("compile function", () => {
       }),
     `${COMPILE_OPTIONS_ERROR}: In the array, the element with index 0 is not a string`
   );
-
+  e(
+    ``,
+    () =>
+      compile(createTestObj2(`{{ "src":"/api/test" }}`), {
+        disallowedTags: true as any
+      }),
+    `${COMPILE_OPTIONS_ERROR}: The value of the property "${DISALLOWED_TAGS}" must be an array`
+  );
+  e(
+    ``,
+    () =>
+      compile(createTestObj2(`{{ "src":"/api/test" }}`), {
+        disallowedTags: ["div" as any]
+      }),
+    `${COMPILE_OPTIONS_ERROR}: The value "div" is not processed`
+  );
+  e(
+    ``,
+    () =>
+      compile(createTestObj2(`{{ "src":"/api/test" }}`), {
+        sanitize: ["div"] as any
+      }),
+    `${COMPILE_OPTIONS_ERROR}: The value of the property "${SANITIZE}" must be a boolean`
+  );
   e(
     `throws an error if the '${SOURCE}' property in the REQUEST OBJECT is an array instead of a string`,
     () => compile(createTestObj1({ [SOURCE]: [] })),
@@ -265,6 +290,25 @@ describe("compile function", () => {
         )
       ),
     `${REQUEST_OBJECT_ERROR}: The "${MODE}" property doesn't work without "${AFTER}" property`
+  );
+  e(
+    ``,
+    () =>
+      compile(createTestObj2(`{{ "src":"/api/test", "disallowedTags":true }}`)),
+    `${REQUEST_OBJECT_ERROR}: The value of the property "${DISALLOWED_TAGS}" must be an array`
+  );
+  e(
+    ``,
+    () =>
+      compile(
+        createTestObj2(`{{ "src":"/api/test", disallowedTags: ["div"] }}`)
+      ),
+    `${REQUEST_OBJECT_ERROR}: The value "div" is not processed`
+  );
+  e(
+    ``,
+    () => compile(createTestObj2(`{{ "src":"/api/test", sanitize: ["div"] }}`)),
+    `${REQUEST_OBJECT_ERROR}: The value of the property "${SANITIZE}" must be a boolean`
   );
   eq(
     `returns a template function when provided a TEMPLATE with just ${SOURCE} property`,

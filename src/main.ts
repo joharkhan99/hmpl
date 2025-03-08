@@ -191,7 +191,7 @@ const DEFAULT_DISALLOWED_TAGS: HMPLDisallowedTags = [];
 const getTemplateWrapper = (str: string, sanitize: boolean = false) => {
   let sanitizedStr = str;
   if (sanitize) {
-    sanitizedStr = DOMPurify.sanitize(str);
+    sanitizedStr = (window as any).DOMPurify.sanitize(str);
   }
   const elementDocument = new DOMParser().parseFromString(
     `<template>${sanitizedStr}</template>`,

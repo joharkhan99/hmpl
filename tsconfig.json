@@ -23,7 +23,8 @@
     "skipLibCheck": true,
     "outDir": "./build",
     "paths": {
-      "json5": ["./node_modules/json5/lib/index"]
+      "json5": ["./node_modules/json5/lib/index"],
+      "dompurify": ["./node_modules/dompurify/dist/purify"]
     }
   },
   "include": ["./src/**/*"],

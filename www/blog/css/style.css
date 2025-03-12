@@ -142,7 +142,7 @@ pre:hover .copy-btn {
 }
 
 .post-navigation .button {
-  width: fit-content;
+  width: max-content;
 }
 
 .post-navigation .button:hover {

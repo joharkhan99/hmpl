@@ -790,6 +790,16 @@
         </div>
       </div>
     </a>
+    <div class="note">
+      HMPL on DevHunt!
+      <a
+        target="_blank"
+        rel="nooferer noopener"
+        href="https://devhunt.org/tool/hmpljs"
+        class="note_link"
+        >You can upvote us here!</a
+      >💎
+    </div>
   </footer>
 </template>
 
@@ -2283,6 +2293,31 @@ footer {
   background: linear-gradient(90deg, #0183ff 0%, #7e71ba 100%);
   color: white;
   text-decoration: none;
+}
+
+.note {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0183ff;
+  color: #fff;
+  z-index: 999;
+}
+
+.note_link {
+  text-decoration: underline !important;
+  font-weight: bold;
+  margin: 0 4px;
+}
+
+.note_link:hover {
+  text-decoration: none !important;
 }
 
 @media (max-width: 1024px) {

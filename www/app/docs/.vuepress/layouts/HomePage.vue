@@ -411,48 +411,50 @@
                 <span class="metric-subtitle">smaller than Alpine</span>
               </div>
             </div>
-            <div class="labels-column">
-              <div class="progress-label">HMPL</div>
-              <div class="progress-label">Alpine</div>
-              <div class="progress-label">Vue</div>
-              <div class="progress-label">Angular</div>
-              <div class="progress-label">Vanilla</div>
-            </div>
-            <div class="progress-column">
-              <div class="progress-bar-wrapper">
-                <div
-                  class="progress-bar"
-                  data-width="39.15"
-                  data-value="194"
-                ></div>
+            <div class="metrics-progress-container">
+              <div class="labels-column">
+                <div class="progress-label">HMPL</div>
+                <div class="progress-label">Alpine</div>
+                <div class="progress-label">Vue</div>
+                <div class="progress-label">Angular</div>
+                <div class="progress-label">Vanilla</div>
               </div>
-              <div class="progress-bar-wrapper">
-                <div
-                  class="progress-bar"
-                  data-width="48.29"
-                  data-value="224"
-                ></div>
-              </div>
-              <div class="progress-bar-wrapper">
-                <div
-                  class="progress-bar"
-                  data-width="51.59"
-                  data-value="235"
-                ></div>
-              </div>
-              <div class="progress-bar-wrapper">
-                <div
-                  class="progress-bar"
-                  data-width="75.73"
-                  data-value="314"
-                ></div>
-              </div>
-              <div class="progress-bar-wrapper">
-                <div
-                  class="progress-bar"
-                  data-width="80"
-                  data-value="328"
-                ></div>
+              <div class="progress-column">
+                <div class="progress-bar-wrapper">
+                  <div
+                    class="progress-bar"
+                    data-width="39.15"
+                    data-value="194"
+                  ></div>
+                </div>
+                <div class="progress-bar-wrapper">
+                  <div
+                    class="progress-bar"
+                    data-width="48.29"
+                    data-value="224"
+                  ></div>
+                </div>
+                <div class="progress-bar-wrapper">
+                  <div
+                    class="progress-bar"
+                    data-width="51.59"
+                    data-value="235"
+                  ></div>
+                </div>
+                <div class="progress-bar-wrapper">
+                  <div
+                    class="progress-bar"
+                    data-width="75.73"
+                    data-value="314"
+                  ></div>
+                </div>
+                <div class="progress-bar-wrapper">
+                  <div
+                    class="progress-bar"
+                    data-width="80"
+                    data-value="328"
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1556,6 +1558,14 @@ section {
   flex: 0 0 auto;
 }
 
+.metrics-progress-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  justify-content: start;
+  gap: 2rem;
+  width: 100%;
+}
+
 @media (max-width: 600px) {
   .metrics-column {
     display: flex;
@@ -1651,7 +1661,7 @@ section {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   gap: 32px;
 }
 @media (max-width: 600px) {
@@ -2168,11 +2178,27 @@ footer {
     flex-direction: column;
     gap: 18px;
   }
+  .metrics-column{
+    display: flex;
+    flex: auto;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+  }
+  .metric-medium{
+    margin-top: 0px;
+  }
+  .metrics-content{
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 0px;
+    width: 100%;
+  }
   .labels-column {
-    gap: 18px;
+    /* gap: 18px; */
   }
   .progress-column {
-    gap: 18px;
+    /* gap: 18px; */
   }
 }
 
